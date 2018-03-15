@@ -9,7 +9,9 @@ class Game:
         self.activePlayer = None
 
     def prepareGame(self):
-        pass
+        for a in self.board.wagonsDeck.cards:
+            print(a)
+        print(self.board.wagonsDeck.cards)
 
     def execute(self):
         pass
