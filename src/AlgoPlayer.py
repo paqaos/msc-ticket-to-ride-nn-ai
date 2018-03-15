@@ -2,4 +2,12 @@ from src.Player import Player
 
 
 class AlgoPlayer(Player):
-    def __init__(self, name): super(AlgoPlayer, self).__init__(name)
+    def __init__(self, name):
+        Player.__init__(self, name)
+
+    def calculateDecision(self, board):
+        if len(self.WagonCards) > 0:
+            pass
+        else:
+            pass
+
