@@ -10,9 +10,16 @@ class Player:
 
     def __init__(self, name):
         self.PlayerName = name
-        
+
     def calculateDecision(self, board):
         return DecisionType.CLAIMTRACK
 
     def claimTrack(self, board):
         pass
+
+    def drawTickets(self, min, count):
+        pass
+
+    def drawWagons(self, wagonHand, deck, count):
+        pass
+

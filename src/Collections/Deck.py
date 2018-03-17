@@ -13,6 +13,9 @@ class Deck:
         else:
             return None
 
+    def draw(self, count):
+        pass
+
     def add(self, card):
         self.cards.append(card)
 

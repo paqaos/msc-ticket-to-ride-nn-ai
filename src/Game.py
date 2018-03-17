@@ -26,6 +26,10 @@ class Game:
                 decision = self.activePlayer.calculateDecision(self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     self.activePlayer.ClaimTrack(self.board)
+                elif decision == DecisionType.DecisionType.TICKETCARD:
+                    self.activePlayer.DrawTickets(self.board, 1, self.board.ticketDeck.draw(3))
+                else:
+                    self.activePlayer.DrawWagons(None, self.board.wagonsDeck, 2)
                 self.passPlayer()
 
     def passPlayer(self):
@@ -33,7 +37,7 @@ class Game:
         self.players.remove(tmpPlayer)
         self.players.append(tmpPlayer)
         self.activePlayer = self.players[0]
-        print self.activePlayer.PlayerName
+
 
 myGame = Game()
 myGame.prepareGame()
