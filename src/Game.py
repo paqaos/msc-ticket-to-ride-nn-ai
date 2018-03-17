@@ -26,7 +26,6 @@ class Game:
                 decision = self.activePlayer.calculateDecision(self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     self.activePlayer.ClaimTrack(self.board)
-
                 self.passPlayer()
 
     def passPlayer(self):

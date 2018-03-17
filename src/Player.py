@@ -10,6 +10,7 @@ class Player:
 
     def __init__(self, name):
         self.PlayerName = name
+        
     def calculateDecision(self, board):
         return DecisionType.CLAIMTRACK
 

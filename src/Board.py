@@ -4,12 +4,17 @@ from src.Cards.WagonCard import WagonCard
 from src.Collections.Deck import Deck
 from src.Enums import Colors
 
+
 class Board:
+    Cities = []
+    Connections = []
+
     def __init__(self):
         self.wagonsDeck = Deck()
         self.ticketDeck = Deck()
         self.wagonGraveyard = Deck()
         self.__prepareCards__()
+        self.__prepareMap__()
 
     def __prepareCards__(self):
         for color in Colors.Colors:
@@ -21,3 +26,6 @@ class Board:
             self.wagonsDeck.add(WagonCard(Colors.Colors.Rainbow))
 
         random.shuffle(self.wagonsDeck.cards)
+
+    def __prepareMap__(self):
+        pass
