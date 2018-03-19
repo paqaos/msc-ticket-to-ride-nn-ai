@@ -26,3 +26,7 @@ class Deck:
     def add(self, card):
         self.cards.append(card)
 
+    def addCards(self, cards):
+        for card in cards:
+            self.cards.append(card)
+

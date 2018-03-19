@@ -1,10 +1,10 @@
 class City:
-    Connections = []
-    Tickets = []
 
     def __init__(self, id, name):
         self.id = id
         self.name = name
+        self.Connections = []
+        self.Tickets = []
 
     def setConnection(self, conn):
         self.Connections.append(conn)

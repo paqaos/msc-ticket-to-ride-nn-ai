@@ -17,12 +17,12 @@ class Game:
         self.players.append(aiPlayer)
         self.players.append(AlgoPlayer("cpu#2"))
         for player in self.players:
-
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
-            print player.PlayerName
-            for card in player.WagonCards.cards:
-                print str(card.Color)
+
+            ticketCards = self.board.ticketDeck.draw(3)
+            returned = player.drawTickets(2, ticketCards)
+            self.board.ticketDeck.addCards(returned)
 
     def execute(self):
         if self.activePlayer is not None:
