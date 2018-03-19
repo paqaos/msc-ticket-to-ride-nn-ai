@@ -6,6 +6,7 @@ from src.Collections.Deck import Deck
 from src.Enums import Colors
 from src.Map.City import City
 from src.Map.Connection import Connection
+from src.Map.Ticket import Ticket
 
 
 class Board:
@@ -45,7 +46,17 @@ class Board:
                 conn = Connection(line[0], line[1], line[2], [])
                 city1 = next(x for x in self.Cities if x.id == line[3])
                 city2 = next(x for x in self.Cities if x.id == line[4])
-                print city1.name + ' -> ' + city2.name
                 city1.setConnection(conn)
                 city2.setConnection(conn)
+                self.Connections.append(conn)
+
+        with open("data/usa/tickets.csv", "rt") as f:
+            reader = csv.reader(f, delimiter=';')
+
+            for line in reader:
+                conn = Ticket(line[0], line[3], [])
+                city1 = next(x for x in self.Cities if x.id == line[1])
+                city2 = next(x for x in self.Cities if x.id == line[2])
+                city1.setDestination(conn)
+                city2.setDestination(conn)
                 self.Connections.append(conn)
