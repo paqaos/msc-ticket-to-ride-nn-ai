@@ -6,7 +6,7 @@ class AlgoPlayer(Player):
         Player.__init__(self, name)
 
     def calculateDecision(self, board):
-        if len(self.WagonCards) > 0:
+        if len(self.WagonCards.cards) > 0:
             pass
         else:
             pass

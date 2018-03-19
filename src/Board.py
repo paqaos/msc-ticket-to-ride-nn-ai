@@ -17,8 +17,8 @@ class Board:
         self.wagonsDeck = Deck()
         self.ticketDeck = Deck()
         self.wagonGraveyard = Deck()
-        self.__prepareCards__()
         self.__prepareMap__()
+        self.__prepareCards__()
 
     def __prepareCards__(self):
         for color in Colors.Colors:
@@ -30,6 +30,7 @@ class Board:
             self.wagonsDeck.add(WagonCard(Colors.Colors.Rainbow))
 
         random.shuffle(self.wagonsDeck.cards)
+        random.shuffle(self.ticketDeck.cards)
 
     def __prepareMap__(self):
 
@@ -59,4 +60,4 @@ class Board:
                 city2 = next(x for x in self.Cities if x.id == line[2])
                 city1.setDestination(conn)
                 city2.setDestination(conn)
-                self.Connections.append(conn)
+                self.ticketDeck.cards.append(conn)

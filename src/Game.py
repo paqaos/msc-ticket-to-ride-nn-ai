@@ -16,9 +16,13 @@ class Game:
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         self.players.append(AlgoPlayer("cpu#2"))
-        for a in self.board.wagonsDeck.cards:
-            print(a)
-        print(self.board.wagonsDeck.cards)
+        for player in self.players:
+
+            wagonCards = self.board.wagonsDeck.draw(4)
+            player.WagonCards.addCards(wagonCards)
+            print player.PlayerName
+            for card in player.WagonCards.cards:
+                print str(card.Color)
 
     def execute(self):
         if self.activePlayer is not None:
@@ -41,4 +45,4 @@ class Game:
 
 myGame = Game()
 myGame.prepareGame()
-myGame.execute()
+# myGame.execute()

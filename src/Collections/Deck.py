@@ -2,11 +2,11 @@ class Deck:
     def __init__(self):
         self.cards = []
 
-    def canDraw(self):
-        return len(self.cards) > 0
+    def canDraw(self, count):
+        return min(count, len(self.cards))
 
     def draw(self):
-        if self.candraw():
+        if self.candraw(1) == 1:
             card = self.cards[0]
             self.cards.remove(card)
             return card
@@ -14,7 +14,14 @@ class Deck:
             return None
 
     def draw(self, count):
-        pass
+        amount = self.canDraw(count)
+        result = []
+        for i in range(amount):
+            card = self.cards[0]
+            self.cards.remove(card)
+            result.append(card)
+
+        return result
 
     def add(self, card):
         self.cards.append(card)
