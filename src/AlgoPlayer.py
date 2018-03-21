@@ -11,3 +11,11 @@ class AlgoPlayer(Player):
         else:
             pass
 
+    def drawTickets(self, min, tickets):
+        result = []
+        for x in tickets:
+            if min > 0:
+                result.append(x)
+            min = min - 1
+        return result
+

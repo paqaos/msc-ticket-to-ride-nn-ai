@@ -3,6 +3,7 @@ import csv
 
 from src.Cards.WagonCard import WagonCard
 from src.Collections.Deck import Deck
+from src.Collections.Hand import Hand
 from src.Enums import Colors
 from src.Map.City import City
 from src.Map.Connection import Connection
@@ -17,6 +18,7 @@ class Board:
         self.wagonsDeck = Deck()
         self.ticketDeck = Deck()
         self.wagonGraveyard = Deck()
+        self.wagonsHand = Hand()
         self.__prepareMap__()
         self.__prepareCards__()
 
@@ -44,9 +46,19 @@ class Board:
             reader = csv.reader(f, delimiter=';')
 
             for line in reader:
-                conn = Connection(line[0], line[1], line[2], [])
-                city1 = next(x for x in self.Cities if x.id == line[3])
-                city2 = next(x for x in self.Cities if x.id == line[4])
+                conn = Connection(line[0], line[3], [], [])
+                for x in self.Cities:
+                    if x.id == line[1]:
+                        city1 = x
+                    if x.id == line[2]:
+                        city2 = x
+                #city1 = next(x for x in self.Cities if x.id == line[1])
+                #city2 = next(x for x in self.Cities if x.id == line[2])
+
+                if line[4] is not None:
+                    conn.color.append(line[4])
+                if line[5] is not None:
+                    conn.color.append(line[5])
                 city1.setConnection(conn)
                 city2.setConnection(conn)
                 self.Connections.append(conn)

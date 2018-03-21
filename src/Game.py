@@ -24,6 +24,9 @@ class Game:
             returned = player.drawTickets(2, ticketCards)
             self.board.ticketDeck.addCards(returned)
 
+        cards = self.board.wagonsDeck.draw(5)
+        self.board.wagonsHand.addCards(cards)
+
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active or self.activePlayer.Last:
@@ -45,4 +48,4 @@ class Game:
 
 myGame = Game()
 myGame.prepareGame()
-# myGame.execute()
+myGame.execute()

@@ -17,7 +17,7 @@ class Player:
     def claimTrack(self, board):
         pass
 
-    def drawTickets(self, min, wagons):
+    def drawTickets(self, min, tickets):
         pass
 
     def drawWagons(self, wagonHand, deck, count):
