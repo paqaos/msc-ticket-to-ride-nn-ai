@@ -1,21 +1,52 @@
+from random import random
+
+from src.AI import Track
+from src.Enums.DecisionType import DecisionType
 from src.Player import Player
 
 
 class AlgoPlayer(Player):
     def __init__(self, name):
         Player.__init__(self, name)
+        self.__targets__ = []
+
+    def canClaimTrack(self,track):
+        return False
+
+    def hasWagons(self, color):
+        return False
+
+    def hasAnyWagons(self, color):
+        return False
 
     def calculateDecision(self, board):
-        if len(self.WagonCards.cards) > 0:
-            pass
+        if len(self.TicketCards) > 0:
+            turn = board.turn
+            x = random(20+turn)
+            if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
+                return DecisionType.TICKETCARD
+            elif self.HasAnyWagons(5):
+                return DecisionType.CLAIMTRACK
+            elif x < 20:
+                return DecisionType.WAGONCARD
+            elif self.canClaimTrack(Track.FromNone()):
+                return DecisionType.CLAIMTRACK
+            else:
+                return DecisionType.WAGONCARD
         else:
-            pass
+            if self.canClaimTrack(None):
+                return DecisionType.CLAIMTRACK
+            else:
+                return DecisionType.WAGONCARD
 
     def drawTickets(self, min, tickets):
         result = []
+        mapData = []
         for x in tickets:
             if min > 0:
                 result.append(x)
             min = min - 1
         return result
 
+    def drawWagons(self, wagonHand, deck, count):
+        return []

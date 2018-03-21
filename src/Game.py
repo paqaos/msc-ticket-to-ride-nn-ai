@@ -32,11 +32,14 @@ class Game:
             while self.activePlayer.Active or self.activePlayer.Last:
                 decision = self.activePlayer.calculateDecision(self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
+                    print self.activePlayer.PlayerName + 'claim'
                     self.activePlayer.ClaimTrack(self.board)
                 elif decision == DecisionType.DecisionType.TICKETCARD:
-                    self.activePlayer.DrawTickets(self.board, 1, self.board.ticketDeck.draw(3))
+                    print self.activePlayer.PlayerName + 'ticket'
+                    self.activePlayer.drawTickets(self.board, 1, self.board.ticketDeck.draw(3))
                 else:
-                    self.activePlayer.DrawWagons(None, self.board.wagonsDeck, 2)
+                    print self.activePlayer.PlayerName + 'wagon'
+                    self.activePlayer.drawWagons(None, self.board.wagonsDeck, 2)
                 self.passPlayer()
 
     def passPlayer(self):
