@@ -2,6 +2,7 @@ from src import Player
 from src.AlgoPlayer import AlgoPlayer
 from src.Board import Board
 from src.Enums import DecisionType
+from src.HumanPlayer import HumanPlayer
 
 
 class Game:
@@ -12,7 +13,7 @@ class Game:
         self.activePlayer = None
 
     def prepareGame(self):
-        aiPlayer = AlgoPlayer("cpu#1")
+        aiPlayer = HumanPlayer("cpu#1")
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         self.players.append(AlgoPlayer("cpu#2"))

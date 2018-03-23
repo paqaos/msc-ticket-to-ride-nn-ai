@@ -8,6 +8,7 @@ class Player:
         self.Active = True
         self.Last = False
         self.Wagons = 45
+        self.Points = 0
         self.TicketCards = []
         self.WagonCards = Hand()
 

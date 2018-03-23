@@ -49,4 +49,5 @@ class AlgoPlayer(Player):
         return result
 
     def drawWagons(self, wagonHand, deck, count):
+
         return []
