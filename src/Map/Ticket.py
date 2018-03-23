@@ -3,3 +3,4 @@ class Ticket:
         self.points = points
         self.cities = cities
         self.id = id
+        self.Done = False

@@ -19,7 +19,7 @@ class AlgoPlayer(Player):
     def hasAnyWagons(self, color):
         return False
 
-    def calculateDecision(self, board):
+    def calculateDecision(self, game, board):
         if len(self.TicketCards) > 0:
             turn = board.turn
             x = random(20+turn)

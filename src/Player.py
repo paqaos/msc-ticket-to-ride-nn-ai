@@ -12,7 +12,7 @@ class Player:
         self.TicketCards = []
         self.WagonCards = Hand()
 
-    def calculateDecision(self, board):
+    def calculateDecision(self, game, board):
         return DecisionType.CLAIMTRACK
 
     def claimTrack(self, board):

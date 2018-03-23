@@ -31,7 +31,7 @@ class Game:
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active or self.activePlayer.Last:
-                decision = self.activePlayer.calculateDecision(self.board)
+                decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print self.activePlayer.PlayerName + 'claim'
                     self.activePlayer.ClaimTrack(self.board)
