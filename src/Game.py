@@ -31,7 +31,7 @@ class Game:
                 decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print self.activePlayer.PlayerName + 'claim'
-                    self.activePlayer.ClaimTrack(self.board)
+                    self.activePlayer.decisionTrack(self.board, self)
                 elif decision == DecisionType.DecisionType.TICKETCARD:
                     print self.activePlayer.PlayerName + 'ticket'
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)

@@ -19,3 +19,6 @@ class Connection:
             return sys.maxint
 
         return self.size
+
+    def claim(self, board, cards):
+        pass

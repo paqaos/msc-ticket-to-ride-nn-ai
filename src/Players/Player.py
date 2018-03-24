@@ -2,6 +2,7 @@ from src.Collections.Hand import Hand
 from src.Enums import DecisionType
 from src.Enums.Colors import Colors
 from src.Players.TicketDecision import TicketDecision
+from src.Players.TrackDecision import TrackDecision
 from src.Players.WagonDecision import WagonDecision
 
 
@@ -21,7 +22,7 @@ class Player:
         return DecisionType.CLAIMTRACK
 
     def claimTrack(self, board):
-        pass
+        return TrackDecision()
 
     def decisionTicket(self, board, game, cards, min):
         decision = TicketDecision()
@@ -55,6 +56,22 @@ class Player:
 
             board.refreshHand()
             board.refreshWagons()
+
+    def decisionTrack(self, board, game):
+        done = False
+        while not done:
+            track = self.claimTrack(board)
+            cost = track.conn.getCost()
+            if track.conn is not None and 0 < cost < 7 and self.canAfford(track):
+                cards = self.selectCards()
+                track.conn.claim(self, cards)
+                for card in cards:
+                    self.WagonCards.cards.remove(card)
+
+                board.wagonGraveyard.addCards(cards)
+
+    def canAfford(self, track):
+        return False
 
     def drawTickets(self, min, tickets):
         return TicketDecision()
