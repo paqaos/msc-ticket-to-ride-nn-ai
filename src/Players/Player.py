@@ -60,15 +60,14 @@ class Player:
     def decisionTrack(self, board, game):
         done = False
         while not done:
-            track = self.claimTrack(board)
-            cost = track.conn.getCost()
-            if track.conn is not None and 0 < cost < 7 and self.canAfford(track):
-                cards = self.selectCards()
-                track.conn.claim(self, cards)
-                for card in cards:
+            trackDecision = self.claimTrack(board)
+            cost = trackDecision.conn.getCost()
+            if trackDecision.conn is not None and 0 < cost < 7 and self.canAfford(trackDecision):
+                trackDecision.conn.claim(self, trackDecision.cards)
+                for card in trackDecision.cards:
                     self.WagonCards.cards.remove(card)
 
-                board.wagonGraveyard.addCards(cards)
+                board.wagonGraveyard.addCards(trackDecision.cards)
 
     def canAfford(self, track):
         return False
