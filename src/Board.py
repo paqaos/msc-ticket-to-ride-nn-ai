@@ -22,6 +22,21 @@ class Board:
         self.__prepareMap__()
         self.__prepareCards__()
 
+    def refreshWagons(self):
+        if len(self.wagonsDeck.cards) == 0 and len(self.wagonGraveyard.cards) > 0:
+            gravCards = self.wagonGraveyard.cards
+            self.wagonGraveyard.cards = []
+            random.shuffle(gravCards)
+            self.wagonsDeck.addCards(gravCards)
+
+    def refreshHand(self):
+        if not (len(self.wagonsHand.cards) < 5 and len(self.wagonsDeck.cards) > 0):
+            self.refreshWagons()
+
+        if len(self.wagonsDeck.cards) > 0 and len(self.wagonsHand.cards) < 5:
+            card = self.wagonsDeck.draw(1)[0]
+            self.wagonsHand.addCards([card])
+
     def __prepareCards__(self):
         for color in Colors.Colors:
             for i in range(12):

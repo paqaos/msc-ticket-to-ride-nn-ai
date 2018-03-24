@@ -37,7 +37,7 @@ class Game:
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                 else:
                     print self.activePlayer.PlayerName + 'wagon'
-                    self.activePlayer.drawWagons(self.board.wagonsHand, self.board.wagonsDeck, 2)
+                    self.activePlayer.decisionWagons(self.board, self)
                 self.passPlayer()
 
     def passPlayer(self):

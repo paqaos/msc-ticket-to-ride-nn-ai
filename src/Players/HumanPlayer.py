@@ -3,6 +3,7 @@ from src.Enums.DecisionType import DecisionType
 from src.Helpers.ShortestPath import ShortestPath
 from src.Players.Player import Player
 from src.Players.TicketDecision import TicketDecision
+from src.Players.WagonDecision import WagonDecision
 
 
 class HumanPlayer(Player):
@@ -76,25 +77,44 @@ class HumanPlayer(Player):
 
         return decision
 
-
-    def drawWagons(self, wagonHand, deck, count):
+    def drawWagons(self, wagonHand, isDeck, count):
         left = count
+        decision = WagonDecision(None, None)
         while left > 0:
             print 'chose wagons'
             for i in range(len(wagonHand.cards)):
-                print str(i) + ' ' + str(wagonHand.cards[i].Color)
+                if left > 1:
+                    print str(i+1) + ' ' + str(wagonHand.cards[i].Color)
+                else:
+                    if wagonHand.cards[i].Color == Colors.Colors.Rainbow:
+                        print 'x' + str(Colors.Colors.Rainbow)
+                    else:
+                        print str(i+1) + ' ' + str(wagonHand.cards[i].Color)
 
-            if len(deck.cards) > 0:
+            if isDeck:
                 print 'd - draw from deck'
 
             line = raw_input('please provide card id or d \n')
+            card = None
             if line == "1":
                 card = wagonHand.cards[0]
             elif line == "2":
-                card == wagonHand.cards[1]
-            elif line == "d":
-                card = deck.draw(1)
+                card = wagonHand.cards[1]
+            elif line == "3":
+                card = wagonHand.cards[2]
+            elif line == "4":
+                card = wagonHand.cards[3]
+            elif line == "5":
+                card = wagonHand.cards[4]
+            elif isDeck and line == "d":
+                decision.type = decision.Deck
+                return decision
 
-            self.game.drawWagon(self, card)
-            self.WagonCards.addCards({card})
-            left = left - 1
+            if card is not None:
+                if card.Color == Colors.Colors.Rainbow:
+                    decision.type = decision.Rainbow
+                else:
+                    decision.type = decision.Other
+
+            decision.card = card
+            return decision

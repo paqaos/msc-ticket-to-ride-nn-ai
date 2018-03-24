@@ -1,6 +1,8 @@
 from src.Collections.Hand import Hand
 from src.Enums import DecisionType
+from src.Enums.Colors import Colors
 from src.Players.TicketDecision import TicketDecision
+from src.Players.WagonDecision import WagonDecision
 
 
 class Player:
@@ -32,6 +34,28 @@ class Player:
         for rej in decision.rejected:
             self.rejectTicket(rej, board)
 
+    def decisionWagons(self, board, game):
+        account = 2
+        while account > 0:
+            decision = self.drawWagons(board.wagonsHand, board.wagonsDeck.canDraw(1), account)
+
+            if decision.type == WagonDecision.Deck and board.wagonsDeck.canDraw(1):
+                account = account - 1
+                card = board.wagonsDeck.draw(1)[0]
+                self.WagonCards.addCards([card])
+            elif decision.type == WagonDecision.Rainbow and decision.card in board.wagonsHand.cards \
+                    and Colors.Rainbow == decision.card.Color:
+                account = account - 2
+                card = board.wagonsHand.draw(decision.card)
+                self.WagonCards.addCards([card])
+            elif decision.card is not None:
+                account = account - 1
+                card = board.wagonsHand.draw(decision.card)
+                self.WagonCards.addCards([card])
+
+            board.refreshHand()
+            board.refreshWagons()
+
     def drawTickets(self, min, tickets):
         return TicketDecision()
 
@@ -41,6 +65,6 @@ class Player:
     def rejectTicket(self, card, board):
         board.ticketDeck.cards.append(card)
 
-    def drawWagons(self, wagonHand, deck, count):
-        pass
+    def drawWagons(self, wagonHand, isDeck, count):
+        return WagonDecision()
 
