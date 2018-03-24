@@ -2,6 +2,7 @@ from src.Enums import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.ShortestPath import ShortestPath
 from src.Players.Player import Player
+from src.Players.TicketDecision import TicketDecision
 
 
 class HumanPlayer(Player):
@@ -41,9 +42,10 @@ class HumanPlayer(Player):
 
 
     def drawTickets(self, min, tickets):
-        chosed = []
+        choosed = []
         result = tickets
         active = True
+        decision = TicketDecision()
 
         while active:
             print 'choose ' + str(min) + ' tickets from collection: (provide id of ticket)\n'
@@ -51,7 +53,7 @@ class HumanPlayer(Player):
                 print str(ticket.id) + ': ' + str(ticket.cities[0].name)\
                       + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )'
 
-            if len(chosed) < min:
+            if len(choosed) < min:
                 line = raw_input('please choose\n')
             else:
                 line = raw_input('please choose or "e" for end\n')
@@ -60,16 +62,20 @@ class HumanPlayer(Player):
 
             for ticket in result:
                 if ticket.id == line:
-                    chosed.append(ticket)
-                    self.TicketCards.append(ticket)
+                    choosed.append(ticket)
 
-            for chose in chosed:
+            for chose in choosed:
                 if chose in result:
                     result.remove(chose)
 
+        for card in result:
+            decision.rejected.append(card)
 
-        print 'thank you'
-        return result
+        for card in choosed:
+            decision.selected.append(card)
+
+        return decision
+
 
     def drawWagons(self, wagonHand, deck, count):
         left = count

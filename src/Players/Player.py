@@ -1,5 +1,6 @@
 from src.Collections.Hand import Hand
 from src.Enums import DecisionType
+from src.Players.TicketDecision import TicketDecision
 
 
 class Player:
@@ -21,10 +22,24 @@ class Player:
         pass
 
     def decisionTicket(self, board, game, cards, min):
+        decision = TicketDecision()
+        while len(decision.selected) < min:
+            decision = self.drawTickets(min, cards)
 
+        for sel in decision.selected:
+            self.addTicket(sel)
+
+        for rej in decision.rejected:
+            self.rejectTicket(rej, board)
 
     def drawTickets(self, min, tickets):
-        pass
+        return TicketDecision()
+
+    def addTicket(self, card):
+        self.TicketCards.append(card)
+
+    def rejectTicket(self, card, board):
+        board.ticketDeck.cards.append(card)
 
     def drawWagons(self, wagonHand, deck, count):
         pass

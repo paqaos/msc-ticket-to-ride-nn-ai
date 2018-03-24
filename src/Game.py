@@ -12,17 +12,15 @@ class Game:
         self.activePlayer = None
 
     def prepareGame(self):
-        aiPlayer = HumanPlayer("cpu#1")
+        aiPlayer = HumanPlayer("cpu#1", self, self.board)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
-        self.players.append(AlgoPlayer("cpu#2"))
+        # self.players.append(AlgoPlayer("cpu#2", self, self.board))
         for player in self.players:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
 
-            ticketCards = self.board.ticketDeck.draw(3)
-            returned = player.drawTickets(2, ticketCards)
-            self.board.ticketDeck.addCards(returned)
+            self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
 
         cards = self.board.wagonsDeck.draw(5)
         self.board.wagonsHand.addCards(cards)
@@ -36,7 +34,7 @@ class Game:
                     self.activePlayer.ClaimTrack(self.board)
                 elif decision == DecisionType.DecisionType.TICKETCARD:
                     print self.activePlayer.PlayerName + 'ticket'
-                    self.activePlayer.drawTickets(self.board, 1, self.board.ticketDeck.draw(3))
+                    self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                 else:
                     print self.activePlayer.PlayerName + 'wagon'
                     self.activePlayer.drawWagons(self.board.wagonsHand, self.board.wagonsDeck, 2)
