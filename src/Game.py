@@ -38,6 +38,7 @@ class Game:
                 else:
                     print self.activePlayer.PlayerName + 'wagon'
                     self.activePlayer.decisionWagons(self.board, self)
+                self.board.refreshHand()
                 self.passPlayer()
 
     def passPlayer(self):

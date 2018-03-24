@@ -29,13 +29,23 @@ class Board:
             random.shuffle(gravCards)
             self.wagonsDeck.addCards(gravCards)
 
-    def refreshHand(self):
-        if not (len(self.wagonsHand.cards) < 5 and len(self.wagonsDeck.cards) > 0):
-            self.refreshWagons()
+    def checkHand(self):
+        rainbows = 0
+        for card in self.wagonsHand.cards:
+            if card.Color == Colors.Colors.Rainbow:
+                rainbows = rainbows + 1
 
-        if len(self.wagonsDeck.cards) > 0 and len(self.wagonsHand.cards) < 5:
+        if rainbows > 2:
+            self.wagonGraveyard.addCards(self.wagonsHand.cards)
+            self.wagonsHand.cards = []
+            self.refreshHand()
+
+    def refreshHand(self):
+        while len(self.wagonsDeck.cards) > 0 and len(self.wagonsHand.cards) < 5:
+            self.refreshWagons()
             card = self.wagonsDeck.draw(1)[0]
             self.wagonsHand.addCards([card])
+            self.checkHand()
 
     def __prepareCards__(self):
         for color in Colors.Colors:
