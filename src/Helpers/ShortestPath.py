@@ -32,12 +32,12 @@ class ShortestPath:
 
             for conn in minCity.inner.Connections:
                 if conn.cities[0] != minCity.inner:
-                    otherCityy = conn.cities[0]
+                    otherCity = conn.cities[0]
                 else:
-                    otherCityy = conn.cities[1]
+                    otherCity = conn.cities[1]
 
                 for x in cities:
-                    if x.inner == otherCityy:
+                    if x.inner == otherCity:
                         actual = x
 
                 alt = int(minCity.cost) + int(conn.getCost(player))
@@ -45,12 +45,12 @@ class ShortestPath:
                     actual.cost = alt
                     actual.prev = minCity
 
-        if found:
+        if found and minCity.cost < sys.maxint:
             actual = minCity
             while actual.inner != source:
-                result.insert(0, actual.inner)
+                result.insert(0, actual)
                 actual = actual.prev
-            result.insert(0, source)
+            result.insert(0, actual)
             return result
 
         return None
@@ -60,5 +60,4 @@ class CityTarget:
     def __init__(self, inner):
         self.cost = sys.maxint
         self.inner = inner
-        self.visited = False
         self.previous = None

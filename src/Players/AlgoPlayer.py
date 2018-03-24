@@ -2,12 +2,12 @@ from random import random
 
 from src.AI import Track
 from src.Enums.DecisionType import DecisionType
-from src.Player import Player
+from src.Players.Player import Player
 
 
 class AlgoPlayer(Player):
-    def __init__(self, name):
-        Player.__init__(self, name)
+    def __init__(self, name, game, board):
+        Player.__init__(self, name, game, board)
         self.__targets__ = []
 
     def canClaimTrack(self,track):

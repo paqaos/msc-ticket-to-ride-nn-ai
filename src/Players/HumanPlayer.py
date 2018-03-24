@@ -1,14 +1,12 @@
-import sys
-
 from src.Enums import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.ShortestPath import ShortestPath
-from src.Player import Player
+from src.Players.Player import Player
 
 
 class HumanPlayer(Player):
-    def __init__(self, name):
-        Player.__init__(self, name)
+    def __init__(self, name, game, board):
+        Player.__init__(self, name, game, board)
         self.__targets__ = []
 
     def calculateDecision(self, game, board):
@@ -69,5 +67,28 @@ class HumanPlayer(Player):
                 if chose in result:
                     result.remove(chose)
 
+
         print 'thank you'
         return result
+
+    def drawWagons(self, wagonHand, deck, count):
+        left = count
+        while left > 0:
+            print 'chose wagons'
+            for i in range(len(wagonHand.cards)):
+                print str(i) + ' ' + str(wagonHand.cards[i].Color)
+
+            if len(deck.cards) > 0:
+                print 'd - draw from deck'
+
+            line = raw_input('please provide card id or d \n')
+            if line == "1":
+                card = wagonHand.cards[0]
+            elif line == "2":
+                card == wagonHand.cards[1]
+            elif line == "d":
+                card = deck.draw(1)
+
+            self.game.drawWagon(self, card)
+            self.WagonCards.addCards({card})
+            left = left - 1

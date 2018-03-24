@@ -1,8 +1,7 @@
-from src import Player
-from src.AlgoPlayer import AlgoPlayer
+from src.Players.AlgoPlayer import AlgoPlayer
 from src.Board import Board
 from src.Enums import DecisionType
-from src.HumanPlayer import HumanPlayer
+from src.Players.HumanPlayer import HumanPlayer
 
 
 class Game:
@@ -40,7 +39,7 @@ class Game:
                     self.activePlayer.drawTickets(self.board, 1, self.board.ticketDeck.draw(3))
                 else:
                     print self.activePlayer.PlayerName + 'wagon'
-                    self.activePlayer.drawWagons(None, self.board.wagonsDeck, 2)
+                    self.activePlayer.drawWagons(self.board.wagonsHand, self.board.wagonsDeck, 2)
                 self.passPlayer()
 
     def passPlayer(self):
@@ -49,6 +48,8 @@ class Game:
         self.players.append(tmpPlayer)
         self.activePlayer = self.players[0]
 
+    def drawWagon(self, player, card):
+        pass
 
 myGame = Game()
 myGame.prepareGame()
