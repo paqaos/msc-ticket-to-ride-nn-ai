@@ -6,3 +6,4 @@ class Track:
 
     def FromNone(self):
         return Track(None)
+

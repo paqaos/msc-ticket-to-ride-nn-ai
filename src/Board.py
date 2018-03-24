@@ -52,8 +52,6 @@ class Board:
                         city1 = x
                     if x.id == line[2]:
                         city2 = x
-                #city1 = next(x for x in self.Cities if x.id == line[1])
-                #city2 = next(x for x in self.Cities if x.id == line[2])
 
                 if line[4] is not None:
                     conn.color.append(line[4])
