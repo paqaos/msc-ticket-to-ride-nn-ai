@@ -5,10 +5,11 @@ from src.Players.HumanPlayer import HumanPlayer
 
 
 class Game:
+    players = []
+
     def __init__(self):
         self.turn = 0
         self.board = Board()
-        self.players = []
         self.activePlayer = None
 
     def prepareGame(self):
@@ -30,13 +31,13 @@ class Game:
             while self.activePlayer.Active or self.activePlayer.Last:
                 decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
-                    print self.activePlayer.PlayerName + 'claim'
+                    print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
                 elif decision == DecisionType.DecisionType.TICKETCARD:
-                    print self.activePlayer.PlayerName + 'ticket'
+                    print(self.activePlayer.PlayerName + 'ticket')
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                 else:
-                    print self.activePlayer.PlayerName + 'wagon'
+                    print(self.activePlayer.PlayerName + 'wagon')
                     self.activePlayer.decisionWagons(self.board, self)
                 self.board.refreshHand()
                 self.passPlayer()

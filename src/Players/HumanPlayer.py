@@ -12,18 +12,18 @@ class HumanPlayer(Player):
         self.__targets__ = []
 
     def calculateDecision(self, game, board):
-        print 'choose your decision\n1. draw tickets\n2. draw wagons\n3. claim track'
-        print '4. show status\n5. show wagons and tickets\n'
+        print('choose your decision\n1. draw tickets\n2. draw wagons\n3. claim track')
+        print('4. show status\n5. show wagons and tickets\n')
         active = True
         while active:
-            line = raw_input("choose")
+            line = input("choose")
             if line == '1':
                 return DecisionType.TICKETCARD
             elif line == '2':
                 return DecisionType.WAGONCARD
             elif line == '4':
                 for player in game.players:
-                    print player.PlayerName + ' (pt. ' + str(player.Points) + ') - ' + str(player.Wagons) + ' wagons'
+                    print(player.PlayerName + ' (pt. ' + str(player.Points) + ') - ' + str(player.Wagons) + ' wagons')
                 continue
             elif line == '5':
                 colHow = {}
@@ -34,12 +34,12 @@ class HumanPlayer(Player):
                     colHow[card.Color] = colHow[card.Color] + 1
 
                 for cardCount in colHow.items():
-                    print str(cardCount[0]) + ' ' + str(cardCount[1])
+                    print(str(cardCount[0]) + ' ' + str(cardCount[1]))
 
                 for ticket in self.TicketCards:
                     ShortestPath.calculate(board, self, ticket.cities[1], ticket.cities[0])
-                    print str(ticket.cities[0].name) \
-                          + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )' + str(ticket.Done)
+                    print(str(ticket.cities[0].name) \
+                          + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )' + str(ticket.Done))
 
 
     def drawTickets(self, min, tickets):
@@ -49,15 +49,15 @@ class HumanPlayer(Player):
         decision = TicketDecision()
 
         while active:
-            print 'choose ' + str(min) + ' tickets from collection: (provide id of ticket)\n'
+            print('choose ' + str(min) + ' tickets from collection: (provide id of ticket)\n')
             for ticket in result:
-                print str(ticket.id) + ': ' + str(ticket.cities[0].name)\
-                      + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )'
+                print(str(ticket.id) + ': ' + str(ticket.cities[0].name)\
+                      + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )')
 
             if len(choosed) < min:
-                line = raw_input('please choose\n')
+                line = input('please choose\n')
             else:
-                line = raw_input('please choose or "e" for end\n')
+                line = input('please choose or "e" for end\n')
                 if line == "e":
                     active = False
 
@@ -81,20 +81,20 @@ class HumanPlayer(Player):
         left = count
         decision = WagonDecision(None, None)
         while left > 0:
-            print 'chose wagons'
+            print('chose wagons')
             for i in range(len(wagonHand.cards)):
                 if left > 1:
-                    print str(i+1) + ' ' + str(wagonHand.cards[i].Color)
+                    print(str(i+1) + ' ' + str(wagonHand.cards[i].Color))
                 else:
                     if wagonHand.cards[i].Color == Colors.Colors.Rainbow:
-                        print 'x' + str(Colors.Colors.Rainbow)
+                        print('x' + str(Colors.Colors.Rainbow))
                     else:
-                        print str(i+1) + ' ' + str(wagonHand.cards[i].Color)
+                        print(str(i+1) + ' ' + str(wagonHand.cards[i].Color))
 
             if isDeck:
-                print 'd - draw from deck'
+                print('d - draw from deck')
 
-            line = raw_input('please provide card id or d \n')
+            line = input('please provide card id or d \n')
             card = None
             if line == "1":
                 card = wagonHand.cards[0]

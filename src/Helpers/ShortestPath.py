@@ -45,7 +45,7 @@ class ShortestPath:
                     actual.cost = alt
                     actual.prev = minCity
 
-        if found and minCity.cost < sys.maxint:
+        if found and minCity.cost < float("inf"):
             actual = minCity
             while actual.inner != source:
                 result.insert(0, actual)
@@ -58,6 +58,6 @@ class ShortestPath:
 
 class CityTarget:
     def __init__(self, inner):
-        self.cost = sys.maxint
+        self.cost = float("inf")
         self.inner = inner
         self.previous = None

@@ -8,6 +8,7 @@ from src.Players.WagonDecision import WagonDecision
 
 class Player:
     def __init__(self, name, game, board):
+        self.Id = 1
         self.PlayerName = name
         self.Active = True
         self.Last = False
@@ -83,4 +84,14 @@ class Player:
 
     def drawWagons(self, wagonHand, isDeck, count):
         return WagonDecision()
+
+    def countCards(self):
+        colHow = {}
+        for color in Colors.Colors:
+            colHow[color] = 0
+
+        for card in self.WagonCards.cards:
+            colHow[card.Color] = colHow[card.Color] + 1
+
+        return colHow
 
