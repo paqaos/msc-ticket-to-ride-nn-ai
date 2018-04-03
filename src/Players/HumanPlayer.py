@@ -4,6 +4,7 @@ from src.Helpers.ShortestPath import ShortestPath
 from src.Helpers.StatePrint import StatePrint
 from src.Players.Player import Player
 from src.Players.TicketDecision import TicketDecision
+from src.Players.TrackDecision import TrackDecision
 from src.Players.WagonDecision import WagonDecision
 
 
@@ -22,6 +23,8 @@ class HumanPlayer(Player):
                 return DecisionType.TICKETCARD
             elif line == '2':
                 return DecisionType.WAGONCARD
+            elif line == '3':
+                return DecisionType.CLAIMTRACK
             elif line == '4':
                 for player in game.players:
                     print(player.PlayerName + ' (pt. ' + str(player.Points) + ') - ' + str(player.Wagons) + ' wagons')
@@ -78,6 +81,16 @@ class HumanPlayer(Player):
             decision.selected.append(card)
 
         return decision
+
+    def claimTrack(self, board):
+        result = TrackDecision()
+        available = []
+        for connection in board.Connections:
+            if connection.canClaim(self):
+                available.append(connection)
+                print(connection.id)
+
+        return result
 
     def drawWagons(self, wagonHand, isDeck, count):
         left = count
