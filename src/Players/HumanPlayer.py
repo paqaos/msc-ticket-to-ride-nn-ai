@@ -1,6 +1,7 @@
 from src.Enums import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.ShortestPath import ShortestPath
+from src.Helpers.StatePrint import StatePrint
 from src.Players.Player import Player
 from src.Players.TicketDecision import TicketDecision
 from src.Players.WagonDecision import WagonDecision
@@ -40,7 +41,8 @@ class HumanPlayer(Player):
                     ShortestPath.calculate(board, self, ticket.cities[1], ticket.cities[0])
                     print(str(ticket.cities[0].name) \
                           + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )' + str(ticket.Done))
-
+            elif line == '6':
+                StatePrint.printState(self.game, self, self.game.board)
 
     def drawTickets(self, min, tickets):
         choosed = []

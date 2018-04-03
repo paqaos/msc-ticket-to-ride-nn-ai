@@ -19,10 +19,11 @@ class StatePrint:
         output.append(player.Wagons)
         output.append(player.Points)
 
+        
+
+        print(output)
         return output
-        # player
-        # turn
-        # 9 x number of cards
+
         # nr of tickets (uncompleted)
         # nr of all tickets
         # nr of wagons

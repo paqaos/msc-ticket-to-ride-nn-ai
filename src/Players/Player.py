@@ -87,7 +87,7 @@ class Player:
 
     def countCards(self):
         colHow = {}
-        for color in Colors.Colors:
+        for color in Colors:
             colHow[color] = 0
 
         for card in self.WagonCards.cards:
