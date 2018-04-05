@@ -34,20 +34,27 @@ class Connection:
         return True
 
     def hasResources(self, cards):
-        result = False
+        result = self.getResourcesType(cards)
 
+        if len(result) > 0:
+            return True
+        else:
+            return False
+
+    def getResourcesType(self, cards):
+        result = []
         if len(self.color) == 2:
             tmpSum = self.sumColors(self.color[1], cards)
 
             if tmpSum > self.size and self.owner2 is None:
-                return True
+                result.append(self.color[1])
 
         sum1 = self.sumColors(self.color[0], cards)
 
         if sum1 > self.size and self.owner1 is None:
-            return True
+            result.append(self.color[0])
 
-        return False
+        return result
 
     def sumColors(self, color, cards):
         if color == Colors.Colors.Rainbow:
