@@ -6,9 +6,10 @@ from src.Players.HumanPlayer import HumanPlayer
 
 class Game:
     players = []
+    playerId = 1
 
     def __init__(self):
-        self.turn = 0
+        self.turn = 1
         self.board = Board()
         self.activePlayer = None
 
@@ -33,12 +34,17 @@ class Game:
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
+                    self.activePlayer.previousDecision = DecisionType.DecisionType.CLAIMTRACK
+
                 elif decision == DecisionType.DecisionType.TICKETCARD:
                     print(self.activePlayer.PlayerName + 'ticket')
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
+                    self.activePlayer.previousDecision = DecisionType.DecisionType.TICKETCARD
+
                 else:
                     print(self.activePlayer.PlayerName + 'wagon')
                     self.activePlayer.decisionWagons(self.board, self)
+                    self.activePlayer.previousDecision = DecisionType.DecisionType.WAGONCARD
                 self.board.refreshHand()
                 self.passPlayer()
 
@@ -47,6 +53,8 @@ class Game:
         self.players.remove(tmpPlayer)
         self.players.append(tmpPlayer)
         self.activePlayer = self.players[0]
+        if self.activePlayer.Id == 1:
+            self.turn += 1
 
     def drawWagon(self, player, card):
         pass

@@ -5,10 +5,11 @@ from src.Players.TicketDecision import TicketDecision
 from src.Players.TrackDecision import TrackDecision
 from src.Players.WagonDecision import WagonDecision
 
-
 class Player:
+
     def __init__(self, name, game, board):
-        self.Id = 1
+        self.Id = game.playerId
+        game.playerId += 1
         self.PlayerName = name
         self.Active = True
         self.Last = False
@@ -18,6 +19,7 @@ class Player:
         self.WagonCards = Hand()
         self.game = game
         self.board = board
+        self.previousDecision = DecisionType.DecisionType.START
 
     def calculateDecision(self, game, board):
         return DecisionType.CLAIMTRACK

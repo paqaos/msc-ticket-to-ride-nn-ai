@@ -57,7 +57,7 @@ class StatePrint:
         output.append(maxWagon)
         output.append(avgWagons)
         output.append(medianWagons)
-
+        output.append(player.previousDecision.value)
         print(output)
         return output
 

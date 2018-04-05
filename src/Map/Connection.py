@@ -71,3 +71,9 @@ class Connection:
 
     def claim(self, board, cards):
         pass
+
+    def countClaimed(self):
+        pass
+
+    def countToClaim(self):
+        pass
