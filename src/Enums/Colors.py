@@ -12,3 +12,24 @@ class Colors(Enum):
     Orange = 7
     Yellow = 8
 
+    @staticmethod
+    def fromString(content):
+        if content == '0':
+            return Colors.Rainbow
+        if content == '1':
+            return Colors.Red
+        if content == '2':
+            return Colors.Blue
+        if content == '3':
+            return Colors.White
+        if content == '4':
+            return Colors.Black
+        if content == '5':
+            return Colors.Green
+        if content == '6':
+            return Colors.Pink
+        if content == '7':
+            return Colors.Orange
+        if content == '8':
+            return Colors.Yellow
+        return None

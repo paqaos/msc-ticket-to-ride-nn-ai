@@ -86,10 +86,23 @@ class HumanPlayer(Player):
         result = TrackDecision()
         available = []
         for connection in board.Connections:
-            if connection.canClaim(self):
+            if connection.canClaim(self) and connection.hasResources(self.countCards()):
                 available.append(connection)
-                print(connection.id)
+                print(str(connection.id) + ': ' + str(connection.cities[0].name) \
+                      + ' <-> ' + str(connection.cities[1].name) + ' - size ' + str(connection.size))
 
+        left = 1
+        while left > 0:
+            select = input('select connection')
+            selectInt = int(select)
+            for conn in available:
+                if conn.id == selectInt:
+                    result.conn = conn
+                    left = 0
+        leftCards = result.conn.size
+        while leftCards > 0:
+            print('select wagons to use')
+            leftCards -= 1
         return result
 
     def drawWagons(self, wagonHand, isDeck, count):

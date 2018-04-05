@@ -1,5 +1,7 @@
 import sys
 
+from src.Enums import Colors
+
 
 class Connection:
     def __init__(self, id, size, colors, cities, double=False):
@@ -8,7 +10,7 @@ class Connection:
         self.size = int(size)
         self.color = colors
         self.cities = cities
-        self.id = id
+        self.id = int(id)
         self.double = double
 
     def getCost(self, player):
@@ -30,6 +32,35 @@ class Connection:
             return False
 
         return True
+
+    def hasResources(self, cards):
+        result = False
+
+        if len(self.color) == 2:
+            tmpSum = self.sumColors(self.color[1], cards)
+
+            if tmpSum > self.size and self.owner2 is None:
+                return True
+
+        sum1 = self.sumColors(self.color[0], cards)
+
+        if sum1 > self.size and self.owner1 is None:
+            return True
+
+        return False
+
+    def sumColors(self, color, cards):
+        if color == Colors.Colors.Rainbow:
+            max = 0
+            for i in Colors.Colors:
+                if i == Colors.Colors.Rainbow:
+                    continue
+                tmp = cards[i] + cards[Colors.Colors.Rainbow]
+                if tmp > max:
+                    max = tmp
+            return max
+        else:
+            return cards[color] + cards[Colors.Colors.Rainbow]
 
     def claim(self, board, cards):
         pass

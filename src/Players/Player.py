@@ -62,7 +62,7 @@ class Player:
         done = False
         while not done:
             trackDecision = self.claimTrack(board)
-            cost = trackDecision.conn.getCost()
+            cost = trackDecision.conn.getCost(self)
             if trackDecision.conn is not None and 0 < cost < 7 and self.canAfford(trackDecision):
                 trackDecision.conn.claim(self, trackDecision.cards)
                 for card in trackDecision.cards:

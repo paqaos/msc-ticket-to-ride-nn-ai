@@ -78,10 +78,14 @@ class Board:
                     if x.id == line[2]:
                         city2 = x
 
-                if line[4] is not None:
-                    conn.color.append(line[4])
-                if line[5] is not None:
-                    conn.color.append(line[5])
+                if line[4] is not None and line[4] != '':
+                    tmpColor = Colors.Colors.fromString(line[4])
+                    if tmpColor is not None:
+                        conn.color.append(tmpColor)
+                if line[5] is not None and line[5] != '':
+                    tmpColor = Colors.Colors.fromString(line[5])
+                    if tmpColor is not None:
+                        conn.color.append(tmpColor)
                 city1.setConnection(conn)
                 city2.setConnection(conn)
                 self.Connections.append(conn)
