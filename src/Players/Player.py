@@ -72,7 +72,7 @@ class Player:
 
                 board.wagonGraveyard.addCards(trackDecision.cards)
 
-    def canAfford(self, track):
+    def canAfford(self, track, cards):
         return False
 
     def drawTickets(self, min, tickets):
@@ -97,3 +97,12 @@ class Player:
 
         return colHow
 
+    def getCards(self, cardColor, count):
+        result = []
+        for card in self.WagonCards.cards:
+            if card.Color == cardColor and count > 0:
+                result.append(card)
+                count -= 1
+        for card in result:
+            self.WagonCards.draw(card)
+        return result

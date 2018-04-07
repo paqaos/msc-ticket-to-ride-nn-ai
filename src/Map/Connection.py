@@ -46,12 +46,12 @@ class Connection:
         if len(self.color) == 2:
             tmpSum = self.sumColors(self.color[1], cards)
 
-            if tmpSum > self.size and self.owner2 is None:
+            if tmpSum >= self.size and self.owner2 is None:
                 result.append(self.color[1])
 
         sum1 = self.sumColors(self.color[0], cards)
 
-        if sum1 > self.size and self.owner1 is None:
+        if sum1 >= self.size and self.owner1 is None:
             result.append(self.color[0])
 
         return result

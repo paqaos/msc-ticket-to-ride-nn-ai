@@ -104,13 +104,54 @@ class HumanPlayer(Player):
 
             leftCards = result.conn.size
             trackColors = result.conn.getResourcesType(countCards)
+
+            toChose = []
+            if trackColors[0] == Colors.Colors.Rainbow:
+                rainbowCount = countCards[Colors.Colors.Rainbow]
+                for color in countCards.keys():
+                    if color == Colors.Colors.Rainbow and rainbowCount > leftCards:
+                        toChose.append(Colors.Colors.Rainbow)
+                    else:
+                        sumCount =  countCards[color] + rainbowCount
+                        if sumCount > leftCards:
+                            toChose.append(color)
+            else:
+                rainbowCount = countCards[Colors.Colors.Rainbow]
+                for tr in trackColors:
+                    sumCount = countCards[tr] + rainbowCount
+                    if sumCount > leftCards:
+                        toChose.append(tr)
+
             id = 1
-            for i in trackColors:
+            for i in toChose:
                 print('select #' + str(id) + ' to color' + str(i))
                 id += 1
-            while leftCards > 0:
-                print('select wagons to use')
-                leftCards -= 1
+
+            selectedColor = None
+            while selectedColor is None:
+                color = int(input('select wagons to use'))
+                if 0 < color < id:
+                    selectedColor = toChose[color - 1]
+
+            if trackColors[0] == Colors.Colors.Rainbow:
+                result.color = Colors.Colors.Rainbow
+            else:
+                result.color = selectedColor
+
+            if selectedColor == Colors.Colors.Rainbow:
+                raincards = self.getCards(Colors.Colors.Rainbow, leftCards)
+                for colorCard in raincards:
+                    result.cards.append(colorCard)
+            else:
+                colorcards = self.getCards(selectedColor, leftCards)
+                leftCards = leftCards - len(colorcards)
+                raincards = self.getCards(Colors.Colors.Rainbow, leftCards)
+
+                for colorCard in colorcards:
+                    result.cards.append(colorCard)
+                for colorCard in raincards:
+                    result.cards.append(colorCard)
+
             return result
         else:
             print('cannot claim track')
