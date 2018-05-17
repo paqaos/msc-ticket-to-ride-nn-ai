@@ -19,7 +19,7 @@ class Player:
         self.WagonCards = Hand()
         self.game = game
         self.board = board
-        self.previousDecision = DecisionType.DecisionType.START
+        self.decisions = [DecisionType.DecisionType.START]
 
     def calculateDecision(self, game, board):
         return DecisionType.CLAIMTRACK
@@ -72,7 +72,7 @@ class Player:
 
                 board.wagonGraveyard.addCards(trackDecision.cards)
 
-    def canAfford(self, track, cards):
+    def canAfford(self, track):
         return False
 
     def drawTickets(self, min, tickets):

@@ -1,6 +1,6 @@
-class ShortestPath:
+class ShortestConnection:
     @staticmethod
-    def calculate(board, player, source, target):
+    def calculatePath(board, player, source, target):
         cities = []
         result = []
         found = False
@@ -50,8 +50,8 @@ class ShortestPath:
 
         if found and minCity.cost < float("inf"):
             actual = minCity
-            while actual is not None and actual.inner is not None:
-                result.insert(0, actual)
+            while actual is not None and actual.conn is not None:
+                result.insert(0, actual.conn)
                 actual = actual.previous
             return result
 

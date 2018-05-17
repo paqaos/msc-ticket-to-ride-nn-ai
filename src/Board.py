@@ -11,10 +11,9 @@ from src.Map.Ticket import Ticket
 
 
 class Board:
-    Cities = []
-    Connections = []
-
     def __init__(self):
+        self.Cities = []
+        self.Connections = []
         self.wagonsDeck = Deck()
         self.ticketDeck = Deck()
         self.wagonGraveyard = Deck()

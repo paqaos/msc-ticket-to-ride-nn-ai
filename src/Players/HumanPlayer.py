@@ -1,6 +1,6 @@
 from src.Enums import Colors
 from src.Enums.DecisionType import DecisionType
-from src.Helpers.ShortestPath import ShortestPath
+from src.Helpers.ShortestConnection import ShortestConnection
 from src.Helpers.StatePrint import StatePrint
 from src.Players.Player import Player
 from src.Players.TicketDecision import TicketDecision
@@ -41,7 +41,9 @@ class HumanPlayer(Player):
                     print(str(cardCount[0]) + ' ' + str(cardCount[1]))
 
                 for ticket in self.TicketCards:
-                    ShortestPath.calculate(board, self, ticket.cities[1], ticket.cities[0])
+                    shpath = ShortestConnection.calculatePath(board, self, ticket.cities[1], ticket.cities[0])
+                    for path in shpath:
+                        print(path.cities[0].name + ' <-> ' + path.cities[1].name)
                     print(str(ticket.cities[0].name) \
                           + ' <-> ' + str(ticket.cities[1].name) + ' ( ' + str(ticket.points) + ' )' + str(ticket.Done))
             elif line == '6':

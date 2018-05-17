@@ -22,7 +22,10 @@ class Game:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
 
-            self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
+            # self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
+            for tc in self.board.ticketDeck.cards:
+                if tc.id == '15':
+                    self.activePlayer.addTicket(tc)
 
         cards = self.board.wagonsDeck.draw(5)
         self.board.wagonsHand.addCards(cards)
@@ -34,17 +37,17 @@ class Game:
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
-                    self.activePlayer.previousDecision = DecisionType.DecisionType.CLAIMTRACK
+                    self.activePlayer.decisions.append(DecisionType.DecisionType.CLAIMTRACK)
 
                 elif decision == DecisionType.DecisionType.TICKETCARD:
                     print(self.activePlayer.PlayerName + 'ticket')
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
-                    self.activePlayer.previousDecision = DecisionType.DecisionType.TICKETCARD
+                    self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
                 else:
                     print(self.activePlayer.PlayerName + 'wagon')
                     self.activePlayer.decisionWagons(self.board, self)
-                    self.activePlayer.previousDecision = DecisionType.DecisionType.WAGONCARD
+                    self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
                 self.board.refreshHand()
                 self.passPlayer()
 

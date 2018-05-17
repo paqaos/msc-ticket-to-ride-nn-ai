@@ -2,7 +2,9 @@ from random import random
 
 from src.AI import Track
 from src.Enums.DecisionType import DecisionType
+from src.Helpers.ShortestConnection import ShortestConnection
 from src.Players.Player import Player
+import itertools
 
 
 class AlgoPlayer(Player):
@@ -17,7 +19,10 @@ class AlgoPlayer(Player):
         return False
 
     def hasAnyWagons(self, color):
-        return False
+        if color is not None:
+            return self.countCards()[color]
+        else:
+            return len(self.WagonCards) > 0
 
     def calculateDecision(self, game, board):
         if len(self.TicketCards) > 0:
@@ -41,11 +46,49 @@ class AlgoPlayer(Player):
 
     def drawTickets(self, min, tickets):
         result = []
-        mapData = []
-        for x in tickets:
-            if min > 0:
-                result.append(x)
-            min = min - 1
+        ticketSize = min
+        ticketpoints = 0
+        ticketcost = float("inf")
+
+        while ticketSize <= len(tickets):
+            ticketGroups = itertools.combinations(tickets, ticketSize)
+
+            for tg in ticketGroups:
+                tgCost = 0
+                tgPoints = 0
+
+                connections = []
+                for t in tg:
+                    distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
+                    connections = list(set().union(connections, distance))
+                    tgPoints += int(t.points)
+
+                for con in connections:
+                    if con.getCost(self) != 0:
+                        tgCost += con.getCost(self)
+
+                if tgCost < ticketcost:
+                    result = tg
+                    ticketcost = tgCost
+                    ticketpoints = tgPoints
+                elif tgCost == ticketcost and tgPoints > ticketpoints:
+                    result = tg
+                    ticketcost = tgCost
+                    ticketpoints = tgPoints
+
+            ticketSize += 1
+
+        for t in result:
+            print('realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')
+
+            distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
+            for cn in distance:
+                print (cn.cities[0].name + '->'+cn.cities[1].name)
+
+        ## for x in tickets:
+        ##    if min > 0:
+        ##        result.append(x)
+        ##    min = min - 1
         return result
 
     def drawWagons(self, wagonHand, deck, count):
