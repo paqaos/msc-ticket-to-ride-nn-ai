@@ -38,6 +38,9 @@ class Player:
         for rej in decision.rejected:
             self.rejectTicket(rej, board)
 
+    def prepareTurn(self, board, game):
+        pass
+
     def decisionWagons(self, board, game):
         account = 2
         while account > 0:

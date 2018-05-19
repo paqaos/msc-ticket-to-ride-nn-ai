@@ -29,6 +29,7 @@ class Game:
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active or self.activePlayer.Last:
+                self.activePlayer.prepareTurn(self.board, self)
                 decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print(self.activePlayer.PlayerName + 'claim')

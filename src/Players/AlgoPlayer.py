@@ -13,6 +13,8 @@ class AlgoPlayer(Player):
     def __init__(self, name, game, board):
         Player.__init__(self, name, game, board)
         self.__targets__ = []
+        self.__lack__ = []
+        self.__poss__ = []
 
     def canClaimTrack(self,track):
         return False
@@ -45,6 +47,35 @@ class AlgoPlayer(Player):
                 return DecisionType.CLAIMTRACK
             else:
                 return DecisionType.WAGONCARD
+
+    def prepareTurn(self, board, game):
+        self.__targets__.clear()
+
+        target = []
+        possible = []
+        lack = []
+
+        for ticket in self.TicketCards:
+            distance = ShortestConnection.calculatePath(self.board, self, ticket.cities[0], ticket.cities[1])
+            target = list(set().union(target, distance))
+
+        for c in board.Connections:
+            if c.hasResources(self.WagonCards.cards) and not c.canClaim(self):
+                continue
+
+            if len(target) > 0 and target.__contains__(c):
+                possible.append(c)
+            elif c.size > 5:
+                possible.append(c)
+            elif len(target) == 0:
+                possible.append(c)
+
+        for t in target:
+            if not possible.__contains__(t):
+                lack.append(t)
+
+    pass
+
 
     def drawTickets(self, min, tickets):
         result = []
