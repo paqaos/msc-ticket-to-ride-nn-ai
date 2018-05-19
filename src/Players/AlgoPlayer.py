@@ -6,6 +6,8 @@ from src.Helpers.ShortestConnection import ShortestConnection
 from src.Players.Player import Player
 import itertools
 
+from src.Players.TicketDecision import TicketDecision
+
 
 class AlgoPlayer(Player):
     def __init__(self, name, game, board):
@@ -26,8 +28,8 @@ class AlgoPlayer(Player):
 
     def calculateDecision(self, game, board):
         if len(self.TicketCards) > 0:
-            turn = board.turn
-            x = random(20+turn)
+            turn = game.turn
+            x = random() % (20+turn)
             if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
                 return DecisionType.TICKETCARD
             elif self.HasAnyWagons(5):
@@ -85,11 +87,17 @@ class AlgoPlayer(Player):
             for cn in distance:
                 print (cn.cities[0].name + '->'+cn.cities[1].name)
 
-        ## for x in tickets:
-        ##    if min > 0:
-        ##        result.append(x)
-        ##    min = min - 1
-        return result
+        decision = TicketDecision()
+        for x in result:
+            decision.selected.append(x)
+        for x in tickets:
+            placed = False
+            for x2 in result:
+                if x2 == x:
+                    placed = True
+            if not placed:
+                decision.rejected.append(x)
+        return decision
 
     def drawWagons(self, wagonHand, deck, count):
 

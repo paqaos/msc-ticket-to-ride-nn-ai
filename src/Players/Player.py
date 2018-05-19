@@ -106,3 +106,12 @@ class Player:
         for card in result:
             self.WagonCards.draw(card)
         return result
+
+    def HasAnyWagons(self, number):
+        cards = self.countCards()
+
+        check = False
+        for card in cards:
+            if cards[card] >= number:
+                check = True
+        return check

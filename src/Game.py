@@ -14,7 +14,7 @@ class Game:
         self.activePlayer = None
 
     def prepareGame(self):
-        aiPlayer = HumanPlayer("cpu#1", self, self.board)
+        aiPlayer = AlgoPlayer("cpu#1", self, self.board)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         # self.players.append(AlgoPlayer("cpu#2", self, self.board))
