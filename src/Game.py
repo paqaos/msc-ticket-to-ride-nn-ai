@@ -21,11 +21,7 @@ class Game:
         for player in self.players:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
-
-            # self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
-            for tc in self.board.ticketDeck.cards:
-                if tc.id == '15':
-                    self.activePlayer.addTicket(tc)
+            self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
 
         cards = self.board.wagonsDeck.draw(5)
         self.board.wagonsHand.addCards(cards)
