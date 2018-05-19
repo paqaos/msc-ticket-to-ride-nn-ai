@@ -54,13 +54,14 @@ class AlgoPlayer(Player):
         target = []
         possible = []
         lack = []
+        cards = self.countCards()
 
         for ticket in self.TicketCards:
             distance = ShortestConnection.calculatePath(self.board, self, ticket.cities[0], ticket.cities[1])
             target = list(set().union(target, distance))
 
         for c in board.Connections:
-            if c.hasResources(self.WagonCards.cards) and not c.canClaim(self):
+            if not c.hasResources(cards) or not c.canClaim(self):
                 continue
 
             if len(target) > 0 and target.__contains__(c):
@@ -73,8 +74,9 @@ class AlgoPlayer(Player):
         for t in target:
             if not possible.__contains__(t):
                 lack.append(t)
-
-    pass
+        self.__lack__ = lack
+        self.__poss__ = possible
+        self.__targets__ = target
 
 
     def drawTickets(self, min, tickets):
@@ -131,5 +133,5 @@ class AlgoPlayer(Player):
         return decision
 
     def drawWagons(self, wagonHand, deck, count):
-
+        print(len(self.__poss__))
         return []
