@@ -3,7 +3,7 @@ from random import random
 from src.AI import Track
 from src.Enums.Colors import Colors
 from src.Enums.DecisionType import DecisionType
-from src.Helpers import DistancePointCalculator
+from src.Helpers.DistancePointCalculator import DistancePointCalculator
 from src.Helpers.ShortestConnection import ShortestConnection
 from src.Players.Player import Player
 import itertools
@@ -191,17 +191,46 @@ class AlgoPlayer(Player):
             return decision
 
     def claimTrack(self, board):
-        tracks = []
         decision = TrackDecision()
+
+        trackColors = {}
+        for color in Colors:
+            trackColors[color] = 0
+
+        for a in self.__lack__:
+            for col in a.color:
+                trackColors[col] = trackColors[col] + a.size
 
         if len(self.__match__) > 0:
             proccessing = self.__match__
             maxConn = None
             maxPoints = 0
             for con in proccessing:
-                points = DistancePointCalculator.calculatepoints(con.getCost())
+                points = DistancePointCalculator.calculatePoints(con.size)
                 if points > maxPoints:
                     maxConn = con
+
+            tmpColors = []
+            cards = self.countCards()
+            if len(maxConn.color) == 1:
+                tmpColors.append(maxConn.color[0])
+            else:
+                if maxConn.owner1 is None and cards[maxConn.color[0]] >= maxConn.size:
+                    tmpColors.append(maxConn.color[0])
+                if maxConn.owner2 is None and cards[maxConn.color[1]] >= maxConn.size:
+                    tmpColors.append(maxConn.color[1])
+
+            if len(tmpColors) == 1:
+                decision.color = tmpColors[0]
+            else:
+                col1dif = trackColors[tmpColors[0]]
+                col2dif = trackColors[tmpColors[1]]
+
+                if col1dif > col2dif:
+                    decision.color = tmpColors[0]
+                else:
+                    decision.color = tmpColors[1]
+
 
             decision.conn = maxConn
         else:
@@ -213,6 +242,38 @@ class AlgoPlayer(Player):
                 if points > maxPoints:
                     maxConn = con
 
+            tmpColors = []
+            cards = self.countCards()
+            if len(maxConn.colors) == 1:
+                tmpColors.append(maxConn.colors[0])
+            else:
+                if  maxConn.colors[0] == Colors.Rainbow:
+                    tmpColors.append(Colors.Rainbow)
+                elif maxConn.Owner1 is None and cards[maxConn.colors[0]] >= maxConn.size:
+                    tmpColors.append(maxConn.colors[0])
+                elif maxConn.Owner2 is None and cards[maxConn.colors[1]] >= maxConn.size:
+                    tmpColors.append(maxConn.colors[1])
+
+            if len(tmpColors) > 1:
+                decision.color = tmpColors[0]
+            else:
+                col1dif = trackColors[tmpColors[0]]
+                col2dif = trackColors[tmpColors[1]]
+
+                if col1dif > col2dif:
+                    decision.color = tmpColors[0]
+                else:
+                    decision.color = tmpColors[1]
             decision.conn = maxConn
+
+        col = decision.color
+        if col == Colors.Rainbow:
+#   Sprawdzenie czy ktorys kolor nie spelnia warunkow
+        # najpierw wykorzystanie kolorow
+        # pozniej wykorzystanie jokerow
+# Sprawdze
+        else:
+# dobranie kart aż spełnią wymogi
+# if brakuje - dobranie Jokerow
 
         return decision

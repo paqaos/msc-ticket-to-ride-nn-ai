@@ -46,7 +46,7 @@ class ShortestConnection:
                         actual = x
 
                 alt = int(minCity.cost) + int(conn.getCost(player))
-                altPoints = int(minCity.points) + int(DistancePointCalculator.calculatepoints(conn.size))
+                altPoints = int(minCity.points) + int(DistancePointCalculator.calculatePoints(conn.size))
                 if alt < actual.cost:
                     actual.cost = alt
                     actual.previous = minCity

@@ -1,6 +1,6 @@
 class DistancePointCalculator:
     @staticmethod
-    def calculatepoints(length):
+    def calculatePoints(length):
         if length == 1:
             return 1
         if length == 2:
