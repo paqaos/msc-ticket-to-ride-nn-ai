@@ -18,9 +18,10 @@ class AlgoPlayer(Player):
         self.__targets__ = []
         self.__lack__ = []
         self.__poss__ = []
+        self.__match__ = []
 
     def canClaimTrack(self,track):
-        return False
+        return len(self.__match__) > 0
 
     def hasWagons(self, color):
         return False
@@ -32,7 +33,7 @@ class AlgoPlayer(Player):
             return len(self.WagonCards) > 0
 
     def calculateDecision(self, game, board):
-        if len(self.TicketCards) > 0:
+        if len(self.TicketCards) == 0:
             turn = game.turn
             x = random() % (20+turn)
             if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
@@ -53,10 +54,12 @@ class AlgoPlayer(Player):
 
     def prepareTurn(self, board, game):
         self.__targets__.clear()
+        self.__match__.clear()
 
         target = []
         possible = []
         lack = []
+        match = []
         cards = self.countCards()
 
         for ticket in self.TicketCards:
@@ -77,9 +80,12 @@ class AlgoPlayer(Player):
         for t in target:
             if not possible.__contains__(t):
                 lack.append(t)
+            else:
+                match.append(t)
         self.__lack__ = lack
         self.__poss__ = possible
         self.__targets__ = target
+        self.__match__ = match
 
 
     def drawTickets(self, min, tickets):
@@ -179,8 +185,9 @@ class AlgoPlayer(Player):
                     break
 
             return decision
-
-        return []
+        else:
+            decision.type = WagonDecision.Deck
+            return decision
 
     def claimTrack(self, board):
         tracks = []
