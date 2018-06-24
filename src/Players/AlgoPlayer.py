@@ -3,6 +3,7 @@ from random import random
 from src.AI import Track
 from src.Enums.Colors import Colors
 from src.Enums.DecisionType import DecisionType
+from src.Helpers import DistancePointCalculator
 from src.Helpers.ShortestConnection import ShortestConnection
 from src.Players.Player import Player
 import itertools
@@ -21,7 +22,7 @@ class AlgoPlayer(Player):
         self.__match__ = []
 
     def canClaimTrack(self,track):
-        return len(self.__match__) > 0
+        return len(self.__match__) > 0 or(len(self.__targets__) == 0 and len(self.__poss__) > 0)
 
     def hasWagons(self, color):
         return False
@@ -192,6 +193,26 @@ class AlgoPlayer(Player):
     def claimTrack(self, board):
         tracks = []
         decision = TrackDecision()
-        possibleTracks = self.__poss__
+
+        if len(self.__match__) > 0:
+            proccessing = self.__match__
+            maxConn = None
+            maxPoints = 0
+            for con in proccessing:
+                points = DistancePointCalculator.calculatepoints(con.getCost())
+                if points > maxPoints:
+                    maxConn = con
+
+            decision.conn = maxConn
+        else:
+            proccessing = self.__poss__
+            maxConn = None
+            maxPoints = 0
+            for con in proccessing:
+                points = DistancePointCalculator.calculatepoints(con.getCost())
+                if points > maxPoints:
+                    maxConn = con
+
+            decision.conn = maxConn
 
         return decision
