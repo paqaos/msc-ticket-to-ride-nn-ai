@@ -1,12 +1,15 @@
 from random import random
 
 from src.AI import Track
+from src.Enums.Colors import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.ShortestConnection import ShortestConnection
 from src.Players.Player import Player
 import itertools
 
 from src.Players.TicketDecision import TicketDecision
+from src.Players.TrackDecision import TrackDecision
+from src.Players.WagonDecision import WagonDecision
 
 
 class AlgoPlayer(Player):
@@ -133,5 +136,55 @@ class AlgoPlayer(Player):
         return decision
 
     def drawWagons(self, wagonHand, deck, count):
-        print(len(self.__poss__))
+        trackColors = { }
+        finalRequest = { }
+        sumLacking = 0
+        handColor = { }
+        decision = WagonDecision(None, None)
+        for color in Colors:
+            trackColors[color] = 0
+            handColor[color] = 0
+
+        for hand in wagonHand.cards:
+            handColor[hand.Color] += 1
+
+        for a in self.__lack__:
+            sumLacking += a.size
+            for col in a.color:
+                trackColors[col] = trackColors[col] + a.size
+
+        for b in trackColors:
+            if trackColors[b] > 0:
+                finalRequest[b] = trackColors[b]
+
+        if sumLacking > 3 or len(finalRequest) > 2:
+            decision.type = WagonDecision.Deck
+            return decision
+
+        elif sumLacking == 1 and wagonHand[finalRequest[0]] > 0:
+            decision.type = WagonDecision.Other
+
+            for a in wagonHand:
+                if a.color == finalRequest[0]:
+                    decision.card = a
+                    break
+
+            return decision
+        elif sumLacking == 1 and wagonHand[Colors.Rainbow] > 0 and count > 1:
+            decision.type = WagonDecision.Rainbow
+
+            for a in wagonHand:
+                if a.color == Colors.Rainbow:
+                    decision.card = a
+                    break
+
+            return decision
+
         return []
+
+    def claimTrack(self, board):
+        tracks = []
+        decision = TrackDecision()
+        possibleTracks = self.__poss__
+
+        return decision

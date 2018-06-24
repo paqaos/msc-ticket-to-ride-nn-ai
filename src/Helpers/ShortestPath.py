@@ -1,3 +1,6 @@
+from src.Helpers.DistancePointCalculator import DistancePointCalculator
+
+
 class ShortestPath:
     @staticmethod
     def calculate(board, player, source, target):
@@ -43,10 +46,17 @@ class ShortestPath:
                         actual = x
 
                 alt = int(minCity.cost) + int(conn.getCost(player))
+                altPoints = int(minCity.points) + int(DistancePointCalculator.calculatepoints(conn.size))
                 if alt < actual.cost:
                     actual.cost = alt
                     actual.previous = minCity
                     actual.conn = conn
+                    actual.points = altPoints
+                if alt == actual.cost and altPoints > actual.points:
+                    actual.cost = alt
+                    actual.previous = minCity
+                    actual.conn = conn
+                    actual.points = altPoints
 
         if found and minCity.cost < float("inf"):
             actual = minCity
