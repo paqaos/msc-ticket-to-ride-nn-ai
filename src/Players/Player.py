@@ -76,7 +76,18 @@ class Player:
                 board.wagonGraveyard.addCards(trackDecision.cards)
 
     def canAfford(self, track):
-        return False
+        sizeCost = track.conn.size
+        trackColor = track.color
+
+        for a in track.cards:
+            if a.Color == Colors.Rainbow:
+                sizeCost -= 1
+            elif a.Color == trackColor:
+                sizeCost -= 1
+            elif a.Color != trackColor and trackColor == Colors.Rainbow:
+                sizeCost -= 1
+
+        return sizeCost == 0
 
     def drawTickets(self, min, tickets):
         return TicketDecision()

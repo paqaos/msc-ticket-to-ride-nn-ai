@@ -193,6 +193,7 @@ class AlgoPlayer(Player):
     def claimTrack(self, board):
         decision = TrackDecision()
 
+        cards = self.countCards()
         trackColors = {}
         for color in Colors:
             trackColors[color] = 0
@@ -209,9 +210,9 @@ class AlgoPlayer(Player):
                 points = DistancePointCalculator.calculatePoints(con.size)
                 if points > maxPoints:
                     maxConn = con
+                    maxPoints = points
 
             tmpColors = []
-            cards = self.countCards()
             if len(maxConn.color) == 1:
                 tmpColors.append(maxConn.color[0])
             else:
@@ -219,18 +220,6 @@ class AlgoPlayer(Player):
                     tmpColors.append(maxConn.color[0])
                 if maxConn.owner2 is None and cards[maxConn.color[1]] >= maxConn.size:
                     tmpColors.append(maxConn.color[1])
-
-            if len(tmpColors) == 1:
-                decision.color = tmpColors[0]
-            else:
-                col1dif = trackColors[tmpColors[0]]
-                col2dif = trackColors[tmpColors[1]]
-
-                if col1dif > col2dif:
-                    decision.color = tmpColors[0]
-                else:
-                    decision.color = tmpColors[1]
-
 
             decision.conn = maxConn
         else:
@@ -241,9 +230,9 @@ class AlgoPlayer(Player):
                 points = DistancePointCalculator.calculatepoints(con.getCost())
                 if points > maxPoints:
                     maxConn = con
+                    maxPoints = points
 
             tmpColors = []
-            cards = self.countCards()
             if len(maxConn.colors) == 1:
                 tmpColors.append(maxConn.colors[0])
             else:
@@ -254,26 +243,53 @@ class AlgoPlayer(Player):
                 elif maxConn.Owner2 is None and cards[maxConn.colors[1]] >= maxConn.size:
                     tmpColors.append(maxConn.colors[1])
 
-            if len(tmpColors) > 1:
+            decision.conn = maxConn
+
+        if len(tmpColors) == 1:
+            decision.color = tmpColors[0]
+        elif len(tmpColors) > 1:
+            col1dif = trackColors[tmpColors[0]]
+            col2dif = trackColors[tmpColors[1]]
+
+            if col1dif > col2dif:
                 decision.color = tmpColors[0]
             else:
-                col1dif = trackColors[tmpColors[0]]
-                col2dif = trackColors[tmpColors[1]]
-
-                if col1dif > col2dif:
-                    decision.color = tmpColors[0]
-                else:
-                    decision.color = tmpColors[1]
-            decision.conn = maxConn
+                decision.color = tmpColors[1]
 
         col = decision.color
         if col == Colors.Rainbow:
-#   Sprawdzenie czy ktorys kolor nie spelnia warunkow
-        # najpierw wykorzystanie kolorow
-        # pozniej wykorzystanie jokerow
-# Sprawdze
+            maxSingle = 0
+            maxColor = None
+            for a in Colors:
+                if a is not Colors.Rainbow:
+                    if maxSingle < cards[a]:
+                        maxColor = a
+                        maxSingle = cards[a]
+
+            rainCols = decision.conn.size - maxSingle
+            for a in self.WagonCards.cards:
+                if maxColor is not None:
+                    if a.Color == maxColor and maxPoints > 0:
+                        decision.cards.append(a)
+                        maxPoints -= 1
+                if a.Color == Colors.Rainbow and rainCols > 0:
+                    decision.cards.append(a)
+                    rainCols -= 1
+
         else:
-# dobranie kart aż spełnią wymogi
-# if brakuje - dobranie Jokerow
+            colCal = cards[col]
+
+            if colCal > decision.conn.size:
+                colCal = decision.conn.size
+
+            rainCol = decision.conn.size - colCal
+
+            for a in self.WagonCards.cards:
+                if a.color == col and colCal > 0:
+                    decision.cards.append(a)
+                    colCal -= 1
+                if a.color == Colors.Rainbow and rainCol > 0:
+                    decision.cards.append(a)
+                    rainCol -= 1
 
         return decision
