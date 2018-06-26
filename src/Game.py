@@ -17,11 +17,11 @@ class Game:
         aiPlayer = AlgoPlayer("cpu#1", self, self.board)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
-        # self.players.append(AlgoPlayer("cpu#2", self, self.board))
+        self.players.append(AlgoPlayer("cpu#2", self, self.board))
         for player in self.players:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
-            self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
+            player.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 2)
 
         cards = self.board.wagonsDeck.draw(5)
         self.board.wagonsHand.addCards(cards)
@@ -50,9 +50,16 @@ class Game:
 
     def passPlayer(self):
         tmpPlayer = self.activePlayer
+        if tmpPlayer.Wagons <= 2:
+            tmpPlayer.Active = False
+
         self.players.remove(tmpPlayer)
         self.players.append(tmpPlayer)
         self.activePlayer = self.players[0]
+        if not self.activePlayer.Active:
+            self.activePlayer.Last = False
+
+        self.activePlayer.Active = tmpPlayer.Active
         if self.activePlayer.Id == 1:
             self.turn += 1
 

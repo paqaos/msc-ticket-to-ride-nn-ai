@@ -50,8 +50,7 @@ class Player:
                 account = account - 1
                 card = board.wagonsDeck.draw(1)[0]
                 self.WagonCards.addCards([card])
-            elif decision.type == WagonDecision.Rainbow and decision.card in board.wagonsHand.cards \
-                    and Colors.Rainbow == decision.card.Color:
+            elif decision.type == WagonDecision.Rainbow and Colors.Rainbow == decision.card.Color:
                 account = account - 2
                 card = board.wagonsHand.draw(decision.card)
                 self.WagonCards.addCards([card])
@@ -69,11 +68,14 @@ class Player:
             trackDecision = self.claimTrack(board)
             cost = trackDecision.conn.getCost(self)
             if trackDecision.conn is not None and 0 < cost < 7 and self.canAfford(trackDecision):
-                trackDecision.conn.claim(self, trackDecision.cards)
+
+                trackDecision.conn.claim(self, self.countHandCards(trackDecision.cards), trackDecision.color)
                 for card in trackDecision.cards:
                     self.WagonCards.cards.remove(card)
 
+                print('claimed ' + trackDecision.conn.cities[0].name + ' <-> ' + trackDecision.conn.cities[1].name + 'size' + str(trackDecision.conn.size))
                 board.wagonGraveyard.addCards(trackDecision.cards)
+                done = True
 
     def canAfford(self, track):
         sizeCost = track.conn.size
@@ -110,6 +112,36 @@ class Player:
             colHow[card.Color] = colHow[card.Color] + 1
 
         return colHow
+
+    def countHandCards(self, altcards):
+        colHow = {}
+        for color in Colors:
+            colHow[color] = 0
+
+        for card in altcards:
+            colHow[card.Color] = colHow[card.Color] + 1
+
+        return colHow
+
+    def countCapacity(self):
+        capacity = {}
+        for color in Colors:
+            capacity[color] = 0
+
+        for card in self.WagonCards.cards:
+            capacity[card.Color] = capacity[card.Color] + 1
+
+        maxCount = 0
+        rainbow = capacity[Colors.Rainbow]
+        for color in Colors:
+            if color != Colors.Rainbow:
+                if capacity[color] > maxCount:
+                    maxCount = capacity[color]
+                capacity[color] += rainbow
+
+        capacity[Colors.Rainbow] += maxCount
+        return capacity
+
 
     def getCards(self, cardColor, count):
         result = []

@@ -27,6 +27,7 @@ class Board:
             self.wagonGraveyard.cards = []
             random.shuffle(gravCards)
             self.wagonsDeck.addCards(gravCards)
+            print('card_refreshed')
 
     def checkHand(self):
         rainbows = 0
@@ -45,6 +46,7 @@ class Board:
             card = self.wagonsDeck.draw(1)[0]
             self.wagonsHand.addCards([card])
             self.checkHand()
+            print('hand_refreshed')
 
     def __prepareCards__(self):
         for color in Colors.Colors:

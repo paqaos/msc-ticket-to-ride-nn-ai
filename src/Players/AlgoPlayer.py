@@ -5,6 +5,7 @@ from src.Enums.Colors import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.DistancePointCalculator import DistancePointCalculator
 from src.Helpers.ShortestConnection import ShortestConnection
+from src.Helpers.TicketConnection import TicketConnection
 from src.Players.Player import Player
 import itertools
 
@@ -22,6 +23,7 @@ class AlgoPlayer(Player):
         self.__match__ = []
 
     def canClaimTrack(self,track):
+        print(str(len(self.__match__)) + ' - ' + str(len(self.__targets__)) + ' - ' + str(len(self.__poss__)))
         return len(self.__match__) > 0 or(len(self.__targets__) == 0 and len(self.__poss__) > 0)
 
     def hasWagons(self, color):
@@ -34,7 +36,13 @@ class AlgoPlayer(Player):
             return len(self.WagonCards) > 0
 
     def calculateDecision(self, game, board):
-        if len(self.TicketCards) == 0:
+        activeTicket = False
+        for tc in self.TicketCards:
+            connectionCheck = TicketConnection.CheckConnection(board, tc, self)
+            if not tc.Done:
+                activeTicket = True
+
+        if not activeTicket:
             turn = game.turn
             x = random() % (20+turn)
             if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
@@ -73,19 +81,26 @@ class AlgoPlayer(Player):
 
             if len(target) > 0 and target.__contains__(c):
                 possible.append(c)
-            elif c.size > 5:
+            elif c.size >= 5:
                 possible.append(c)
+                match.append(c)
             elif len(target) == 0:
                 possible.append(c)
 
+        finalTarget = []
         for t in target:
-            if not possible.__contains__(t):
-                lack.append(t)
+            if not c.canClaim(self):
+                continue
             else:
-                match.append(t)
+                finalTarget.append(t)
+                if not possible.__contains__(t):
+                    lack.append(t)
+                else:
+                    match.append(t)
+
         self.__lack__ = lack
         self.__poss__ = possible
-        self.__targets__ = target
+        self.__targets__ = finalTarget
         self.__match__ = match
 
 
@@ -193,7 +208,9 @@ class AlgoPlayer(Player):
     def claimTrack(self, board):
         decision = TrackDecision()
 
+        cardsCapacity = self.countCapacity()
         cards = self.countCards()
+
         trackColors = {}
         for color in Colors:
             trackColors[color] = 0
@@ -202,48 +219,38 @@ class AlgoPlayer(Player):
             for col in a.color:
                 trackColors[col] = trackColors[col] + a.size
 
+        mode = 0
         if len(self.__match__) > 0:
+            mode = 1
             proccessing = self.__match__
-            maxConn = None
-            maxPoints = 0
-            for con in proccessing:
-                points = DistancePointCalculator.calculatePoints(con.size)
-                if points > maxPoints:
-                    maxConn = con
-                    maxPoints = points
-
-            tmpColors = []
-            if len(maxConn.color) == 1:
-                tmpColors.append(maxConn.color[0])
-            else:
-                if maxConn.owner1 is None and cards[maxConn.color[0]] >= maxConn.size:
-                    tmpColors.append(maxConn.color[0])
-                if maxConn.owner2 is None and cards[maxConn.color[1]] >= maxConn.size:
-                    tmpColors.append(maxConn.color[1])
-
-            decision.conn = maxConn
         else:
+            mode = 2
             proccessing = self.__poss__
-            maxConn = None
-            maxPoints = 0
-            for con in proccessing:
-                points = DistancePointCalculator.calculatepoints(con.getCost())
-                if points > maxPoints:
-                    maxConn = con
-                    maxPoints = points
 
-            tmpColors = []
-            if len(maxConn.colors) == 1:
-                tmpColors.append(maxConn.colors[0])
-            else:
-                if  maxConn.colors[0] == Colors.Rainbow:
-                    tmpColors.append(Colors.Rainbow)
-                elif maxConn.Owner1 is None and cards[maxConn.colors[0]] >= maxConn.size:
-                    tmpColors.append(maxConn.colors[0])
-                elif maxConn.Owner2 is None and cards[maxConn.colors[1]] >= maxConn.size:
-                    tmpColors.append(maxConn.colors[1])
+        maxConn = None
+        maxPoints = 0
+        minCost = 7
 
-            decision.conn = maxConn
+        for con in proccessing:
+            points = DistancePointCalculator.calculatePoints(con.size)
+            if mode == 2 and points > maxPoints:
+                maxConn = con
+                maxPoints = points
+            elif mode == 1 and con.size < minCost:
+                minCost = con.size
+                maxConn = con
+
+        tmpColors = []
+        print(maxConn.color)
+        if len(maxConn.color) == 1:
+            tmpColors.append(maxConn.color[0])
+        else:
+            if maxConn.owner1 is None and cardsCapacity[maxConn.color[0]] >= maxConn.size:
+                tmpColors.append(maxConn.color[0])
+            if maxConn.owner2 is None and cardsCapacity[maxConn.color[1]] >= maxConn.size:
+                tmpColors.append(maxConn.color[1])
+
+        decision.conn = maxConn
 
         if len(tmpColors) == 1:
             decision.color = tmpColors[0]
@@ -257,6 +264,7 @@ class AlgoPlayer(Player):
                 decision.color = tmpColors[1]
 
         col = decision.color
+
         if col == Colors.Rainbow:
             maxSingle = 0
             maxColor = None
@@ -266,12 +274,15 @@ class AlgoPlayer(Player):
                         maxColor = a
                         maxSingle = cards[a]
 
+            if maxSingle > decision.conn.size:
+                maxSingle = decision.conn.size
+
             rainCols = decision.conn.size - maxSingle
             for a in self.WagonCards.cards:
                 if maxColor is not None:
-                    if a.Color == maxColor and maxPoints > 0:
+                    if a.Color == maxColor and maxSingle > 0:
                         decision.cards.append(a)
-                        maxPoints -= 1
+                        maxSingle -= 1
                 if a.Color == Colors.Rainbow and rainCols > 0:
                     decision.cards.append(a)
                     rainCols -= 1
@@ -285,10 +296,10 @@ class AlgoPlayer(Player):
             rainCol = decision.conn.size - colCal
 
             for a in self.WagonCards.cards:
-                if a.color == col and colCal > 0:
+                if a.Color == col and colCal > 0:
                     decision.cards.append(a)
                     colCal -= 1
-                if a.color == Colors.Rainbow and rainCol > 0:
+                if a.Color == Colors.Rainbow and rainCol > 0:
                     decision.cards.append(a)
                     rainCol -= 1
 
