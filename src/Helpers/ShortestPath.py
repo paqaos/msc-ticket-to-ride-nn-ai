@@ -46,12 +46,7 @@ class ShortestPath:
 
                 alt = int(minCity.cost) + int(conn.getCost(player))
                 altPoints = int(minCity.points) + int(DistancePointCalculator.calculatePoints(conn.size))
-                if alt < actual.cost:
-                    actual.cost = alt
-                    actual.previous = minCity
-                    actual.conn = conn
-                    actual.points = altPoints
-                if alt == actual.cost and altPoints > actual.points:
+                if (alt < actual.cost) or (alt == actual.cost and altPoints > actual.points):
                     actual.cost = alt
                     actual.previous = minCity
                     actual.conn = conn

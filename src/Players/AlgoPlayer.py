@@ -22,9 +22,9 @@ class AlgoPlayer(Player):
         self.__poss__ = []
         self.__match__ = []
 
-    def canClaimTrack(self,track):
+    def canClaimTrack(self, track):
         print(str(len(self.__match__)) + ' - ' + str(len(self.__targets__)) + ' - ' + str(len(self.__poss__)))
-        return len(self.__match__) > 0 or(len(self.__targets__) == 0 and len(self.__poss__) > 0)
+        return len(self.__match__) > 0 or (len(self.__targets__) == 0 and len(self.__poss__) > 0)
 
     def hasWagons(self, color):
         return False
@@ -42,24 +42,28 @@ class AlgoPlayer(Player):
             if not tc.Done:
                 activeTicket = True
 
+        canDrawWagons = len(board.wagonsDeck.cards) > 0 or len(board.wagonsHand.cards) > 0
+        canClaim = len(self.__poss__) > 0
         if not activeTicket:
             turn = game.turn
-            x = random() % (20+turn)
+            x = random() % (20 + turn)
             if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
                 return DecisionType.TICKETCARD
             elif self.HasAnyWagons(5):
                 return DecisionType.CLAIMTRACK
-            elif x < 20:
+            elif x < 20 and canDrawWagons:
                 return DecisionType.WAGONCARD
-            elif self.canClaimTrack(Track.FromNone()):
+            elif canClaim and (self.canClaimTrack(Track.FromNone()) or not canDrawWagons ):
                 return DecisionType.CLAIMTRACK
-            else:
+            elif canDrawWagons:
                 return DecisionType.WAGONCARD
         else:
-            if self.canClaimTrack(None):
+            if canClaim and (self.canClaimTrack(None) or not canDrawWagons):
                 return DecisionType.CLAIMTRACK
-            else:
+            elif canDrawWagons:
                 return DecisionType.WAGONCARD
+
+        return DecisionType.TICKETCARD # ostateczność
 
     def prepareTurn(self, board, game):
         self.__targets__.clear()
@@ -76,7 +80,7 @@ class AlgoPlayer(Player):
             target = list(set().union(target, distance))
 
         for c in board.Connections:
-            if not c.hasResources(cards) or not c.canClaim(self):
+            if not c.hasResources(cards) or not c.canClaim(self) or not c.getCost(self) == c.size:
                 continue
 
             if len(target) > 0 and target.__contains__(c):
@@ -102,7 +106,6 @@ class AlgoPlayer(Player):
         self.__poss__ = possible
         self.__targets__ = finalTarget
         self.__match__ = match
-
 
     def drawTickets(self, min, tickets):
         result = []
@@ -143,7 +146,7 @@ class AlgoPlayer(Player):
 
             distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
             for cn in distance:
-                print (cn.cities[0].name + '->'+cn.cities[1].name)
+                print(cn.cities[0].name + '->' + cn.cities[1].name)
 
         decision = TicketDecision()
         for x in result:
@@ -157,11 +160,11 @@ class AlgoPlayer(Player):
                 decision.rejected.append(x)
         return decision
 
-    def drawWagons(self, wagonHand, deck, count):
-        trackColors = { }
-        finalRequest = { }
+    def drawWagons(self, wagonHand, deck, isdeck, count):
+        trackColors = {}
+        finalRequest = {}
         sumLacking = 0
-        handColor = { }
+        handColor = {}
         decision = WagonDecision(None, None)
         for color in Colors:
             trackColors[color] = 0
@@ -175,19 +178,39 @@ class AlgoPlayer(Player):
             for col in a.color:
                 trackColors[col] = trackColors[col] + a.size
 
+        maxWanted = 0
+        mostWanted = None
         for b in trackColors:
             if trackColors[b] > 0:
                 finalRequest[b] = trackColors[b]
+                if maxWanted < finalRequest[b]:
+                    maxWanted = finalRequest[b]
+                    mostWanted = b
 
-        if sumLacking > 3 or len(finalRequest) > 2:
+        if sumLacking == 0 and len(deck.cards) > 0:
+            decision.type = WagonDecision.Deck
+            return decision
+        elif mostWanted is None and len(deck.cards) > 0:
+            decision.type = WagonDecision.Deck
+            return decision
+        elif mostWanted is None and len(wagonHand.cards) > 0:
+            cardFromHand = int(random() % len(wagonHand.cards))
+            decision.type = WagonDecision.Other
+            card = wagonHand.cards[cardFromHand]
+            if card.Color == Colors.Rainbow:
+                card = wagonHand.cards[0]
+                decision.type = WagonDecision.Rainbow
+            decision.card = card
+            return decision
+        if len(finalRequest) > 3 and len(deck.cards) >= 1:
             decision.type = WagonDecision.Deck
             return decision
 
-        elif sumLacking == 1 and wagonHand[finalRequest[0]] > 0:
+        elif mostWanted is not None and sumLacking < 4 and handColor[mostWanted] > 0:
             decision.type = WagonDecision.Other
 
             for a in wagonHand:
-                if a.color == finalRequest[0]:
+                if a.color == mostWanted:
                     decision.card = a
                     break
 
@@ -201,8 +224,17 @@ class AlgoPlayer(Player):
                     break
 
             return decision
-        else:
+        elif len(deck.cards) > 1:
             decision.type = WagonDecision.Deck
+            return decision
+        elif len(wagonHand.cards) > 0:
+            cardFromHand = int(random() % len(wagonHand.cards))
+            decision.type = WagonDecision.Other
+            card = wagonHand.cards[cardFromHand]
+            if card.Color == Colors.Rainbow:
+                card = wagonHand.cards[0]
+                decision.type = WagonDecision.Rainbow
+            decision.card = card
             return decision
 
     def claimTrack(self, board):
@@ -240,8 +272,14 @@ class AlgoPlayer(Player):
                 minCost = con.size
                 maxConn = con
 
+        if maxConn is None:
+            for con in self.__poss__:
+                points = DistancePointCalculator.calculatePoints(con.size)
+                if mode == 2 and points > maxPoints:
+                    maxConn = con
+                    maxPoints = points
+
         tmpColors = []
-        print(maxConn.color)
         if len(maxConn.color) == 1:
             tmpColors.append(maxConn.color[0])
         else:
@@ -303,4 +341,5 @@ class AlgoPlayer(Player):
                     decision.cards.append(a)
                     rainCol -= 1
 
+        lenc = len(decision.cards) == decision.conn.size
         return decision

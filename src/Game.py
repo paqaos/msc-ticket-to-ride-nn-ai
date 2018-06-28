@@ -18,6 +18,9 @@ class Game:
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         self.players.append(AlgoPlayer("cpu#2", self, self.board))
+        self.players.append(AlgoPlayer("cpu#3", self, self.board))
+        self.players.append(AlgoPlayer("cpu#4", self, self.board))
+        self.players.append(AlgoPlayer("cpu#5", self, self.board))
         for player in self.players:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)

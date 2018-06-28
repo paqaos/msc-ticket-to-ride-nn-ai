@@ -44,7 +44,9 @@ class Player:
     def decisionWagons(self, board, game):
         account = 2
         while account > 0:
-            decision = self.drawWagons(board.wagonsHand, board.wagonsDeck.canDraw(1), account)
+            if account == 1 and len(board.wagonsHand.cards) == 0 and len(board.wagonsDeck.cards) == 0:
+                break
+            decision = self.drawWagons(board.wagonsHand, board.wagonsDeck, board.wagonsDeck.canDraw(1), account)
 
             if decision.type == WagonDecision.Deck and board.wagonsDeck.canDraw(1):
                 account = account - 1
@@ -100,7 +102,7 @@ class Player:
     def rejectTicket(self, card, board):
         board.ticketDeck.cards.append(card)
 
-    def drawWagons(self, wagonHand, isDeck, count):
+    def drawWagons(self, wagonHand, deck, isDeck, count):
         return WagonDecision()
 
     def countCards(self):
