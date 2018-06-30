@@ -17,24 +17,26 @@ class Connection:
     def getCost(self, player):
         if self.owner1 == player or self.owner2 == player:
             return 0
-        if (len(self.color) == 1 or not self.double) and (self.owner1 is not None or self.owner2 is not None):
+        if self.owner1 is not None and self.owner2 is not None:
             return 42
-        if self.owner1 is not None or self.owner2 is not None:
+        if len(self.color) == 1 and self.owner1 is not None:
+            return 42
+        if len(self.color) == 2 and not self.double and (self.owner1 is not None or self.owner2 is not None):
             return 42
 
         return self.size
 
     def canClaim(self, player: Player) -> bool:
-        if self.size > player.Wagons:
-            return True
         if self.owner1 == player or self.owner2 == player:
             return False
-        if (len(self.color) == 1 or not self.double) and (self.owner1 is not None or self.owner2 is not None):
+        if self.owner1 is not None and self.owner2 is not None:
             return False
-        if self.owner1 is not None or self.owner2 is not None:
+        if len(self.color) == 1 and self.owner1 is not None:
+            return False
+        if len(self.color) == 2 and not self.double and (self.owner1 is not None or self.owner2 is not None):
             return False
 
-        return True
+        return self.size <= player.Wagons
 
     def hasResources(self, cards):
         result = self.getResourcesType(cards)

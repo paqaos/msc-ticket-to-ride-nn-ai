@@ -51,7 +51,7 @@ class Game:
                     self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
                 else:
-                    print(self.activePlayer.PlayerName + 'wagon')
+                    print(self.activePlayer.PlayerName + 'wagon ' + str(len(self.board.wagonsDeck.cards)) + ' ' + str(len(self.board.wagonsHand.cards)))
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
                 self.board.refreshHand()

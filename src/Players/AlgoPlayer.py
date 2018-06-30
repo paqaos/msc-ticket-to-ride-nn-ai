@@ -36,6 +36,7 @@ class AlgoPlayer(Player):
             return len(self.WagonCards) > 0
 
     def calculateDecision(self, game, board):
+        self.prepareTurn(board,game)
         activeTicket = False
         for tc in self.TicketCards:
             connectionCheck = TicketConnection.CheckConnection(board, tc, self)
@@ -47,9 +48,9 @@ class AlgoPlayer(Player):
         if not activeTicket:
             turn = game.turn
             x = random() % (20 + turn)
-            if len(self.WagonCards.cards) >= 8 and self.Wagons > 8:
+            if len(self.WagonCards.cards) >= 8 and self.Wagons >= 8:
                 return DecisionType.TICKETCARD
-            elif self.HasAnyWagons(5):
+            elif self.HasAnyWagons(6) and canClaim:
                 return DecisionType.CLAIMTRACK
             elif x < 20 and canDrawWagons:
                 return DecisionType.WAGONCARD
@@ -66,9 +67,6 @@ class AlgoPlayer(Player):
         return DecisionType.TICKETCARD # ostateczność
 
     def prepareTurn(self, board, game):
-        self.__targets__.clear()
-        self.__match__.clear()
-
         target = []
         possible = []
         lack = []
@@ -80,12 +78,12 @@ class AlgoPlayer(Player):
             target = list(set().union(target, distance))
 
         for c in board.Connections:
-            if not c.hasResources(cards) or not c.canClaim(self) or not c.getCost(self) == c.size:
+            if not c.hasResources(cards) or not c.canClaim(self):
                 continue
 
             if len(target) > 0 and target.__contains__(c):
                 possible.append(c)
-            elif c.size >= 5:
+            elif c.size >= 6:
                 possible.append(c)
                 match.append(c)
             elif len(target) == 0:
@@ -112,6 +110,7 @@ class AlgoPlayer(Player):
         ticketSize = min
         ticketpoints = 0
         ticketcost = float("inf")
+        reachable = False
 
         while ticketSize <= len(tickets):
             ticketGroups = itertools.combinations(tickets, ticketSize)
