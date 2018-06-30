@@ -53,12 +53,12 @@ class AlgoPlayer(Player):
                 return DecisionType.CLAIMTRACK
             elif x < 20 and canDrawWagons:
                 return DecisionType.WAGONCARD
-            elif canClaim and (self.canClaimTrack(Track.FromNone()) or not canDrawWagons ):
+            elif canClaim and self.canClaimTrack(Track.FromNone()):
                 return DecisionType.CLAIMTRACK
             elif canDrawWagons:
                 return DecisionType.WAGONCARD
         else:
-            if canClaim and (self.canClaimTrack(None) or not canDrawWagons):
+            if canClaim and self.canClaimTrack(None):
                 return DecisionType.CLAIMTRACK
             elif canDrawWagons:
                 return DecisionType.WAGONCARD
@@ -142,7 +142,8 @@ class AlgoPlayer(Player):
             ticketSize += 1
 
         for t in result:
-            print('realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')
+            print( self.PlayerName +
+                   'realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')
 
             distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
             for cn in distance:
@@ -224,7 +225,7 @@ class AlgoPlayer(Player):
                     break
 
             return decision
-        elif len(deck.cards) > 1:
+        elif len(deck.cards) > 0:
             decision.type = WagonDecision.Deck
             return decision
         elif len(wagonHand.cards) > 0:

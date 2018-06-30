@@ -12,6 +12,7 @@ class Game:
         self.turn = 1
         self.board = Board()
         self.activePlayer = None
+        self.last = False
 
     def prepareGame(self):
         aiPlayer = AlgoPlayer("cpu#1", self, self.board)
@@ -21,6 +22,11 @@ class Game:
         self.players.append(AlgoPlayer("cpu#3", self, self.board))
         self.players.append(AlgoPlayer("cpu#4", self, self.board))
         self.players.append(AlgoPlayer("cpu#5", self, self.board))
+
+        if len(self.players) > 3:
+            for conn in self.board.Connections:
+                conn.double = True
+
         for player in self.players:
             wagonCards = self.board.wagonsDeck.draw(4)
             player.WagonCards.addCards(wagonCards)
@@ -31,7 +37,7 @@ class Game:
 
     def execute(self):
         if self.activePlayer is not None:
-            while self.activePlayer.Active or self.activePlayer.Last:
+            while self.activePlayer.Active:
                 self.activePlayer.prepareTurn(self.board, self)
                 decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
@@ -40,7 +46,7 @@ class Game:
                     self.activePlayer.decisions.append(DecisionType.DecisionType.CLAIMTRACK)
 
                 elif decision == DecisionType.DecisionType.TICKETCARD:
-                    print(self.activePlayer.PlayerName + 'ticket')
+                    print(self.activePlayer.PlayerName + 'ticket ' + str(len(self.board.ticketDeck.cards)))
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
@@ -53,16 +59,18 @@ class Game:
 
     def passPlayer(self):
         tmpPlayer = self.activePlayer
-        if tmpPlayer.Wagons <= 2:
+        if tmpPlayer.Last:
+            tmpPlayer.Last = False
             tmpPlayer.Active = False
+        elif not tmpPlayer.Last and tmpPlayer.Wagons <= 2:
+            tmpPlayer.Last = True
+            self.last = True
 
         self.players.remove(tmpPlayer)
         self.players.append(tmpPlayer)
         self.activePlayer = self.players[0]
-        if not self.activePlayer.Active:
-            self.activePlayer.Last = False
 
-        self.activePlayer.Active = tmpPlayer.Active
+        self.activePlayer.Last = self.last
         if self.activePlayer.Id == 1:
             self.turn += 1
 
