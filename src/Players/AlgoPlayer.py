@@ -54,7 +54,7 @@ class AlgoPlayer(Player):
                 return DecisionType.CLAIMTRACK
             elif x < 20 and canDrawWagons:
                 return DecisionType.WAGONCARD
-            elif canClaim and self.canClaimTrack(Track.FromNone()):
+            elif canClaim:
                 return DecisionType.CLAIMTRACK
             elif canDrawWagons:
                 return DecisionType.WAGONCARD
@@ -106,11 +106,14 @@ class AlgoPlayer(Player):
         self.__match__ = match
 
     def drawTickets(self, min, tickets):
-        result = []
+        result = None
         ticketSize = min
         ticketpoints = 0
         ticketcost = float("inf")
         reachable = False
+
+        minPassing = None
+        minCost = 100
 
         while ticketSize <= len(tickets):
             ticketGroups = itertools.combinations(tickets, ticketSize)
@@ -129,6 +132,12 @@ class AlgoPlayer(Player):
                     if con.getCost(self) != 0:
                         tgCost += con.getCost(self)
 
+                if tgCost >= self.Wagons:
+                    if tgCost < minCost and (minPassing is None or len(minPassing) >= len(tg)):
+                        minCost = tgCost
+                        minPassing = tg
+                    continue
+
                 if tgCost < ticketcost:
                     result = tg
                     ticketcost = tgCost
@@ -139,6 +148,9 @@ class AlgoPlayer(Player):
                     ticketpoints = tgPoints
 
             ticketSize += 1
+
+        if result is None:
+            result = minPassing
 
         for t in result:
             print( self.PlayerName +

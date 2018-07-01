@@ -1,7 +1,6 @@
 from src.Players.AlgoPlayer import AlgoPlayer
 from src.Board import Board
 from src.Enums import DecisionType
-from src.Players.HumanPlayer import HumanPlayer
 
 
 class Game:
@@ -74,9 +73,16 @@ class Game:
         if self.activePlayer.Id == 1:
             self.turn += 1
 
-    def drawWagon(self, player, card):
-        pass
+    def printResult(self):
+        points = {}
+        for pl in self.players:
+            points[pl] = pl.calculatePoints(self.board)
+            print(pl.PlayerName + ' pts: ' + str(points[pl]))
+
+
 
 myGame = Game()
 myGame.prepareGame()
 myGame.execute()
+myGame.printResult()
+

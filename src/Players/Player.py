@@ -1,6 +1,8 @@
 from src.Collections.Hand import Hand
 from src.Enums import DecisionType
 from src.Enums.Colors import Colors
+from src.Helpers.DistancePointCalculator import DistancePointCalculator
+from src.Helpers.TicketConnection import TicketConnection
 from src.Players.TicketDecision import TicketDecision
 from src.Players.TrackDecision import TrackDecision
 from src.Players.WagonDecision import WagonDecision
@@ -20,6 +22,7 @@ class Player:
         self.game = game
         self.board = board
         self.decisions = [DecisionType.DecisionType.START]
+        self.claimed = []
 
     def calculateDecision(self, game, board):
         return DecisionType.CLAIMTRACK
@@ -77,6 +80,7 @@ class Player:
 
                 print('claimed ' + trackDecision.conn.cities[0].name + ' <-> ' + trackDecision.conn.cities[1].name + 'size' + str(trackDecision.conn.size))
                 board.wagonGraveyard.addCards(trackDecision.cards)
+                self.claimed.append(trackDecision.conn)
                 done = True
 
     def canAfford(self, track):
@@ -163,3 +167,34 @@ class Player:
             if cards[card] >= number:
                 check = True
         return check
+
+    def calculatePoints(self, board):
+        points = 0
+        ticketPoints = 0
+        trackPoints = 0
+        tracks = { }
+        for i in range(1,7):
+            tracks[i] = 0
+        for c in self.claimed:
+            tracks[c.size] += 1
+
+        for i in range(1, 7):
+            mult = DistancePointCalculator.calculatePoints(i)
+            trackPoints += (mult * tracks[i])
+            points += (mult * tracks[i])
+            print(self.PlayerName + '- tras o dlugosci ' + str(i) + ': ' + str(tracks[i]))
+            print('punkty ' + str(tracks[i]) + ' * ' + str(mult) + ' = ' + str(mult * tracks[i]))
+
+        for t in self.TicketCards:
+            connectionCheck = TicketConnection.CheckConnection(board, t, self)
+            if not t.Done:
+                ticketPoints -= int(t.points)
+                points -= int(t.points)
+                print(self.PlayerName + ': nie zrealizowany bilet ' + str(t.points))
+            else:
+                ticketPoints += int(t.points)
+                points += int(t.points)
+                print(self.PlayerName + ': zrealizowany bilet ' + str(t.points))
+
+        return (points, trackPoints, ticketPoints)
+
