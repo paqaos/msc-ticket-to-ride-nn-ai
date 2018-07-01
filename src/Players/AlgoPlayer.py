@@ -52,12 +52,17 @@ class AlgoPlayer(Player):
 
         if not activeTicket:
             turn = game.turn
+            if turn < 40:
+                annealingFactor = (1 - (turn / 100)) * 80 + 20
+            else:
+                annealingFactor = (1 - (turn / 100)) * 100
+
             x = random() % (20 + turn)
             if len(self.WagonCards.cards) >= 8 and self.Wagons >= 8 and otherWagonsMin > 6:
                 return DecisionType.TICKETCARD
-            elif self.HasAnyWagons(6) and canClaim:
+            elif self.HasAnyWagons(5) and canClaim:
                 return DecisionType.CLAIMTRACK
-            elif x < 20 and canDrawWagons:
+            elif x < annealingFactor and canDrawWagons:
                 return DecisionType.WAGONCARD
             elif canClaim:
                 return DecisionType.CLAIMTRACK
@@ -88,7 +93,7 @@ class AlgoPlayer(Player):
 
             if len(target) > 0 and target.__contains__(c):
                 possible.append(c)
-            elif c.size >= 6:
+            elif c.size >= 5:
                 possible.append(c)
                 match.append(c)
             elif len(target) == 0:
