@@ -45,10 +45,15 @@ class AlgoPlayer(Player):
 
         canDrawWagons = len(board.wagonsDeck.cards) > 0 or len(board.wagonsHand.cards) > 0
         canClaim = len(self.__poss__) > 0
+        otherWagonsMin = 45
+        for pla in game.players:
+            if pla != self and pla.Wagons < otherWagonsMin:
+                otherWagonsMin = pla.Wagons
+
         if not activeTicket:
             turn = game.turn
             x = random() % (20 + turn)
-            if len(self.WagonCards.cards) >= 8 and self.Wagons >= 8:
+            if len(self.WagonCards.cards) >= 8 and self.Wagons >= 8 and otherWagonsMin > 6:
                 return DecisionType.TICKETCARD
             elif self.HasAnyWagons(6) and canClaim:
                 return DecisionType.CLAIMTRACK
@@ -114,6 +119,7 @@ class AlgoPlayer(Player):
 
         minPassing = None
         minCost = 100
+        self.dobranie += 1
 
         while ticketSize <= len(tickets):
             ticketGroups = itertools.combinations(tickets, ticketSize)
@@ -133,12 +139,12 @@ class AlgoPlayer(Player):
                         tgCost += con.getCost(self)
 
                 if tgCost >= self.Wagons:
-                    if tgCost < minCost and (minPassing is None or len(minPassing) >= len(tg)):
-                        minCost = tgCost
+                    if tgPoints < minCost:
+                        minCost = tgPoints
                         minPassing = tg
                     continue
 
-                if tgCost < ticketcost:
+                if tgCost < ticketcost or (tgCost == ticketcost and tgPoints > ticketpoints):
                     result = tg
                     ticketcost = tgCost
                     ticketpoints = tgPoints
@@ -163,6 +169,7 @@ class AlgoPlayer(Player):
         decision = TicketDecision()
         for x in result:
             decision.selected.append(x)
+            x.dobranie = self.dobranie
         for x in tickets:
             placed = False
             for x2 in result:
@@ -211,7 +218,8 @@ class AlgoPlayer(Player):
             card = wagonHand.cards[cardFromHand]
             if card.Color == Colors.Rainbow:
                 card = wagonHand.cards[0]
-                decision.type = WagonDecision.Rainbow
+                if card.Color == Colors.Rainbow:
+                    decision.type = WagonDecision.Rainbowc
             decision.card = card
             return decision
         if len(finalRequest) > 3 and len(deck.cards) >= 1:
@@ -245,6 +253,8 @@ class AlgoPlayer(Player):
             card = wagonHand.cards[cardFromHand]
             if card.Color == Colors.Rainbow:
                 card = wagonHand.cards[0]
+                if card.Color == Colors.Rainbow:
+                    decision.type = WagonDecision.Rainbow
                 decision.type = WagonDecision.Rainbow
             decision.card = card
             return decision

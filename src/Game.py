@@ -20,7 +20,7 @@ class Game:
         self.players.append(AlgoPlayer("cpu#2", self, self.board))
         self.players.append(AlgoPlayer("cpu#3", self, self.board))
         self.players.append(AlgoPlayer("cpu#4", self, self.board))
-        self.players.append(AlgoPlayer("cpu#5", self, self.board))
+        # self.players.append(AlgoPlayer("cpu#5", self, self.board))
 
         if len(self.players) > 3:
             for conn in self.board.Connections:

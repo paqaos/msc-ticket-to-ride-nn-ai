@@ -18,11 +18,11 @@ class Connection:
         if self.owner1 == player or self.owner2 == player:
             return 0
         if self.owner1 is not None and self.owner2 is not None:
-            return 42
+            return 1000
         if len(self.color) == 1 and self.owner1 is not None:
-            return 42
+            return 1000
         if len(self.color) == 2 and not self.double and (self.owner1 is not None or self.owner2 is not None):
-            return 42
+            return 1000
 
         return self.size
 
