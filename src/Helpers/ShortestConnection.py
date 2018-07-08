@@ -58,7 +58,7 @@ class ShortestConnection:
                     actual.conn = conn
                     actual.points = altPoints
 
-        if found and minCity.cost < float("inf"):
+        if found and minCity.cost < 10000:
             actual = minCity
             while actual is not None and actual.conn is not None:
                 result.insert(0, actual.conn)
@@ -70,7 +70,7 @@ class ShortestConnection:
 
 class CityTarget:
     def __init__(self, inner):
-        self.cost = float("inf")
+        self.cost = 10000
         self.points = 0
         self.inner = inner
         self.previous = None

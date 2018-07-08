@@ -4,14 +4,13 @@ from src.Enums import DecisionType
 
 
 class Game:
-    players = []
-    playerId = 1
-
     def __init__(self):
         self.turn = 1
         self.board = Board()
         self.activePlayer = None
         self.last = False
+        self.players = []
+        self.playerId = 1
 
     def prepareGame(self):
         aiPlayer = AlgoPlayer("cpu#1", self, self.board)
@@ -80,9 +79,9 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-
-myGame = Game()
-myGame.prepareGame()
-myGame.execute()
-myGame.printResult()
+for i in range(1,1000):
+    myGame = Game()
+    myGame.prepareGame()
+    myGame.execute()
+    myGame.printResult()
 

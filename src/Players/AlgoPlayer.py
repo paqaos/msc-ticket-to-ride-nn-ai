@@ -58,7 +58,10 @@ class AlgoPlayer(Player):
                 annealingFactor = (1 - (turn / 100)) * 100
 
             x = random() % (20 + turn)
-            if len(self.WagonCards.cards) >= 8 and self.Wagons >= 8 and otherWagonsMin > 6:
+            if len(self.WagonCards.cards) >= 8 \
+                    and self.Wagons >= 8 \
+                    and otherWagonsMin > 6\
+                    and len(self.TicketCards) > 0:
                 return DecisionType.TICKETCARD
             elif self.HasAnyWagons(5) and canClaim:
                 return DecisionType.CLAIMTRACK
@@ -69,12 +72,14 @@ class AlgoPlayer(Player):
             elif canDrawWagons:
                 return DecisionType.WAGONCARD
         else:
-            if canClaim and self.canClaimTrack(None):
+            if canClaim:
                 return DecisionType.CLAIMTRACK
             elif canDrawWagons:
                 return DecisionType.WAGONCARD
-
-        return DecisionType.TICKETCARD # ostateczność
+        if len(self.TicketCards) > 0:
+            return DecisionType.TICKETCARD # ostateczność
+        else:
+            return DecisionType.PASS
 
     def prepareTurn(self, board, game):
         target = []
@@ -130,6 +135,8 @@ class AlgoPlayer(Player):
             ticketGroups = itertools.combinations(tickets, ticketSize)
 
             for tg in ticketGroups:
+                if minPassing is None:
+                    minPassing = tg
                 tgCost = 0
                 tgPoints = 0
 
@@ -224,7 +231,7 @@ class AlgoPlayer(Player):
             if card.Color == Colors.Rainbow:
                 card = wagonHand.cards[0]
                 if card.Color == Colors.Rainbow:
-                    decision.type = WagonDecision.Rainbowc
+                    decision.type = WagonDecision.Rainbow
             decision.card = card
             return decision
         if len(finalRequest) > 3 and len(deck.cards) >= 1:

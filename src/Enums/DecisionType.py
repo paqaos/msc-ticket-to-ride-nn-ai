@@ -6,3 +6,4 @@ class DecisionType(Enum):
     WAGONCARD = 1
     TICKETCARD = 2
     CLAIMTRACK = 3
+    PASS = 4
