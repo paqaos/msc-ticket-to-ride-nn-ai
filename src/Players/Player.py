@@ -24,6 +24,8 @@ class Player:
         self.decisions = [DecisionType.DecisionType.START]
         self.claimed = []
         self.dobranie = 0
+        self.TicketDone = 0
+        self.TicketFail = 0
 
     def calculateDecision(self, game, board):
         return DecisionType.CLAIMTRACK
@@ -191,11 +193,13 @@ class Player:
             if not t.Done:
                 ticketPoints -= int(t.points)
                 points -= int(t.points)
+                self.TicketFail += 1
                 print(self.PlayerName + ': nie zrealizowany bilet ' + str(t.points) + ' dobranie ' + str(t.dobranie))
             else:
                 ticketPoints += int(t.points)
                 points += int(t.points)
+                self.TicketDone += 1
                 print(self.PlayerName + ': zrealizowany bilet ' + str(t.points)+ ' dobranie ' + str(t.dobranie))
-
+        self.Points = points
         return (points, trackPoints, ticketPoints)
 

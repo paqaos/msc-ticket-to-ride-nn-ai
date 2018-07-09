@@ -1,6 +1,5 @@
 from random import random
 
-from src.AI import Track
 from src.Enums.Colors import Colors
 from src.Enums.DecisionType import DecisionType
 from src.Helpers.DistancePointCalculator import DistancePointCalculator
@@ -61,22 +60,17 @@ class AlgoPlayer(Player):
             if len(self.WagonCards.cards) >= 8 \
                     and self.Wagons >= 8 \
                     and otherWagonsMin > 6\
-                    and len(self.TicketCards) > 0:
+                    and len(board.ticketDeck.cards) > 0:
                 return DecisionType.TICKETCARD
-            elif self.HasAnyWagons(5) and canClaim:
+            elif self.HasAnyWagons(6) and canClaim:
                 return DecisionType.CLAIMTRACK
             elif x < annealingFactor and canDrawWagons:
                 return DecisionType.WAGONCARD
-            elif canClaim:
-                return DecisionType.CLAIMTRACK
-            elif canDrawWagons:
-                return DecisionType.WAGONCARD
-        else:
-            if canClaim:
-                return DecisionType.CLAIMTRACK
-            elif canDrawWagons:
-                return DecisionType.WAGONCARD
-        if len(self.TicketCards) > 0:
+        if canClaim:
+            return DecisionType.CLAIMTRACK
+        elif canDrawWagons:
+            return DecisionType.WAGONCARD
+        elif len(board.ticketDeck.cards) > 0:
             return DecisionType.TICKETCARD # ostateczność
         else:
             return DecisionType.PASS
@@ -98,7 +92,7 @@ class AlgoPlayer(Player):
 
             if len(target) > 0 and target.__contains__(c):
                 possible.append(c)
-            elif c.size >= 5:
+            elif c.size >= 6:
                 possible.append(c)
                 match.append(c)
             elif len(target) == 0:
@@ -169,7 +163,8 @@ class AlgoPlayer(Player):
 
         if result is None:
             result = minPassing
-
+        if result is None:
+            print(str(len(tickets)) + ' ' + str(min))
         for t in result:
             print( self.PlayerName +
                    'realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')

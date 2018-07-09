@@ -12,14 +12,12 @@ class Game:
         self.players = []
         self.playerId = 1
 
-    def prepareGame(self):
+    def prepareGame(self, countAi):
         aiPlayer = AlgoPlayer("cpu#1", self, self.board)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
-        self.players.append(AlgoPlayer("cpu#2", self, self.board))
-        self.players.append(AlgoPlayer("cpu#3", self, self.board))
-        self.players.append(AlgoPlayer("cpu#4", self, self.board))
-        # self.players.append(AlgoPlayer("cpu#5", self, self.board))
+        for singleAi in range(1, countAi):
+            self.players.append(AlgoPlayer('cpu#' + str(singleAi+1), self, self.board))
 
         if len(self.players) > 3:
             for conn in self.board.Connections:
@@ -48,10 +46,11 @@ class Game:
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
-                else:
+                elif decision == DecisionType.DecisionType.WAGONCARD:
                     print(self.activePlayer.PlayerName + 'wagon ' + str(len(self.board.wagonsDeck.cards)) + ' ' + str(len(self.board.wagonsHand.cards)))
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
+
                 self.board.refreshHand()
                 self.passPlayer()
 
@@ -79,9 +78,29 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-for i in range(1,1000):
-    myGame = Game()
-    myGame.prepareGame()
-    myGame.execute()
-    myGame.printResult()
+with open('result_5.csv', 'w') as f, open('done_5.csv', 'w') as tf, open('fail_5.csv', 'w') as ff:
+    for pl in range(2, 6):
+        for rep in range(250):
+            lineTck = ''
+            line = ''
+            failLine = ''
+            myGame = Game()
+            myGame.prepareGame(pl)
+            myGame.execute()
+            myGame.printResult()
+
+            for player in myGame.players:
+                line += str(player.Points) + ';'
+                failLine += str(player.TicketFail) + ';'
+                lineTck += str(player.TicketDone) + ';'
+
+            line += '\n'
+            lineTck += '\n'
+            failLine += '\n'
+            f.write(line)
+            tf.write(lineTck)
+            ff.write(failLine)
+        f.flush()
+        tf.flush()
+        ff.flush()
 
