@@ -15,10 +15,18 @@ class StatePrint:
         for a in Colors:
             output.append(wagonCards[a])
 
+        output.append(len(game.board.wagonsHand.cards))
+        output.append(len(game.board.wagonsDeck.cards))
+        output.append(len(game.board.wagonGraveyard.cards))
         output.append(len(player.TicketCards))
+        output.append(len(game.board.ticketDeck.cards))
         output.append(player.Wagons)
         output.append(player.Points)
 
+        output.append(len(player.__poss__))
+        output.append(len(player.__match__))
+        output.append(len(player.__targets__))
+        output.append(len(player.__lack__))
         output.append(len(game.players))
 
         points = []

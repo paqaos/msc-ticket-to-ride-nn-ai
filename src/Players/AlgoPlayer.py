@@ -16,10 +16,6 @@ from src.Players.WagonDecision import WagonDecision
 class AlgoPlayer(Player):
     def __init__(self, name, game, board):
         Player.__init__(self, name, game, board)
-        self.__targets__ = []
-        self.__lack__ = []
-        self.__poss__ = []
-        self.__match__ = []
 
     def canClaimTrack(self, track):
         print(str(len(self.__match__)) + ' - ' + str(len(self.__targets__)) + ' - ' + str(len(self.__poss__)))

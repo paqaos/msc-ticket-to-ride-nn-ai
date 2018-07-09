@@ -26,6 +26,10 @@ class Player:
         self.dobranie = 0
         self.TicketDone = 0
         self.TicketFail = 0
+        self.__targets__ = []
+        self.__lack__ = []
+        self.__poss__ = []
+        self.__match__ = []
 
     def calculateDecision(self, game, board, state):
         return DecisionType.CLAIMTRACK

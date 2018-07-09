@@ -40,9 +40,10 @@ class Game:
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active:
-                state = StatePrint.printState(self,self.activePlayer)
                 self.activePlayer.prepareTurn(self.board, self)
-                decision = self.activePlayer.calculateDecision(self, self.board)
+                self.activePlayer.calculatePoints(self.board)
+                state = StatePrint.printState(self,self.activePlayer)
+                decision = self.activePlayer.calculateDecision(self, self.board,state)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
                     print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
