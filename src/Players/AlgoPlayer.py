@@ -34,7 +34,7 @@ class AlgoPlayer(Player):
         else:
             return len(self.WagonCards) > 0
 
-    def calculateDecision(self, game, board):
+    def calculateDecision(self, game, board,state):
         self.prepareTurn(board,game)
         activeTicket = False
         for tc in self.TicketCards:

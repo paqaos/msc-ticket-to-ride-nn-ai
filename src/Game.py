@@ -1,10 +1,16 @@
+import os
+
+from src.Helpers.StatePrint import StatePrint
 from src.Players.AlgoPlayer import AlgoPlayer
 from src.Board import Board
 from src.Enums import DecisionType
+import uuid
+import csv
 
 
 class Game:
     def __init__(self):
+        self.gameId = uuid.uuid4()
         self.turn = 1
         self.board = Board()
         self.activePlayer = None
@@ -34,6 +40,7 @@ class Game:
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active:
+                state = StatePrint.printState(self,self.activePlayer)
                 self.activePlayer.prepareTurn(self.board, self)
                 decision = self.activePlayer.calculateDecision(self, self.board)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
@@ -51,6 +58,10 @@ class Game:
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
 
+                state.append(decision.value)
+                with open('reports/' + str(self.gameId) + '/' + str(self.activePlayer.PlayerName) + '.sth', 'a', newline='') as stateFile:
+                    csvWr = csv.writer(stateFile)
+                    csvWr.writerow(state)
                 self.board.refreshHand()
                 self.passPlayer()
 
@@ -78,7 +89,7 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-with open('result_5.csv', 'w') as f, open('done_5.csv', 'w') as tf, open('fail_5.csv', 'w') as ff:
+with open('result_6.csv', 'w') as f, open('done_6.csv', 'w') as tf, open('fail_6.csv', 'w') as ff:
     for pl in range(2, 6):
         for rep in range(250):
             lineTck = ''
@@ -86,13 +97,18 @@ with open('result_5.csv', 'w') as f, open('done_5.csv', 'w') as tf, open('fail_5
             failLine = ''
             myGame = Game()
             myGame.prepareGame(pl)
+            if not os.path.exists('reports/'):
+                os.makedirs('reports')
+            os.makedirs('reports/' + str(myGame.gameId))
             myGame.execute()
             myGame.printResult()
-
-            for player in myGame.players:
-                line += str(player.Points) + ';'
-                failLine += str(player.TicketFail) + ';'
-                lineTck += str(player.TicketDone) + ';'
+            line += str(myGame.gameId) +';'
+            with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
+                for player in myGame.players:
+                    line += str(player.Points) + ';'
+                    report.write(str(player.PlayerName) + ' ' + str(player.Points))
+                    failLine += str(player.TicketFail) + ';'
+                    lineTck += str(player.TicketDone) + ';'
 
             line += '\n'
             lineTck += '\n'

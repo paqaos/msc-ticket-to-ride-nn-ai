@@ -18,7 +18,7 @@ class NNPlayer(Player):
     def hasAnyWagons(self, color):
         return False
 
-    def calculateDecision(self, game, board):
+    def calculateDecision(self, game, board,state):
         if len(self.TicketCards) > 0:
             turn = board.turn
             x = random(20+turn)

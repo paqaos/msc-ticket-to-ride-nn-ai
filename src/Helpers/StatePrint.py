@@ -5,7 +5,7 @@ from src.Enums.Colors import Colors
 
 class StatePrint:
     @staticmethod
-    def printState(game, player, state):
+    def printState(game, player):
         output = []
         output.append(int(player.Id))
         output.append(int(game.turn))
@@ -98,8 +98,6 @@ class StatePrint:
         output.append(avgWagonCards)
         output.append(medianWagonCards)
 
-        output.append(player.previousDecision.value)
-        print(output)
         return output
 
         # nr of tickets (uncompleted)

@@ -13,7 +13,7 @@ class HumanPlayer(Player):
         Player.__init__(self, name, game, board)
         self.__targets__ = []
 
-    def calculateDecision(self, game, board):
+    def calculateDecision(self, game, board, state):
         print('choose your decision\n1. draw tickets\n2. draw wagons\n3. claim track')
         print('4. show status\n5. show wagons and tickets\n')
         active = True

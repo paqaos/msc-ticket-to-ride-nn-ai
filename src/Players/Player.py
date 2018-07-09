@@ -27,7 +27,7 @@ class Player:
         self.TicketDone = 0
         self.TicketFail = 0
 
-    def calculateDecision(self, game, board):
+    def calculateDecision(self, game, board, state):
         return DecisionType.CLAIMTRACK
 
     def claimTrack(self, board):
