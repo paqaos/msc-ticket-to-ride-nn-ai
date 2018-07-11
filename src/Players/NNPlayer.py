@@ -9,15 +9,6 @@ class NNPlayer(Player):
         Player.__init__(self, name, game, board)
         self.__targets__ = []
 
-    def canClaimTrack(self,track):
-        return False
-
-    def hasWagons(self, color):
-        return False
-
-    def hasAnyWagons(self, color):
-        return False
-
     def calculateDecision(self, game, board,state):
         if len(self.TicketCards) > 0:
             turn = board.turn
