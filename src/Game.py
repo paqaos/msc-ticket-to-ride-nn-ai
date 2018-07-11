@@ -7,6 +7,8 @@ from src.Enums import DecisionType
 import uuid
 import csv
 
+from src.Players.NNPlayer import NNPlayer
+
 
 class Game:
     def __init__(self):
@@ -25,6 +27,7 @@ class Game:
         for singleAi in range(1, countAi):
             self.players.append(AlgoPlayer('cpu#' + str(singleAi+1), self, self.board))
 
+        self.players.append(NNPlayer('cpunn', self, self.board))
         if len(self.players) > 3:
             for conn in self.board.Connections:
                 conn.double = True
@@ -91,7 +94,7 @@ class Game:
 
 
 with open('result_6.csv', 'w') as f, open('done_6.csv', 'w') as tf, open('fail_6.csv', 'w') as ff:
-    for pl in range(2, 6):
+    for pl in range(2, 3):
         for rep in range(250):
             lineTck = ''
             line = ''

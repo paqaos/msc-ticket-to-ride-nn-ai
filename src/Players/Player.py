@@ -189,8 +189,8 @@ class Player:
             mult = DistancePointCalculator.calculatePoints(i)
             trackPoints += (mult * tracks[i])
             points += (mult * tracks[i])
-            print(self.PlayerName + '- tras o dlugosci ' + str(i) + ': ' + str(tracks[i]))
-            print('punkty ' + str(tracks[i]) + ' * ' + str(mult) + ' = ' + str(mult * tracks[i]))
+            # print(self.PlayerName + '- tras o dlugosci ' + str(i) + ': ' + str(tracks[i]))
+            # print('punkty ' + str(tracks[i]) + ' * ' + str(mult) + ' = ' + str(mult * tracks[i]))
 
         for t in self.TicketCards:
             connectionCheck = TicketConnection.CheckConnection(board, t, self)
@@ -198,12 +198,12 @@ class Player:
                 ticketPoints -= int(t.points)
                 points -= int(t.points)
                 self.TicketFail += 1
-                print(self.PlayerName + ': nie zrealizowany bilet ' + str(t.points) + ' dobranie ' + str(t.dobranie))
+                # print(self.PlayerName + ': nie zrealizowany bilet ' + str(t.points) + ' dobranie ' + str(t.dobranie))
             else:
                 ticketPoints += int(t.points)
                 points += int(t.points)
                 self.TicketDone += 1
-                print(self.PlayerName + ': zrealizowany bilet ' + str(t.points)+ ' dobranie ' + str(t.dobranie))
+                # print(self.PlayerName + ': zrealizowany bilet ' + str(t.points)+ ' dobranie ' + str(t.dobranie))
         self.Points = points
         return (points, trackPoints, ticketPoints)
 

@@ -20,7 +20,7 @@ def main(argv):
     classifier = tf.estimator.DNNClassifier(
         feature_columns=my_feature_columns,
         hidden_units=[60,60],
-        n_classes=4
+        n_classes=5
     )
 
 

@@ -86,14 +86,15 @@ CSV_COLUMN_NAMES = [
 ]
 
 Decisions = [
+    'START',
     'WAGON',
     'TICKET',
     'TRACK',
     'PASS'
 ]
 
-def load_data(y_name='Decision'):
-    train_path = '../dataset/learn.csv' #tf.keras.utils.get_file('file://../dataset/learn.csv', 'file://../dataset')
+def load_data(y_name='Decision', path='../dataset/learn.csv'):
+    train_path = path #tf.keras.utils.get_file('file://../dataset/learn.csv', 'file://../dataset')
 
     train = pd.read_csv(train_path, names=CSV_COLUMN_NAMES, header=0, delimiter=',')
     train_x, train_y = train, train.pop(y_name)
