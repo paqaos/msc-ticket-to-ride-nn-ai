@@ -6,7 +6,7 @@ import tensorflow as tf
 
 import game_data
 
-train_steps = 1000
+train_steps = 3000
 batch_size = 100
 
 
@@ -19,7 +19,7 @@ def main(argv):
 
     classifier = tf.estimator.DNNClassifier(
         feature_columns=my_feature_columns,
-        hidden_units=[60,60],
+        hidden_units=[60,160,80],
         n_classes=5
     )
 

@@ -26,6 +26,7 @@ class Player:
         self.dobranie = 0
         self.TicketDone = 0
         self.TicketFail = 0
+        self.PointsForOthers = 0
         self.__targets__ = []
         self.__lack__ = []
         self.__poss__ = []
@@ -192,6 +193,9 @@ class Player:
             # print(self.PlayerName + '- tras o dlugosci ' + str(i) + ': ' + str(tracks[i]))
             # print('punkty ' + str(tracks[i]) + ' * ' + str(mult) + ' = ' + str(mult * tracks[i]))
 
+        self.PointsForOthers = points
+        self.TicketDone = 0
+        self.TicketFail = 0
         for t in self.TicketCards:
             connectionCheck = TicketConnection.CheckConnection(board, t, self)
             if not t.Done:

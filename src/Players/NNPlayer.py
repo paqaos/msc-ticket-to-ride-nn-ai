@@ -5,7 +5,7 @@ from src.Enums import DecisionType
 from src.Players.AlgoPlayer import AlgoPlayer
 import tensorflow as tf
 
-train_steps = 1000
+train_steps = 4000
 batch_size = 100
 
 class NNPlayer(AlgoPlayer):
@@ -20,7 +20,7 @@ class NNPlayer(AlgoPlayer):
 
         self.classifier = tf.estimator.DNNClassifier(
             feature_columns=my_feature_columns,
-            hidden_units=[60, 60],
+            hidden_units=[60,120,80],
             n_classes=5
         )
 

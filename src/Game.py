@@ -21,13 +21,13 @@ class Game:
         self.playerId = 1
 
     def prepareGame(self, countAi):
-        aiPlayer = AlgoPlayer("cpu#1", self, self.board)
+        aiPlayer = NNPlayer("cpu#1", self, self.board)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         for singleAi in range(1, countAi):
-            self.players.append(AlgoPlayer('cpu#' + str(singleAi+1), self, self.board))
+            self.players.append(NNPlayer('cpu#' + str(singleAi+1), self, self.board))
 
-        self.players.append(NNPlayer('cpunn', self, self.board))
+        #self.players.append(NNPlayer('cpunn', self, self.board))
         if len(self.players) > 3:
             for conn in self.board.Connections:
                 conn.double = True
@@ -93,9 +93,9 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-with open('result_6.csv', 'w') as f, open('done_6.csv', 'w') as tf, open('fail_6.csv', 'w') as ff:
-    for pl in range(2, 3):
-        for rep in range(250):
+with open('result_8.csv', 'w') as f, open('done_8.csv', 'w') as tf, open('fail_8.csv', 'w') as ff:
+    for pl in range(2, 6):
+        for rep in range(1):
             lineTck = ''
             line = ''
             failLine = ''

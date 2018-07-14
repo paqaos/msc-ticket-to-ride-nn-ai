@@ -7,14 +7,8 @@ class StatePrint:
     @staticmethod
     def printState(game, player):
         output = []
-        output.append(int(player.Id))
         output.append(int(game.turn))
-
-        wagonCards = player.countCards()
-
-        for a in Colors:
-            output.append(wagonCards[a])
-
+        output.append(len(player.WagonCards))
         output.append(len(game.board.wagonsHand.cards))
         output.append(len(game.board.wagonsDeck.cards))
         output.append(len(game.board.wagonGraveyard.cards))
@@ -22,6 +16,8 @@ class StatePrint:
         output.append(len(game.board.ticketDeck.cards))
         output.append(player.Wagons)
         output.append(player.Points)
+
+        output.append(len(game.board.wagonsDeck.cards) +  len(game.board.wagonsHand.cards))
 
         output.append(len(player.__poss__))
         output.append(len(player.__match__))
@@ -46,12 +42,12 @@ class StatePrint:
         sumTickets = 0
         sumWagonCards = 0
         for player in game.players:
-            if player.Points > maxPoints:
-                maxPoints = player.Points
-            if player.Points < minPoints:
-                minPoints = player.Points
-            points.append(player.Points)
-            sumPoints += player.Points
+            if player.PointsForOthers > maxPoints:
+                maxPoints = player.PointsForOthers
+            if player.PointsForOthers < minPoints:
+                minPoints = player.PointsForOthers
+            points.append(player.PointsForOthers)
+            sumPoints += player.PointsForOthers
 
             if player.Wagons > maxWagon:
                 maxWagon = player.Wagons
@@ -77,19 +73,10 @@ class StatePrint:
             wagonCards.append(wagonCount)
             sumWagonCards += wagonCount
 
-        medianPoints = statistics.median(points)
-        avgPoints = sumPoints / len(points)
         medianWagons = statistics.median(wagons)
         avgWagons = sumWagons / len(wagons)
         medianTickets = statistics.median(tickets)
         avgTickets = sumTickets / len(tickets)
-        medianWagonCards = statistics.median(wagonCards)
-        avgWagonCards = sumWagonCards / len(wagonCards)
-
-        output.append(minPoints)
-        output.append(maxPoints)
-        output.append(avgPoints)
-        output.append(medianPoints)
 
         output.append(minWagon)
         output.append(maxWagon)
@@ -101,10 +88,6 @@ class StatePrint:
         output.append(avgTickets)
         output.append(medianTickets)
 
-        output.append(minWagonCards)
-        output.append(maxWagonCards)
-        output.append(avgWagonCards)
-        output.append(medianWagonCards)
 
         return output
 
