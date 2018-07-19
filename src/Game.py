@@ -7,6 +7,7 @@ from src.Enums import DecisionType
 import uuid
 import csv
 
+from src.Players.DecisionNNPredictor import DecisionNNPredictor
 from src.Players.NNPlayer import NNPlayer
 
 
@@ -20,12 +21,12 @@ class Game:
         self.players = []
         self.playerId = 1
 
-    def prepareGame(self, countAi):
-        aiPlayer = NNPlayer("cpu#1", self, self.board)
+    def prepareGame(self, countAi, predictor):
+        aiPlayer = NNPlayer("cpu#1", self, self.board, predictor)
         self.activePlayer = aiPlayer
         self.players.append(aiPlayer)
         for singleAi in range(1, countAi):
-            self.players.append(NNPlayer('cpu#' + str(singleAi+1), self, self.board))
+            self.players.append(NNPlayer('cpu#' + str(singleAi+1), self, self.board, predictor))
 
         #self.players.append(NNPlayer('cpunn', self, self.board))
         if len(self.players) > 3:
@@ -45,20 +46,20 @@ class Game:
             while self.activePlayer.Active:
                 self.activePlayer.prepareTurn(self.board, self)
                 self.activePlayer.calculatePoints(self.board)
-                state = StatePrint.printState(self,self.activePlayer)
+                state = StatePrint.printState(self, self.activePlayer)
                 decision = self.activePlayer.calculateDecision(self, self.board,state)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
-                    print(self.activePlayer.PlayerName + 'claim')
+                    #  print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.CLAIMTRACK)
 
                 elif decision == DecisionType.DecisionType.TICKETCARD:
-                    print(self.activePlayer.PlayerName + 'ticket ' + str(len(self.board.ticketDeck.cards)))
+                    #  print(self.activePlayer.PlayerName + 'ticket ' + str(len(self.board.ticketDeck.cards)))
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
                 elif decision == DecisionType.DecisionType.WAGONCARD:
-                    print(self.activePlayer.PlayerName + 'wagon ' + str(len(self.board.wagonsDeck.cards)) + ' ' + str(len(self.board.wagonsHand.cards)))
+                    #  print(self.activePlayer.PlayerName + 'wagon ' + str(len(self.board.wagonsDeck.cards)) + ' ' + str(len(self.board.wagonsHand.cards)))
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
 
@@ -93,26 +94,33 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-with open('result_8.csv', 'w') as f, open('done_8.csv', 'w') as tf, open('fail_8.csv', 'w') as ff:
-    for pl in range(2, 6):
-        for rep in range(1):
+with open('result_10nn2pl.csv', 'w') as f, open('done_10nn2pl.csv', 'w') as tf, open('fail_10nn2pl.csv', 'w') as ff:
+    predictor = DecisionNNPredictor()
+    for pl in range(5, 1, -1):
+        for rep in range(250):
             lineTck = ''
             line = ''
             failLine = ''
             myGame = Game()
-            myGame.prepareGame(pl)
             if not os.path.exists('reports/'):
                 os.makedirs('reports')
             os.makedirs('reports/' + str(myGame.gameId))
-            myGame.execute()
-            myGame.printResult()
-            line += str(myGame.gameId) +';'
-            with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
-                for player in myGame.players:
-                    line += str(player.Points) + ';'
-                    report.write(str(player.PlayerName) + ' ' + str(player.Points))
-                    failLine += str(player.TicketFail) + ';'
-                    lineTck += str(player.TicketDone) + ';'
+
+            try:
+                myGame.prepareGame(pl, predictor)
+                myGame.execute()
+                myGame.printResult()
+                line += str(myGame.gameId) +';'
+                with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
+                    for player in myGame.players:
+                        line += str(player.Points) + ';'
+                        report.write(str(player.PlayerName) + ' ' + str(player.Points))
+                        failLine += str(player.TicketFail) + ';'
+                        lineTck += str(player.TicketDone) + ';'
+            except:
+                line += 'fail' + str(len(myGame.players))
+                failLine += 'fail' + str(len(myGame.players))
+                lineTck += 'fail' + str(len(myGame.players))
 
             line += '\n'
             lineTck += '\n'
@@ -120,6 +128,9 @@ with open('result_8.csv', 'w') as f, open('done_8.csv', 'w') as tf, open('fail_8
             f.write(line)
             tf.write(lineTck)
             ff.write(failLine)
+            f.flush()
+            tf.flush()
+            ff.flush()
         f.flush()
         tf.flush()
         ff.flush()

@@ -18,7 +18,7 @@ class AlgoPlayer(Player):
         Player.__init__(self, name, game, board)
 
     def canClaimTrack(self, track):
-        print(str(len(self.__match__)) + ' - ' + str(len(self.__targets__)) + ' - ' + str(len(self.__poss__)))
+        # print(str(len(self.__match__)) + ' - ' + str(len(self.__targets__)) + ' - ' + str(len(self.__poss__)))
         return len(self.__match__) > 0 or (len(self.__targets__) == 0 and len(self.__poss__) > 0)
 
     def hasWagons(self, color):
@@ -40,6 +40,7 @@ class AlgoPlayer(Player):
 
         canDrawWagons = len(board.wagonsDeck.cards) > 0 or len(board.wagonsHand.cards) > 0
         canClaim = len(self.__poss__) > 0
+        shouldClaim = len(self.__match__) > 0
         otherWagonsMin = 45
         for pla in game.players:
             if pla != self and pla.Wagons < otherWagonsMin:
@@ -62,12 +63,16 @@ class AlgoPlayer(Player):
                 return DecisionType.CLAIMTRACK
             elif x < annealingFactor and canDrawWagons:
                 return DecisionType.WAGONCARD
-        if canClaim:
+            elif canClaim:
+                return DecisionType.CLAIMTRACK
+        if shouldClaim:
             return DecisionType.CLAIMTRACK
         elif canDrawWagons:
             return DecisionType.WAGONCARD
+        elif canClaim:
+            return DecisionType.CLAIMTRACK
         elif len(board.ticketDeck.cards) > 0:
-            return DecisionType.TICKETCARD # ostateczność
+            return DecisionType.TICKETCARD  # ostateczność
         else:
             return DecisionType.PASS
 
@@ -87,12 +92,11 @@ class AlgoPlayer(Player):
                 continue
 
             if len(target) > 0 and target.__contains__(c):
-                possible.append(c)
-            elif c.size >= 6:
-                possible.append(c)
                 match.append(c)
-            elif len(target) == 0:
-                possible.append(c)
+            elif c.size >= 6:
+                match.append(c)
+
+            possible.append(c)
 
         finalTarget = []
         for t in target:
@@ -100,10 +104,6 @@ class AlgoPlayer(Player):
                 continue
             else:
                 finalTarget.append(t)
-                if not possible.__contains__(t):
-                    lack.append(t)
-                else:
-                    match.append(t)
 
         self.__lack__ = lack
         self.__poss__ = possible
@@ -115,7 +115,6 @@ class AlgoPlayer(Player):
         ticketSize = min
         ticketpoints = 0
         ticketcost = float("inf")
-        reachable = False
 
         minPassing = None
         minCost = 100
@@ -159,15 +158,14 @@ class AlgoPlayer(Player):
 
         if result is None:
             result = minPassing
-        if result is None:
-            print(str(len(tickets)) + ' ' + str(min))
-        for t in result:
-            print( self.PlayerName +
-                   'realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')
 
-            distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
-            for cn in distance:
-                print(cn.cities[0].name + '->' + cn.cities[1].name)
+     #   for t in result:
+           # print( self.PlayerName +
+            #       'realizuje' + t.cities[0].name + ' ' + t.cities[1].name + ' po trasie')
+
+      #      distance = ShortestConnection.calculatePath(self.board, self, t.cities[0], t.cities[1])
+       #     for cn in distance:
+        #        print(cn.cities[0].name + '->' + cn.cities[1].name)
 
         decision = TicketDecision()
         for x in result:
@@ -297,10 +295,12 @@ class AlgoPlayer(Player):
                 minCost = con.size
                 maxConn = con
 
+        maxPoints = 0
         if maxConn is None:
+            # print('maxConn None' + str(len(self.__poss__)))
             for con in self.__poss__:
                 points = DistancePointCalculator.calculatePoints(con.size)
-                if mode == 2 and points > maxPoints:
+                if points > maxPoints:
                     maxConn = con
                     maxPoints = points
 

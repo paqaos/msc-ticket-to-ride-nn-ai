@@ -17,10 +17,17 @@ def main(argv):
     for key in train_x.keys():
         my_feature_columns.append(tf.feature_column.numeric_column(key=key))
 
+    my_config = tf.estimator.RunConfig(
+        save_checkpoints_secs=20*60,
+        keep_checkpoint_max=5
+    )
+
     classifier = tf.estimator.DNNClassifier(
         feature_columns=my_feature_columns,
-        hidden_units=[60,160,80],
-        n_classes=5
+        hidden_units=[180,160],
+        n_classes=5,
+        model_dir='../models/decision',
+        config=my_config
     )
 
 

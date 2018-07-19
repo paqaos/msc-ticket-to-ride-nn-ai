@@ -86,7 +86,7 @@ class Player:
                 for card in trackDecision.cards:
                     self.WagonCards.cards.remove(card)
 
-                print('claimed ' + trackDecision.conn.cities[0].name + ' <-> ' + trackDecision.conn.cities[1].name + 'size' + str(trackDecision.conn.size))
+                # print('claimed ' + trackDecision.conn.cities[0].name + ' <-> ' + trackDecision.conn.cities[1].name + 'size' + str(trackDecision.conn.size))
                 board.wagonGraveyard.addCards(trackDecision.cards)
                 self.claimed.append(trackDecision.conn)
                 done = True

@@ -8,7 +8,7 @@ class StatePrint:
     def printState(game, player):
         output = []
         output.append(int(game.turn))
-        output.append(len(player.WagonCards))
+        output.append(len(player.WagonCards.cards))
         output.append(len(game.board.wagonsHand.cards))
         output.append(len(game.board.wagonsDeck.cards))
         output.append(len(game.board.wagonGraveyard.cards))
@@ -16,6 +16,15 @@ class StatePrint:
         output.append(len(game.board.ticketDeck.cards))
         output.append(player.Wagons)
         output.append(player.Points)
+
+        wagonCards = player.countCapacity()
+        max = 0
+        diff = 0
+        for wagonCard in wagonCards:
+            if wagonCards[wagonCard] > 0:
+                diff += 1
+            if wagonCards[wagonCard] > max:
+                max = wagonCards[wagonCard]
 
         output.append(len(game.board.wagonsDeck.cards) +  len(game.board.wagonsHand.cards))
 
@@ -88,6 +97,12 @@ class StatePrint:
         output.append(avgTickets)
         output.append(medianTickets)
 
+        output.append(player.TicketFail)
+        output.append(player.TicketDone)
+        output.append(player.PointsForOthers)
+
+        output.append(max)
+        output.append(diff)
 
         return output
 
