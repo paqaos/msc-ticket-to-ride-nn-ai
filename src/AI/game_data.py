@@ -96,18 +96,13 @@ def train_input_fn(features, labels, batch_size):
 
 
 def eval_input_fn(features, labels, batch_size):
-    features = dict(features)
+    # features = dict(features)
     if labels is None:
         inputs = features
     else:
         inputs = (features, labels)
 
-    dataset = tf.data.Dataset.from_tensor_slices(inputs)
-
-    assert batch_size is not None, "batch must not be None"
-    dataset = dataset.batch(batch_size)
-
-    return dataset
+    return tf.data.Dataset.from_tensor_slices(inputs).batch(batch_size)
 
 
 def _parse_line(line):

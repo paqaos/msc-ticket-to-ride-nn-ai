@@ -181,7 +181,7 @@ class Player:
         ticketPoints = 0
         trackPoints = 0
         tracks = { }
-        for i in range(1,7):
+        for i in range(1, 7):
             tracks[i] = 0
         for c in self.claimed:
             tracks[c.size] += 1

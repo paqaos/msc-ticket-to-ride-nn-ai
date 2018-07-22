@@ -69,6 +69,8 @@ class Game:
                 #    csvWr.writerow(state)
 
                 #  self.activePlayer.decisions.append(state)
+
+                del state
                 self.board.refreshHand()
                 self.passPlayer()
 
@@ -103,47 +105,48 @@ preserveGameLog = False
 
 with tf.device('/device:GPU:0'):
     tf.logging.set_verbosity(tf.logging.ERROR)
-    # with open('result_10nn3pl.csv', 'w') as f, open('done_10nn3pl.csv', 'w') as tf, open('fail_10nn3pl.csv', 'w') as ff:
-    predictor = DecisionNNPredictor()
-    for pl in range(2, 3):
-        for rep in range(15):
-            startDate = datetime.utcnow()
-            lineTck = ''
-            line = ''
-            failLine = ''
-            myGame = Game()
-            if not os.path.exists('reports/'):
-                os.makedirs('reports')
-            os.makedirs('reports/' + str(myGame.gameId))
+    with open('result_10nn3pl.csv', 'w') as f, open('done_10nn3pl.csv', 'w') as tf, open('fail_10nn3pl.csv', 'w') as ff:
+        predictor = DecisionNNPredictor()
+        for pl in range(2, 5):
+            for rep in range(200):
+                startDate = datetime.utcnow()
+                lineTck = ''
+                line = ''
+                failLine = ''
+                myGame = Game()
+                if not os.path.exists('reports/'):
+                    os.makedirs('reports')
+                os.makedirs('reports/' + str(myGame.gameId))
 
-            try:
-                myGame.prepareGame(pl, predictor)
-                myGame.execute()
-                myGame.printResult()
-                line += str(myGame.gameId) +';'
-                with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
-                    for player in myGame.players:
-                        line += str(player.Points) + ';'
-                        report.write(str(player.PlayerName) + ' ' + str(player.Points))
-                        failLine += str(player.TicketFail) + ';'
-                        lineTck += str(player.TicketDone) + ';'
-            except:
-                e = sys.exc_info()[0]
-                line += 'fail' + str(len(myGame.players))
-                failLine += 'fail' + str(len(myGame.players))
-                lineTck += 'fail' + str(len(myGame.players))
+                try:
+                    myGame.prepareGame(pl, predictor)
+                    myGame.execute()
+                    myGame.printResult()
+                    line += str(myGame.gameId) +';'
+                    with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
+                        for player in myGame.players:
+                            line += str(player.Points) + ';'
+                            report.write(str(player.PlayerName) + ' ' + str(player.Points))
+                            failLine += str(player.TicketFail) + ';'
+                            lineTck += str(player.TicketDone) + ';'
+                except:
+                    e = sys.exc_info()[0]
+                    line += 'fail' + str(len(myGame.players))
+                    failLine += 'fail' + str(len(myGame.players))
+                    lineTck += 'fail' + str(len(myGame.players))
 
-            line += '\n'
-            lineTck += '\n'
-            failLine += '\n'
-          # f.write(line)
-          #  tf.write(lineTck)
-          #  ff.write(failLine)
-            endDate = datetime.utcnow()
-            print('start exp: ' + str(startDate) + ' end date: ' + str(endDate))
-           # f.flush()
-           # tf.flush()
-           # ff.flush()
+                line += '\n'
+                lineTck += '\n'
+                failLine += '\n'
+                f.write(line)
+                tf.write(lineTck)
+                ff.write(failLine)
+                endDate = datetime.utcnow()
+                print('start exp: ' + str(startDate) + ' end date: ' + str(endDate))
+                f.flush()
+                tf.flush()
+                ff.flush()
+                del myGame
 
 endall = datetime.utcnow()
 

@@ -4,17 +4,13 @@ from src.AI import game_data
 from src.Enums import DecisionType
 from src.Players.AlgoPlayer import AlgoPlayer
 
-train_steps = 3000
-batch_size = 100
-
 
 class NNPlayer(AlgoPlayer):
     def __init__(self, name, game, board, predictor):
         AlgoPlayer.__init__(self, name, game, board)
-        self.predictor = predictor
+        self.predictor = predictor.getPredictor()
 
     def calculateDecision(self, game, board, state):
-
         predict_x = {
             'Turn': [state[0]],
             'PlayerWagonsCards': [state[1]],
@@ -46,14 +42,16 @@ class NNPlayer(AlgoPlayer):
             'DifferentColorWagons': [state[27]]
         }
 
-        classifier = self.predictor.getPredictor()
-        predictions = classifier.predict(
-
+        predictions = self.predictor.predict(
             input_fn=lambda: game_data.eval_input_fn(predict_x,
-
                                                      labels=None,
                                                      batch_size=1))
+
+        result = DecisionType.DecisionType.PASS
         for pred in zip(predictions):
             classId= pred[0]['class_ids'][0]
-            return DecisionType.DecisionType(classId)
-        return DecisionType.DecisionType.PASS
+            result = DecisionType.DecisionType(classId)
+
+        del predict_x
+        del predictions
+        return result

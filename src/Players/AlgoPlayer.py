@@ -262,7 +262,6 @@ class AlgoPlayer(Player):
 
     def claimTrack(self, board):
         decision = TrackDecision()
-
         cardsCapacity = self.countCapacity()
         cards = self.countCards()
 
@@ -297,7 +296,6 @@ class AlgoPlayer(Player):
 
         maxPoints = 0
         if maxConn is None:
-            # print('maxConn None' + str(len(self.__poss__)))
             for con in self.__poss__:
                 points = DistancePointCalculator.calculatePoints(con.size)
                 if points > maxPoints:
@@ -366,5 +364,4 @@ class AlgoPlayer(Player):
                     decision.cards.append(a)
                     rainCol -= 1
 
-        lenc = len(decision.cards) == decision.conn.size
         return decision

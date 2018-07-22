@@ -1,0 +1,1 @@
+cpu#2 95cpu#3 88cpu#4 92cpu#5 90cpu#1 59

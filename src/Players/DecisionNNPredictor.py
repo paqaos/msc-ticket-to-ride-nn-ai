@@ -17,13 +17,13 @@ class DecisionNNPredictor:
         self.my_config = tf.estimator.RunConfig(
             session_config=self.my_session
         )
-
-    def getPredictor(self):
-        classifier = tf.estimator.DNNClassifier(
+        self.predictor = tf.estimator.DNNClassifier(
                 feature_columns=self.my_feature_columns,
                 hidden_units=[180, 160],
                 n_classes=5,
                 model_dir='models/decision',
                 config=self.my_config
             )
-        return classifier
+
+    def getPredictor(self):
+        return self.predictor
