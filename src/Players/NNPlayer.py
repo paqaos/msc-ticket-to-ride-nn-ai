@@ -11,7 +11,7 @@ batch_size = 100
 class NNPlayer(AlgoPlayer):
     def __init__(self, name, game, board, predictor):
         AlgoPlayer.__init__(self, name, game, board)
-        self.classifier = predictor.getPredictor()
+        self.predictor = predictor
 
     def calculateDecision(self, game, board, state):
 
@@ -46,13 +46,13 @@ class NNPlayer(AlgoPlayer):
             'DifferentColorWagons': [state[27]]
         }
 
-        predictions = self.classifier.predict(
+        classifier = self.predictor.getPredictor()
+        predictions = classifier.predict(
 
             input_fn=lambda: game_data.eval_input_fn(predict_x,
 
                                                      labels=None,
-
-                                                     batch_size=batch_size))
+                                                     batch_size=1))
         for pred in zip(predictions):
             classId= pred[0]['class_ids'][0]
             return DecisionType.DecisionType(classId)

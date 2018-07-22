@@ -1,4 +1,6 @@
 import os
+import sys
+from datetime import datetime
 
 from src.Helpers.StatePrint import StatePrint
 from src.Players.AlgoPlayer import AlgoPlayer
@@ -6,6 +8,7 @@ from src.Board import Board
 from src.Enums import DecisionType
 import uuid
 import csv
+import tensorflow as tf
 
 from src.Players.DecisionNNPredictor import DecisionNNPredictor
 from src.Players.NNPlayer import NNPlayer
@@ -28,7 +31,6 @@ class Game:
         for singleAi in range(1, countAi):
             self.players.append(NNPlayer('cpu#' + str(singleAi+1), self, self.board, predictor))
 
-        #self.players.append(NNPlayer('cpunn', self, self.board))
         if len(self.players) > 3:
             for conn in self.board.Connections:
                 conn.double = True
@@ -44,29 +46,29 @@ class Game:
     def execute(self):
         if self.activePlayer is not None:
             while self.activePlayer.Active:
+                print('new player' + str(self.turn))
                 self.activePlayer.prepareTurn(self.board, self)
                 self.activePlayer.calculatePoints(self.board)
                 state = StatePrint.printState(self, self.activePlayer)
                 decision = self.activePlayer.calculateDecision(self, self.board,state)
                 if decision == DecisionType.DecisionType.CLAIMTRACK:
-                    #  print(self.activePlayer.PlayerName + 'claim')
                     self.activePlayer.decisionTrack(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.CLAIMTRACK)
 
                 elif decision == DecisionType.DecisionType.TICKETCARD:
-                    #  print(self.activePlayer.PlayerName + 'ticket ' + str(len(self.board.ticketDeck.cards)))
                     self.activePlayer.decisionTicket(self.board, self, self.board.ticketDeck.draw(3), 1)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.TICKETCARD)
 
                 elif decision == DecisionType.DecisionType.WAGONCARD:
-                    #  print(self.activePlayer.PlayerName + 'wagon ' + str(len(self.board.wagonsDeck.cards)) + ' ' + str(len(self.board.wagonsHand.cards)))
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
 
                 state.append(decision.value)
-                with open('reports/' + str(self.gameId) + '/' + str(self.activePlayer.PlayerName) + '.sth', 'a', newline='') as stateFile:
-                    csvWr = csv.writer(stateFile)
-                    csvWr.writerow(state)
+                #  with open('reports/' + str(self.gameId) + '/' + str(self.activePlayer.PlayerName) + '.sth', 'a', newline='') as stateFile:
+                #    csvWr = csv.writer(stateFile)
+                #    csvWr.writerow(state)
+
+                #  self.activePlayer.decisions.append(state)
                 self.board.refreshHand()
                 self.passPlayer()
 
@@ -94,10 +96,18 @@ class Game:
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
 
 
-with open('result_10nn2pl.csv', 'w') as f, open('done_10nn2pl.csv', 'w') as tf, open('fail_10nn2pl.csv', 'w') as ff:
+startAll = datetime.utcnow()
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+preserveGameLog = False
+
+with tf.device('/device:GPU:0'):
+    tf.logging.set_verbosity(tf.logging.ERROR)
+    # with open('result_10nn3pl.csv', 'w') as f, open('done_10nn3pl.csv', 'w') as tf, open('fail_10nn3pl.csv', 'w') as ff:
     predictor = DecisionNNPredictor()
-    for pl in range(5, 1, -1):
-        for rep in range(250):
+    for pl in range(2, 3):
+        for rep in range(15):
+            startDate = datetime.utcnow()
             lineTck = ''
             line = ''
             failLine = ''
@@ -118,6 +128,7 @@ with open('result_10nn2pl.csv', 'w') as f, open('done_10nn2pl.csv', 'w') as tf, 
                         failLine += str(player.TicketFail) + ';'
                         lineTck += str(player.TicketDone) + ';'
             except:
+                e = sys.exc_info()[0]
                 line += 'fail' + str(len(myGame.players))
                 failLine += 'fail' + str(len(myGame.players))
                 lineTck += 'fail' + str(len(myGame.players))
@@ -125,13 +136,16 @@ with open('result_10nn2pl.csv', 'w') as f, open('done_10nn2pl.csv', 'w') as tf, 
             line += '\n'
             lineTck += '\n'
             failLine += '\n'
-            f.write(line)
-            tf.write(lineTck)
-            ff.write(failLine)
-            f.flush()
-            tf.flush()
-            ff.flush()
-        f.flush()
-        tf.flush()
-        ff.flush()
+          # f.write(line)
+          #  tf.write(lineTck)
+          #  ff.write(failLine)
+            endDate = datetime.utcnow()
+            print('start exp: ' + str(startDate) + ' end date: ' + str(endDate))
+           # f.flush()
+           # tf.flush()
+           # ff.flush()
 
+endall = datetime.utcnow()
+
+print('start ' + str(startAll))
+print('end ' +  str(endall))

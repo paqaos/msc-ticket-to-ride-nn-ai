@@ -1,0 +1,344 @@
+\documentclass[12pt, oneside]{report}
+
+\usepackage[left=2.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{polski}
+\usepackage[polish]{babel}
+\usepackage{hyperref}
+\usepackage[table]{xcolor}
+
+\begin{document}  
+\thispagestyle{empty}
+\begin{titlepage}
+    \begin{center}
+
+           \Large
+	\textbf{Uniwersytet Jagielloński w Krakowie}\vspace{0.2cm}\\ Wydział Fizyki, Astronomii i Informatyki Stosowanej
+               \vspace*{1cm}
+               
+         \vspace{3cm}
+         \Large
+          \textbf{Paweł Łabno}\\\vspace{0.5cm}
+         \normalsize Nr albumu: 1138170\\
+             \vspace{2cm}
+        \Huge
+        \textbf{Implementacja Sztucznej Inteligencji dla gry \textit{Wsiąść do Pociągu}}
+      
+        \vspace{1.5cm}
+        \normalsize
+        Praca magisterska\\
+        na kierunku Informatyka Stosowana\\ \vspace{0.15cm}
+        
+        \vfill
+        \vspace{2cm}
+       \begin{minipage}{1\textwidth}
+\begin{flushright}
+Praca wykonana pod kierunkiem\\
+<tytuł/stopień naukowy Imię Nazwisko>\\
+<Instytut/Zakład>
+\end{flushright}
+\end{minipage}
+        
+        \vspace{2cm}
+        \begin{center}
+      Kraków 2018
+        \end{center}
+    \end{center}
+\end{titlepage}
+
+\newpage 
+ \thispagestyle{empty}
+\vspace{2.5cm}
+\begin{flushleft}
+\large \textbf{Oświadczenie autora pracy}\vspace{0.6cm}\\
+\end{flushleft}
+
+\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca dyplomowa została napisana przeze mnie samodzielnie i nie zawiera treści uzyskanych w sposób niezgodny z obowiązującymi przepisami.\\
+
+\noindent Oświadczam również, że przedstawiona praca nie była wcześniej przedmiotem procedur związanych z uzyskaniem tytułu zawodowego w wyższej uczelni.
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{lr}
+................................~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&
+.......................................... \\
+{~~~~Kraków, dnia} & {Podpis autora pracy~~~~}
+\end{tabular}
+\end{center}
+\vspace{5cm}
+\begin{flushleft}
+\large \textbf{Oświadczenie kierującego pracą}
+\end{flushleft}
+
+\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim kierunkiem i~kwalifikuje się do przedstawienia jej w postępowaniu o nadanie tytułu zawodowego.
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{lr}
+................................~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&
+............................................ \\
+{~~~~Kraków, dnia} & {Podpis kierującego pracą~~}
+\end{tabular}
+\end{center}
+\vfill
+\newpage
+\chapter{Wprowadzenie}
+\section{Wprowadzenie}
+\paragraph{Gra} W literaturze pojawia się wiele 
+\paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Można założyć, że każdy chce uzyskać jak najlepszy wynik dla siebie.
+\paragraph{Klasyfikacja gry}
+Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową, niesymetryczną z niepełną informacją. 
+\paragraph{Gra z niepełną informacją} 
+Określenie gra z niepełną informacją oznacza, że gracze podejmują swoje decyzje nie wiedząc o tym jakie cele mają inni uczestnicy rozgrywki. W grze \textit{Wsiąść do pociągu} polega to m.in. na braku wiedzy jakie bilety (oraz czy zostały ukończone) realizują konkurenci.
+\paragraph{Uczenie maszynowe}
+Według Donald'a Michie: \\ \textit{System uczący się wykorzystuje zewnętrzne dane empiryczne w celu tworzenia i aktualizacji podstaw dla udoskonalonego działania na podobnych danych w przyszłości oraz wyrażania tych podstaw w zrozumiałej i symbolicznej postaci}
+
+\section{Zasady gry}
+\subsection{Omówienie celu gry}
+Celem rozgrywki jest uzyskanie jak największej liczby punktów. Gracz może zdobyć punkty za zarezerwowanie połączeń \ref{table:points} oraz za ukończenie biletów (korzystając z połączeń jednego gracza można dotrzeć z jednego wskazanego miasta do drugiego). 
+
+\begin{table}[h]
+	\begin{center}
+		\label{table:points}
+		\begin{tabular}{|c|c|} \hline
+		\textbf{Długość połączenia} & \textbf{Ilość punktów} \\ \hline
+		1 & 1 \\ \hline
+		2 & 2 \\ \hline
+		3 & 4 \\ \hline
+		4 & 7 \\ \hline
+		5 & 10 \\ \hline
+		6 & 15 \\ \hline
+		\end{tabular}	
+		\caption{Ilość punktów za zrealizowanie połączenia}
+	\end{center}
+
+\end{table}
+
+\subsection{Przebieg rozgrywki}
+Po rozłożeniu planszy następuje przygotowanie rozgrywki
+\begin{enumerate}
+	\item \textbf{Przygotowanie talii}
+	\subitem Gracze tasują dostępne karty wagonów oraz biletów. Rozkładają na planszy pierwszych 5 kart wagonów - widocznych typem dla gracza. Jeśli wśród nich są co najmniej 3 lokomotywy - wymienić cały zestaw kart.
+	\item \textbf{Losowanie biletów}
+	\subitem Każdy z graczy pobiera z talii biletów po trzy karty. Następnie wybiera które z nich zachować a które odłożyć na spód talii. Musi zachować conajmniej dwa bilety. \textit{Przyjmuje się zachowanie jedynie dwóch kart biletów}
+	\item \textbf{Losowanie kart wagonów}
+	\subitem Każdy z graczy pobiera z talii biletów po cztery karty. Nie ma prawa ich odrzucić lub zamienić.
+\end{enumerate}
+\subsection{Możliwości gracza}
+W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji:
+\begin{enumerate}
+	\item \textbf{Zarezerwowanie połączenia} 
+	\subitem Każdy z graczy może zarezerwować dowolne połączenie pomiędzy miastami po spełnieniu warunków
+	\subitem Gracz musi posiadać odpowiednią ilość kart wagonów odpowiedniego koloru (lokomotywa zastępuje dowolny kolor)
+	\subitem Gracz musi posiadać co najmniej tyle wagonów co długość połączenia które chce zarezerwować
+	\subitem Gracz nie zarezerwował ścieżki w połączeniu
+	\subitem Wszystkie ścieżki w danym połączeniu nie są zajęte
+	\subitem Połączenie ma dwie ścieżki, jedna z nich jest zajęta, druga wolna. W rozgrywce uczestniczy co najmniej 4 graczy.
+	\subitem \textbf{Decyzja zabroniona} Gracz nie ma wagonów lub kart wagonów potrzebnych do zarezerwowania dowolnego połączenia na mapie.
+	\item \textbf{Dobranie wagonów}
+	\subitem Gracz może zdecydować o dobraniu do dwóch wagonów w zależności od tego jakie wagony chce dobrać. 
+	\subitem Gracz może zabrać jako pierwszy wagon - kartę lokomotywy (Joker) z puli planszy. Nie dobiera wtedy drugiego wagonu.
+	\subitem Gracz może zabrać karty z talii lub puli - dwie. Może być jedna karta z talii oraz jedna karta z planszy.
+	\subitem \textbf{Decyzja zabroniona} Skończyła się talia kart wagonów, nie ma na planszy kart wagonów a stos kart odrzuconych jest pusty.
+	\item \textbf{Dobranie biletów}
+	\subitem Gracz w ramach decyzji o dobranie biletów losuje 3 bilety z talii i decyduje, które zachowa, a które odrzuci. Zachować musi co najmniej 1 bilet.
+	\subitem \textbf{Decyzja zabroniona} W talii kart biletów nie pozostał żaden bilet.
+\end{enumerate}
+\subsection{Koniec gry}
+Rozgrywka kończy się w momencie, gdy jednemu z graczy pozostają co najwyżej dwa wagoniki. Po tym zdarzeniu każdy z graczy ma jeszcze jeden ruch do wykonaniu. Gdy wszyscy gracze wykonają ruch przechodzi się do fazy podliczenia punktów.
+\chapter{Przebieg badania}
+\section{Analiza zachowań gracza}
+Pierwszym etapem pracy nad sztuczną inteligencją zostało zaanalizowanie zachowań graczy pod punktem przygotowania algorytmu, który wykorzystano do przygotowania zbioru uczącego. Jako rozsądne kierunki analizy przyjąłem:
+	\begin{enumerate}
+		\item{Analiza rozgrywek z rzeczywistym graczem}
+		\item{Analiza rozgrywek z graczem komputerowym (dostępnym z grą w wersji cyfrowej)}
+		\item{Przeszukanie sieci internet w tematyce SI}
+	\end{enumerate}
+W dalszej pracy przyjąłem następujace zachowanie gracza komputerowego:
+\begin{enumerate}
+	\item Gracz kieruje rozgrywkę dla siebie - zależy mu jedynie na jak największej ilości punktów (w danym momencie oraz ogólnie)
+	\item Gracze nie przeszkadzają sobie nawzajem (uczestnicy rozgrywki nie podejmują decyzji mających na celu utrudnienie gry innym uczestnikom, wykluczając sytuację, gdy dla danego gracza decyzja blokująca jest jednocześnie najbardziej korzystną w kontekście zdobyczy punktowej)
+\end{enumerate}
+\section{Model doświadczenia}
+Dla uzyskania jak najbardziej miarodajnych wyników dla każdej przeprowadzanej próby postanowiłem przeprowadzić rozgrywkę 1000 razy w następującej konfiguracji (Tablica \ref{table:gameconfig}):
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| c | c |} \hline
+			Liczba graczy & Liczba rozgrywek \\ \hline
+			2 & 250 \\ \hline
+			3 & 250 \\ \hline
+			4 & 250 \\ \hline
+			5 & 250 \\ \hline
+		\end{tabular}
+		\caption{Konfiguracja danych testowych}
+		\label{table:gameconfig}
+	\end{center}
+\end{table}
+
+Następnie w celu wyznaczenia parametrów rozgrywki. 
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| c | c |} \hline
+			Parametr  & Opis \\ \hline
+			MAX & Maksymalna liczba punktów zdobyta przez gracza \\ \hline
+			MIN & Najmniejsza liczba punktów zdobyta przez gracza \\ \hline
+			AVG & Sredni wynik punktowy \\ \hline
+			MED & Mediana punktów \\ \hline
+			AVG DONE TCK & Srednia liczba zrealizowanych biletów \\ \hline
+			AVG FAIL TCK & Srednia liczba niezrealizowanych biletów \\ \hline
+			TURNS & Srednia liczba tur rozgrywki \\ \hline
+			110 (\%) & Liczba graczy z co najmniej 110 punktami \\ \hline
+			120 (\%) & Liczba graczy z co najmniej 120 punktami \\ \hline
+			140 (\%) & Liczba graczy z co najmniej 140 punktami \\ \hline
+		\end{tabular}
+		\caption{Parametry rozgrywki}
+		\label{table:outputparam}
+	\end{center}
+\end{table}
+
+
+\chapter{Model algorytmiczny}
+\section{Algorytm}
+\subsection{Decyzja ogólna}
+\begin{enumerate}
+	\item Gracz nie posiada biletów
+	\subitem 1.1 Gracz posiada co najmniej 8 kart wagonów, 8 wagonów, inni gracze mają co najmniej 6 wagonów każdy, pozostały jeszcze bilety w talii - dobranie biletów
+	\subitem 1.2 Gracz ma co najmniej 5 kart wagonów jednego koloru oraz może zarezerwować połączenie na planszy - Rezerwacja połączenia
+	\subitem 1.3 Gracz może dobrać karty wagonów oraz jest początek rozgrywki - dobranie kart wagonów
+	\item Gracz może zarezerwować połączenie na planszy - Rezerwacja połączenia
+	\item Gracz może dobrać kartę wagonu - dobranie kart wagonów
+	\item Są wolne bilety - dobranie biletów
+	\item Gracz jest zmuszony opuścić turę
+\end{enumerate}
+\subsection{Poddecyzja - bilet}
+\begin{enumerate}
+	\item \textbf{Przygotowanie} Dla kazdej grupy biletow (możliwego podzbioru pobranych kart) wyznacz koszt (suma brakujących połączeń) oraz możliwą zdobycz punktów zwycięstwa
+	\subitem Oznacz grupę biletów, która w sumie spowoduje utratę najmniejszą liczbę punktów - jesli żadnej z nich gracz nie może zrealizować
+	\item Z grup, ktore gracz moze ukonczyc wybierz grupe o najniższym koszcie. Jesli dwie lub wiecej grup ma taki sam koszt - wybierz tą, która gwarantuje większą liczbę punktów
+	\item Jesli w punkcie drugim nie wybrano żadnej grupy, jako wybraną grupą biletów wybierz grupę oznaczoną w punkcie pierwszym.
+\end{enumerate}
+\subsection{Poddecyzja - karta wagonów}
+\begin{enumerate}
+	\item Policz dostepne karty wagonow na planszy (według kolorów) oraz ile kart każdego z kolorów potrzeba na zrealizowanie pozostałych biletów
+	\item Wyznacz kolory, których brakuje graczowi a następnie kolor, którego wagonów graczowi brakuje najwięcej.
+	\item Jesli gracz ma zrealizowane wszystkie bilety - wez kartę z talii 
+	\item Jesli gracz ma zrealizowane wszystkie bilety, a talia sie skonczyla - wez losowa karte z planszy
+	\item Jesli graczowi brakuje wiecej niz 3 roznych kolorow kart- wez z talii
+	\item Jesli potrzeba mniej niz 4 karty, a pozadany kolor jest na planszy - wez wybrana karte z planszy
+	\item Jesli pozostala jedna karta do zrealizowania biletu, gracz nie wybral jeszcze w turze karty oraz jest karta \textit{Lokomotywy} na planszy - wez wybrana karte lokomotywy
+	\item Jesli talia nie jest pusta - wez karte z talii
+	\item Wez losowa karte z planszy
+\end{enumerate}
+\subsection{Decyzja - rezerwacja połączenia}
+\begin{enumerate}
+	\item Oblicz posiadane karty kazdego z kolorow, oraz jakie karty sa potrzebne do rezerwacji polaczen z biletow
+	\item Jesli sa karty w zbiorze \textit{Pasujace} oznacz ten zbior jako przetwarzany. W przeciwnym przypadku oznacz zbior kart \textit{mozliwych}
+	\item Jako kryterium wyboru polaczenia do rezerwacji wybierz
+	\subitem Dla realizacji w przypadku niepustego zbioru \textit{pasujace} wybierz najkrotsze polaczenie
+	\subitem W kazdym innym przypadku wybierz polaczenie gwarantujace najwiecej punktow.
+	
+	\item Okresl pule kolorow do wykorzystania. Jesli jest wiecej niz jeden mozliwy kolor (w przypadku np. teczy), wybierz ten ktorego masz najwiecej kart
+	\item Wybierz karty wagonow podanego koloru
+\end{enumerate}
+\subsection{Przygotowanie tury}
+\begin{enumerate}
+	\item Okresl pule wszystkich polaczen potrzebnych do realizacji biletow gracza (okreslane jako \textit{cel})
+	\item Z wszystkich polaczen na mapie wyznacz te ktore gracz moze zrealizowac w danej turze (okreslane jako \textit{mozliwosci})
+	\subitem Dodaj polaczenia zawierajace sie w \textit{celu}
+	\subitem Dodaj wszystkie polaczenia o dlugosci co najmniej 5
+	\subitem Dodaj wszystkie polaczenia gdy dlugosc zbioru \textit{cel} jest rowna 0
+	\item Dla wszystkich polaczen ze zbioru \textit{target} (ktore gracz moze w ogole zarezerwowac)
+	\subitem Zawierajace sie w zbiorze \textit{mozliwosci} dodaj do zbioru \textit{pasujace}
+	\subitem W przeciwnym przypadku dodaj do zbioru \textit{Brakujace}
+	
+\end{enumerate}
+\subsection{Wyznaczanie tras do realizacji biletów}
+Planszę rozgrywki można przedstawić w formie modelu grafu, gdzie połączeniami są krawędzie a wierzchołkami miasta. Do wyznaczenia najbardziej korzystanego połączenia tras wykorzystano Algorytm Bellmana-Forda. Algorytm ten pozwala nam na określenie całej najkrótszej ścieżki rozpoczynając od wierzchołka początkowego. Jako metodę porównywawczą dla kosztu ścieżki uznano:
+\begin{enumerate}
+	\item Dla różnych kosztów (w wagonów) od węzła początkowego wybieramy ten który jest mniejszy
+	\item Dla równego kosztu (w wagonach) od węzła początkowego wybieramy tą ścieżkę dla której ścieżka gwarantuje większą ilość punktów
+\end{enumerate}
+\section{Wyniki modelu algorytmicznego}
+Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}. \textbf{Dane w tabeli są nieaktualne}
+\begin{table}[h]	
+	\begin{center}
+		\begin{tabular}{| c | c | c | c | c | c | c |} \hline
+			Liczba graczy & Min pkt & Max pkt & Mediana pkt & zrealizowane bilety & średnio pkt \\ \hline
+			2 & 41 & 176 & 104 & 4,29 & 102,49 \\ \hline
+			3 & 23 & 151 & 96,5 & 3,53 & 96,34 \\ \hline
+			4 & 31 & 173 & 96 & 3,84 &95,99 \\ \hline
+			5 & 9 & 176 & 90 & 3,55 & 89,17 \\ \hline
+			- & 9 & 176 & 95 & 3,71 &94,56 \\ \hline
+		\end{tabular}
+		\caption{Wyniki uzależnione od ilości graczy}
+		\label{table:algo_sizeresult}
+	\end{center}
+\end{table}
+
+\section{Wnioski}
+Przygotowany algorytm najlepiej sobie radzi w rozgrywce dla dwóch graczy. 
+\chapter{Model sieci neuronowej}
+\section{Model danych wejściowych}
+\begin{table}[h]
+		\begin{tabular}{| c | c | c | c |} \hline
+			Nazwa & Typ & Zakres & Opis \\ \hline
+			Tura & Int & 0-100 & Aktualna tura gracza \\ \hline
+			Karty wagonów & Int & 0-120 & Suma kart wagonów gracza (wszystkich kolorów) \\ \hline
+			Wagony na planszy & Int & 0-5 & Ilość wagonów na planszy \\ \hline
+			Wagony w talii & Int & 0-120 & Ilość wagonów w talii \\ \hline
+			Wagony odrzucone & Int & 0-120 & Ilość odrzuconych wagonów \\ \hline
+			Bilety gracza & Int & 0-30 & Ilość biletów posiadanych przez gracza \\ \hline
+		\end{tabular}	
+		\caption{Dane wejściowe sieci neuronowej}
+		\label{table:algo_input}
+\end{table}
+\section{Model danych wyjściowych}
+W eksperymencie wykorzystano klasyfikator, który operuje na pięciu możliwych klasach wyjściowych (do podglądu w \ref{table:algo_classifcator}):
+\begin{table}[h]	
+	\begin{center}
+		\begin{tabular}{| c | c | c |} \hline
+			\# & Nazwa & Opis decyzji \\ \hline
+			0 & Start & Służy do oznaczenia początku rozgrywki \\ \hline
+			1 & Pobranie karty wagonów & Gracz powinien pobrać karty tego typu (akumulacja zasobów) \\ \hline
+			2 & Pobranie karty biletów & Gracz powinien pobrać karty tego typu (dobranie celów) \\ \hline
+			3 & Zarezerwowanie połączenia & Gracz powinien zabezpieczyć punkty \\ \hline
+			4 & Opuszczenie tury & Gracz nie może podjąć żadnej decyzji (sytuacja niemal teoretyczna) \\ \hline
+		\end{tabular}
+		\caption{Klasy określane przez klasyfikator}
+		\label{table:algo_classifcator}
+	\end{center}
+\end{table}
+\section{Struktura sieci}
+\section{Proces weryfikacji uczenia}
+W trakcie zbierania pomiarów kilkukrotnie zmieniano model danych. Sieć podejmowała często zabronione decyzje spowodowane wpływem niepotrzebnych \textit{featerów}. W związku z tym usunięto dane o poczynaniach innych graczy, a dodano ilość różnych kolorów kart wagonów posiadanych przez gracza oraz największą ilość kart tego samego koloru.
+\section{Wyniki} 
+\section{Podusmowanie}
+\chapter{Dowód dzizałania sieci}
+\section{Model eksperymentu}
+W celu udowodnienia działania modelu przeprowadziłem eksperyment w formie. Dla każdej epoki uczenia przeprowadziłem serię testów a uśredniony wynik powinien wzrastać wraz z wzrostem iteracji.
+\section{Wyniki}
+\chapter{Podsumowanie}
+\section{Podsumowanie}
+\chapter{Słownik}
+\paragraph{Gracz}
+Uczestnik rozgrywki - sterowany przez sztuczną inteligencję. Przygotowano poniższych uczestników
+\subparagraph{Model algorytmiczny} Sztuczna inteligencja działająca w oparciu o algorytm. Wykorzystany do uzyskania danych uczących
+\subparagraph{Sieć neuronowa} Sztuczna sieć neuronowa - klasyfikuje rodzaj decyzji jaka ma zostać podjęta przez gracza
+\paragraph{Bilet}
+\label{dictionary:bilet}
+Losowane przez uczestnika rozgrywki zadanie do zrealizowania. Określony przez dwa miasta, które gracz musi ze sobą połączyć (za pomocą zarezerwowanych połączeń). W przypadku udanego zrealizowania zadania gracz zdobywa określoną liczbę punktów. W przeciwnym przypadku punkty są odejmowane z zdobytej puli.
+\paragraph{Połączenie}
+Połączenie dwóch sąsiadujących ze sobą miast. Połączenia charakteryzują się ilością nitek (1 lub dwie), kolorystyką (jeden z 8 kolorów lub połączenie bezbarwne) oraz długością. Można zbudować graf wykorzystując miasta jako węzły oraz połączenia jako krawędzie.
+\paragraph{Wagon} Element (w fizycznej wersji gry) służący do znakowania zarezerwowanych połączeń. Jeden wagonik odpowiada jednej karcie wagonów służacej do zarezerwowania połączenia. Gracz na początku posiada 45 wagonów. W momencie, gdy jeden z graczy ma 2 wagony lub mniej gracze wykonują jeszcze po jednym ruchu po czym przechodzą do fazy podliczenia punktów na koniec rozgrywki.
+\paragraph{Karta wagonu} Element rozgrywki. W grze występuje jako jeden z 8 zasobów (kolorów) - po 10 sztuk, oraz karta joker (zastępuje dowolną kartę zasobów) - w ilości 12 sztuk. Gracz wykorzystuje karty zasobów do zrealizowania połączenia.
+\chapter{Bibliografia}
+\begin{enumerate}
+	\item{Instrukcja do gry}
+	\subitem (Dostęp: ) \\ \url{https://www.wydawnictworebel.pl/repository/files/instrukcje/WdP_USA.pdf}
+	\item{Omówienie botów do gry - forum Board Game Geek}
+	\subitem (Dostęp: ) \\ 
+	\url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
+	\item{Repozytorium projektu}
+	\subitem(Dostęp: ) \\ \url{https://github....}
+\end{enumerate}
+\end{document}

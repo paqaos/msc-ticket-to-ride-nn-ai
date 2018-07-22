@@ -30,12 +30,12 @@ def main(argv):
         config=my_config
     )
 
-
     classifier.train(
         input_fn=lambda:game_data.train_input_fn(train_x,
                                                  train_y,
                                                  batch_size),
             steps=train_steps)
+
 
 if __name__ == '__main__':
     tf.logging.set_verbosity(tf.logging.INFO)
