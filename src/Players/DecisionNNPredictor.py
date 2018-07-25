@@ -12,7 +12,7 @@ class DecisionNNPredictor:
         for key in train_x.keys():
             self.my_feature_columns.append(tf.feature_column.numeric_column(key=key))
 
-        self.gpu_config = tf.GPUOptions(allow_growth=False)
+        self.gpu_config = tf.GPUOptions(allow_growth=True)
         self.my_session = tf.ConfigProto(log_device_placement=False, gpu_options=self.gpu_config)
         self.my_config = tf.estimator.RunConfig(
             session_config=self.my_session

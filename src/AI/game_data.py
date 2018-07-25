@@ -94,8 +94,15 @@ def train_input_fn(features, labels, batch_size):
 
     return dataset
 
-
 def eval_input_fn(features, labels, batch_size):
+    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels)).shuffle(5000).repeat().batch(batch_size)
+
+    iterator = dataset.make_one_shot_iterator()
+    batch_features, batch_labels = iterator.get_next()
+    return batch_features, batch_labels
+
+
+def pred_input_fn(features, labels, batch_size):
     # features = dict(features)
     if labels is None:
         inputs = features

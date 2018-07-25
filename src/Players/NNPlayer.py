@@ -8,7 +8,7 @@ from src.Players.AlgoPlayer import AlgoPlayer
 class NNPlayer(AlgoPlayer):
     def __init__(self, name, game, board, predictor):
         AlgoPlayer.__init__(self, name, game, board)
-        self.predictor = predictor.getPredictor()
+        self.predictor = predictor
 
     def calculateDecision(self, game, board, state):
         predict_x = {
@@ -43,7 +43,7 @@ class NNPlayer(AlgoPlayer):
         }
 
         predictions = self.predictor.predict(
-            input_fn=lambda: game_data.eval_input_fn(predict_x,
+            input_fn=lambda: game_data.pred_input_fn(predict_x,
                                                      labels=None,
                                                      batch_size=1))
 

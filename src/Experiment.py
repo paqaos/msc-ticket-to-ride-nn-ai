@@ -1,12 +1,14 @@
+import csv
 import os
 import sys
 from datetime import datetime
 import tensorflow as tf
+import numpy as np
 
 from src.Logic.Game import Game
 from src.Players.DecisionNNPredictor import DecisionNNPredictor
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
 preserveGameLog = False
 
 from src.AI import game_data
@@ -29,6 +31,7 @@ class Experiment:
 
         self.train_x = train_x
         self.train_y = train_y
+        self.evaluate = None
 
         self.directory = 'GameResults'
         self.experimentName = experimentName
@@ -43,6 +46,7 @@ class Experiment:
         self.tf = tf
 
     def make_iteration(self, iteration):
+        iteration_result = { }
         with self.tf.device('/device:GPU:0'):
             localPath = self.experimentPath + '/' + str(iteration)
             if not os.path.exists(localPath):
@@ -53,10 +57,18 @@ class Experiment:
             fileDone = self.experimentPath + '/' + str(iteration) + '/done.csv'
             fileFail = self.experimentPath + '/' + str(iteration) + '/fail.csv'
 
+            fails = 0
+            games = 0
+            max = 0
+            min = 200
+            sum_turns = 0
+            sum_points = 0
+            players = 0
+            finished = 0
             with open(fileResult, 'w') as fr, open(fileDone, 'w') as fd, open(fileFail, 'w') as ff:
-                predictor = DecisionNNPredictor(modelPath)
-                for pl in range(2, 6):
-                    fails = 0
+                predictor = self.predictor.getPredictor()
+                games += 1
+                for pl in range(2, 3):
                     for rep in range(self.games):
                         lineTck = ''
                         line = ''
@@ -72,7 +84,15 @@ class Experiment:
                             myGame.printResult()
                             line += str(myGame.gameId) + ';'
                             with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
+                                finished += 1
+                                sum_turns += myGame.turn
                                 for player in myGame.players:
+                                    if player.Points > max:
+                                        max = player.Points
+                                    if player.Points < min:
+                                        min = player.Points
+                                    sum_points += player.Points
+                                    players += 1
                                     line += str(player.Points) + ';'
                                     report.write(str(player.PlayerName) + ' ' + str(player.Points))
                                     failLine += str(player.TicketFail) + ';'
@@ -83,6 +103,7 @@ class Experiment:
                             line += 'fail ' + str(len(myGame.players)) + ' in turn: ' + str(myGame.turn)
                             failLine += 'fail ' + str(len(myGame.players)) + ' in turn: ' + str(myGame.turn)
                             lineTck += 'fail ' + str(len(myGame.players)) + ' in turn: ' + str(myGame.turn)
+                            sum_turns += myGame.turn
 
                         line += '\n'
                         lineTck += '\n'
@@ -94,6 +115,25 @@ class Experiment:
                         fd.flush()
                         ff.flush()
                         del myGame
+            iteration_result['games'] = games
+            iteration_result['fails'] = fails
+
+            if finished == 0:
+                min = '-'
+                max = '-'
+
+            iteration_result['max'] = max
+            iteration_result['min'] = min
+
+            iteration_result['players'] = players
+            iteration_result['finished'] = finished
+            if players == 0:
+                iteration_result['avg'] = '-'
+            else:
+                iteration_result['avg'] = sum_points / players
+            iteration_result['turns'] = sum_turns / games
+
+        return iteration_result
 
     def make_learning(self, batch_size):
         self.predictor.getPredictor().train(
@@ -102,18 +142,53 @@ class Experiment:
                                                       batch_size),
             steps=batch_size)
 
-    def run_experiment(self, learn_iteration, learn_batch, with_learn):
-        with open(self.experimentPath + '/experiment.txt', 'w') as log:
+    def make_evaluate(self, batch_size):
+        tf.contrib.summary.eval_dir(self.experimentPath)
+
+        if not os.path.exists(modelPath):
+            os.makedirs(modelPath)
+            os.makedirs(modelPath+'/eval')
+        with self.tf.device('/device:GPU:0'):
+            eval_result = self.predictor.getPredictor().evaluate(
+                input_fn=lambda: game_data.eval_input_fn(self.train_x,
+                                                         self.train_y,
+                                                         batch_size),
+                steps=batch_size)
+
+            return eval_result
+
+    def run_experiment(self, learn_iteration, learn_batch, with_learn, start_iteration=1):
+        with open(self.experimentPath + '/experiment.txt', 'a') as log, open(self.experimentPath + '/experiment.csv', 'a', newline='' ) as qualityf :
             experiment_start = datetime.utcnow()
             log.write('experiment started: ' + str(experiment_start) + '\n')
-            for li in range(1, learn_iteration+1):
+            for li in range(start_iteration, learn_iteration+1):
                 log.write('iteration ' + str(li) + ' started: ' + str(datetime.utcnow()) + '\n')
-                if with_learn and li != 1:
+                if with_learn and li != start_iteration:
                     self.make_learning(learn_batch)
-                self.make_iteration(li)
+                quality = self.make_evaluate(learn_batch)
+                iteration_quality = self.make_iteration(li)
                 print('step' + str(li))
                 log.write('iteration ' + str(li) + ' ended: ' + str(datetime.utcnow()) + '\n')
                 log.flush()
+
+                qualityOut = []
+                qualityOut.append(li)
+                qualityOut.append(quality['global_step'])
+                qualityOut.append(quality['loss'])
+                qualityOut.append(quality['average_loss'])
+                qualityOut.append(quality['accuracy'])
+
+                qualityOut.append(iteration_quality['games'])
+                qualityOut.append(iteration_quality['fails'])
+                qualityOut.append(iteration_quality['max'])
+                qualityOut.append(iteration_quality['min'])
+                qualityOut.append(iteration_quality['players'])
+                qualityOut.append(iteration_quality['finished'])
+                qualityOut.append(iteration_quality['avg'])
+                qualityOut.append(iteration_quality['turns'])
+                csvWr = csv.writer(qualityf)
+                csvWr.writerow(qualityOut)
+                qualityf.flush()
             experiment_end = datetime.utcnow()
             log.write('experiment ended: ' + str(experiment_end) + '\n')
             log.flush()
