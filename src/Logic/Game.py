@@ -1,16 +1,8 @@
-import os
-import sys
-from datetime import datetime
-
 from src.Helpers.StatePrint import StatePrint
-from src.Players.AlgoPlayer import AlgoPlayer
-from src.Board import Board
+from src.Logic.Board import Board
 from src.Enums import DecisionType
 import uuid
-import csv
-import tensorflow as tf
 
-from src.Players.DecisionNNPredictor import DecisionNNPredictor
 from src.Players.NNPlayer import NNPlayer
 
 
@@ -96,59 +88,3 @@ class Game:
         for pl in self.players:
             points[pl] = pl.calculatePoints(self.board)
             print(pl.PlayerName + ' pts: ' + str(points[pl]))
-
-
-startAll = datetime.utcnow()
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-preserveGameLog = False
-
-with tf.device('/device:GPU:0'):
-    tf.logging.set_verbosity(tf.logging.ERROR)
-    with open('result_10nn3pl.csv', 'w') as f, open('done_10nn3pl.csv', 'w') as tf, open('fail_10nn3pl.csv', 'w') as ff:
-        predictor = DecisionNNPredictor()
-        for pl in range(2, 5):
-            for rep in range(200):
-                startDate = datetime.utcnow()
-                lineTck = ''
-                line = ''
-                failLine = ''
-                myGame = Game()
-                if not os.path.exists('reports/'):
-                    os.makedirs('reports')
-                os.makedirs('reports/' + str(myGame.gameId))
-
-                try:
-                    myGame.prepareGame(pl, predictor)
-                    myGame.execute()
-                    myGame.printResult()
-                    line += str(myGame.gameId) +';'
-                    with open('reports/' + str(myGame.gameId) + '/raport.txt', 'w') as report:
-                        for player in myGame.players:
-                            line += str(player.Points) + ';'
-                            report.write(str(player.PlayerName) + ' ' + str(player.Points))
-                            failLine += str(player.TicketFail) + ';'
-                            lineTck += str(player.TicketDone) + ';'
-                except:
-                    e = sys.exc_info()[0]
-                    line += 'fail' + str(len(myGame.players))
-                    failLine += 'fail' + str(len(myGame.players))
-                    lineTck += 'fail' + str(len(myGame.players))
-
-                line += '\n'
-                lineTck += '\n'
-                failLine += '\n'
-                f.write(line)
-                tf.write(lineTck)
-                ff.write(failLine)
-                endDate = datetime.utcnow()
-                print('start exp: ' + str(startDate) + ' end date: ' + str(endDate))
-                f.flush()
-                tf.flush()
-                ff.flush()
-                del myGame
-
-endall = datetime.utcnow()
-
-print('start ' + str(startAll))
-print('end ' +  str(endall))

@@ -105,13 +105,3 @@ class StatePrint:
         output.append(diff)
 
         return output
-
-        # nr of tickets (uncompleted)
-        # nr of all tickets
-        # nr of wagons
-        # points
-        # missing to shortest path
-
-        # points (min, max, average, median)
-        # number of players
-        # wagons (min, max, average, median)

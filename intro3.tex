@@ -83,7 +83,7 @@ Praca wykonana pod kierunkiem\\
 \newpage
 \chapter{Wprowadzenie}
 \section{Wprowadzenie}
-\paragraph{Gra} W literaturze pojawia się wiele 
+\paragraph{Gra} W literaturze pojawia się wiele definicji dla gry. Można uznać, że jest to czynność o rozrywkowym charakterze, w której uczestniczy jeden lub wielu graczy. Grę można również opisać jako model matematyczny charakteryzujący się określonymi zasadami oraz zbiorem możliwych operacji na tym modelu.
 \paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Można założyć, że każdy chce uzyskać jak najlepszy wynik dla siebie.
 \paragraph{Klasyfikacja gry}
 Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową, niesymetryczną z niepełną informacją. 
@@ -91,14 +91,14 @@ Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową, niesymetryczną z ni
 Określenie gra z niepełną informacją oznacza, że gracze podejmują swoje decyzje nie wiedząc o tym jakie cele mają inni uczestnicy rozgrywki. W grze \textit{Wsiąść do pociągu} polega to m.in. na braku wiedzy jakie bilety (oraz czy zostały ukończone) realizują konkurenci.
 \paragraph{Uczenie maszynowe}
 Według Donald'a Michie: \\ \textit{System uczący się wykorzystuje zewnętrzne dane empiryczne w celu tworzenia i aktualizacji podstaw dla udoskonalonego działania na podobnych danych w przyszłości oraz wyrażania tych podstaw w zrozumiałej i symbolicznej postaci}
-
-\section{Zasady gry}
+\paragraph{Głębokie sieci neuronowe}
+Głębokie sieci neuronowe są szczególnym przypadkiem uczenia maszynowego. Sieć składa się z więcej niż jednej warstwy ukrytej, a reprezentacja wewnętrzna neuronów niekoniecznie jest odworowaniem liniowym.
+\section{Zasady gry \textit{Wsiąść do pociągu}}
 \subsection{Omówienie celu gry}
 Celem rozgrywki jest uzyskanie jak największej liczby punktów. Gracz może zdobyć punkty za zarezerwowanie połączeń \ref{table:points} oraz za ukończenie biletów (korzystając z połączeń jednego gracza można dotrzeć z jednego wskazanego miasta do drugiego). 
 
 \begin{table}[h]
 	\begin{center}
-		\label{table:points}
 		\begin{tabular}{|c|c|} \hline
 		\textbf{Długość połączenia} & \textbf{Ilość punktów} \\ \hline
 		1 & 1 \\ \hline
@@ -109,12 +109,13 @@ Celem rozgrywki jest uzyskanie jak największej liczby punktów. Gracz może zdo
 		6 & 15 \\ \hline
 		\end{tabular}	
 		\caption{Ilość punktów za zrealizowanie połączenia}
+		\label{table:points}
 	\end{center}
 
 \end{table}
 
-\subsection{Przebieg rozgrywki}
-Po rozłożeniu planszy następuje przygotowanie rozgrywki
+\subsection{Przygotowanie rozgrywki}
+Po rozłożeniu planszy następuje przygotowanie rozgrywki:
 \begin{enumerate}
 	\item \textbf{Przygotowanie talii}
 	\subitem Gracze tasują dostępne karty wagonów oraz biletów. Rozkładają na planszy pierwszych 5 kart wagonów - widocznych typem dla gracza. Jeśli wśród nich są co najmniej 3 lokomotywy - wymienić cały zestaw kart.
@@ -123,6 +124,7 @@ Po rozłożeniu planszy następuje przygotowanie rozgrywki
 	\item \textbf{Losowanie kart wagonów}
 	\subitem Każdy z graczy pobiera z talii biletów po cztery karty. Nie ma prawa ich odrzucić lub zamienić.
 \end{enumerate}
+Gdy zostaną wykonane powyższe kroki uczestnicy gry mogą rozpocząć rozgrywkę. 
 \subsection{Możliwości gracza}
 W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji:
 \begin{enumerate}
@@ -144,7 +146,14 @@ W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji:
 	\subitem \textbf{Decyzja zabroniona} W talii kart biletów nie pozostał żaden bilet.
 \end{enumerate}
 \subsection{Koniec gry}
-Rozgrywka kończy się w momencie, gdy jednemu z graczy pozostają co najwyżej dwa wagoniki. Po tym zdarzeniu każdy z graczy ma jeszcze jeden ruch do wykonaniu. Gdy wszyscy gracze wykonają ruch przechodzi się do fazy podliczenia punktów.
+Rozgrywka kończy się w momencie, gdy jednemu z graczy pozostają co najwyżej dwa wagoniki. Po tym zdarzeniu każdy z graczy ma jeszcze jeden ruch do wykonaniu. Gdy wszyscy gracze wykonają ruch przechodzi się do fazy podliczenia punktów. \\
+Podliczenie przebiega następująco:
+\begin{enumerate}
+	\item Podliczenie punktów za połączenia (według \ref{table:points} )
+	\item Dodanie punktów za każdy zrealizowany bilet (według oznaczenia na bilecie)
+	\item Odjęcie punktów za każdy niezrealizowany bilet (według oznaczenia na bilecie)
+\end{enumerate}
+\textbf{Dla usprawnienia procesu gry w eksperymentach pominięto zasadę bonusowych 10 punktów dla gracza posiadającego najdłuższą nieprzerwaną ścieżkę}
 \chapter{Przebieg badania}
 \section{Analiza zachowań gracza}
 Pierwszym etapem pracy nad sztuczną inteligencją zostało zaanalizowanie zachowań graczy pod punktem przygotowania algorytmu, który wykorzystano do przygotowania zbioru uczącego. Jako rozsądne kierunki analizy przyjąłem:
@@ -174,7 +183,7 @@ Dla uzyskania jak najbardziej miarodajnych wyników dla każdej przeprowadzanej 
 	\end{center}
 \end{table}
 
-Następnie w celu wyznaczenia parametrów rozgrywki. 
+Następnie w celu wyznaczenia parametrów rozgrywki.  \ref{table:outputparam}
 
 \begin{table}[h]
 	\begin{center}
@@ -190,6 +199,7 @@ Następnie w celu wyznaczenia parametrów rozgrywki.
 			110 (\%) & Liczba graczy z co najmniej 110 punktami \\ \hline
 			120 (\%) & Liczba graczy z co najmniej 120 punktami \\ \hline
 			140 (\%) & Liczba graczy z co najmniej 140 punktami \\ \hline
+			FAIL (\%) & Liczba gier w których gracz dokonał ruchu zabronionego \\ \hline
 		\end{tabular}
 		\caption{Parametry rozgrywki}
 		\label{table:outputparam}
@@ -276,7 +286,9 @@ Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeres
 \end{table}
 
 \section{Wnioski}
-Przygotowany algorytm najlepiej sobie radzi w rozgrywce dla dwóch graczy. 
+
+\textbf{Wstawić wykres rozkładu punktów}
+
 \chapter{Model sieci neuronowej}
 \section{Model danych wejściowych}
 \begin{table}[h]
@@ -324,6 +336,10 @@ W celu udowodnienia działania modelu przeprowadziłem eksperyment w formie. Dla
 Uczestnik rozgrywki - sterowany przez sztuczną inteligencję. Przygotowano poniższych uczestników
 \subparagraph{Model algorytmiczny} Sztuczna inteligencja działająca w oparciu o algorytm. Wykorzystany do uzyskania danych uczących
 \subparagraph{Sieć neuronowa} Sztuczna sieć neuronowa - klasyfikuje rodzaj decyzji jaka ma zostać podjęta przez gracza
+\paragraph{Decyzja}
+Podejmowana przez uczestnika rozgrywki decyzja (rezerwacja połączenia, pobranie kart wagonów lub pobranie kart biletów)
+\subparagraph{Decyzja zabroniona}
+Podjęta przez gracza decyzja niemożliwa w danym momencie z punktu widzenia gry. \textit{Przykładowo brakujące zasoby gry}
 \paragraph{Bilet}
 \label{dictionary:bilet}
 Losowane przez uczestnika rozgrywki zadanie do zrealizowania. Określony przez dwa miasta, które gracz musi ze sobą połączyć (za pomocą zarezerwowanych połączeń). W przypadku udanego zrealizowania zadania gracz zdobywa określoną liczbę punktów. W przeciwnym przypadku punkty są odejmowane z zdobytej puli.
@@ -339,6 +355,6 @@ Połączenie dwóch sąsiadujących ze sobą miast. Połączenia charakteryzują
 	\subitem (Dostęp: ) \\ 
 	\url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
 	\item{Repozytorium projektu}
-	\subitem(Dostęp: ) \\ \url{https://github....}
+	\subitem(Dostęp: ) \\ \url{https://github.com/paqaos/praca-dyplomowa}
 \end{enumerate}
 \end{document}
