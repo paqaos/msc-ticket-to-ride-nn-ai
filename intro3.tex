@@ -7,6 +7,8 @@
 \usepackage[polish]{babel}
 \usepackage{hyperref}
 \usepackage[table]{xcolor}
+\usepackage{longtable}
+\usepackage{graphicx}
 
 \begin{document}  
 \thispagestyle{empty}
@@ -87,6 +89,8 @@ Praca wykonana pod kierunkiem\\
 \paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Można założyć, że każdy chce uzyskać jak najlepszy wynik dla siebie.
 \paragraph{Klasyfikacja gry}
 Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową, niesymetryczną z niepełną informacją. 
+\paragraph{Problem klasyfikacji}
+W grze \textit{Wsiąść do Pociągu} pojawia się problem decyzyjny w postaci klasyfikacji. Klasyfikacja jest problemem przyporządkowania danego zestawu danych do jednej lub więcej klas ze zbioru co najmniej dwóch klas. \textit{Przeciwieństwo: Regresja}
 \paragraph{Gra z niepełną informacją} 
 Określenie gra z niepełną informacją oznacza, że gracze podejmują swoje decyzje nie wiedząc o tym jakie cele mają inni uczestnicy rozgrywki. W grze \textit{Wsiąść do pociągu} polega to m.in. na braku wiedzy jakie bilety (oraz czy zostały ukończone) realizują konkurenci.
 \paragraph{Uczenie maszynowe}
@@ -195,7 +199,6 @@ Następnie w celu wyznaczenia parametrów rozgrywki.  \ref{table:outputparam}
 			MED & Mediana punktów \\ \hline
 			AVG DONE TCK & Srednia liczba zrealizowanych biletów \\ \hline
 			AVG FAIL TCK & Srednia liczba niezrealizowanych biletów \\ \hline
-			TURNS & Srednia liczba tur rozgrywki \\ \hline
 			110 (\%) & Liczba graczy z co najmniej 110 punktami \\ \hline
 			120 (\%) & Liczba graczy z co najmniej 120 punktami \\ \hline
 			140 (\%) & Liczba graczy z co najmniej 140 punktami \\ \hline
@@ -208,7 +211,11 @@ Następnie w celu wyznaczenia parametrów rozgrywki.  \ref{table:outputparam}
 
 
 \chapter{Model algorytmiczny}
-\section{Algorytm}
+\label{model:algo}
+\section{Wprowadzenie do eksperymentu}
+Celem drugiej części eksperymentu było dowiedzienie, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Wykorzystanie modelu algorytmicznego pozwoli uprościć zbieranie danych, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. \\
+W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}.
+\section{Opis algorytmu}
 \subsection{Decyzja ogólna}
 \begin{enumerate}
 	\item Gracz nie posiada biletów
@@ -269,68 +276,188 @@ Planszę rozgrywki można przedstawić w formie modelu grafu, gdzie połączenia
 	\item Dla równego kosztu (w wagonach) od węzła początkowego wybieramy tą ścieżkę dla której ścieżka gwarantuje większą ilość punktów
 \end{enumerate}
 \section{Wyniki modelu algorytmicznego}
-Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}. \textbf{Dane w tabeli są nieaktualne}
-\begin{table}[h]	
+Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}.
+
+\begin{table}[h]
 	\begin{center}
-		\begin{tabular}{| c | c | c | c | c | c | c |} \hline
-			Liczba graczy & Min pkt & Max pkt & Mediana pkt & zrealizowane bilety & średnio pkt \\ \hline
-			2 & 41 & 176 & 104 & 4,29 & 102,49 \\ \hline
-			3 & 23 & 151 & 96,5 & 3,53 & 96,34 \\ \hline
-			4 & 31 & 173 & 96 & 3,84 &95,99 \\ \hline
-			5 & 9 & 176 & 90 & 3,55 & 89,17 \\ \hline
-			- & 9 & 176 & 95 & 3,71 &94,56 \\ \hline
+		\begin{tabular}{| c | c | c | c | c | c |} \hline
+			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & ogólnie \\ \hline
+			Minimum & 37 & 14 & 43 & 34 & 14 \\ \hline
+			Maksimum & 173 & 149 & 182 & 162 & 182 \\ \hline
+			Srednia & 107,02 & 98,02 & 98,03 & 94,59 & 98,16 \\ \hline
+			Mediana & 108 & 95 & 98 & 96 & 99 \\ \hline
+			(\%) > 110 & 44,60 & 38,00 & 28,00 & 21,60 & 27,51 \\ \hline
+			(\%) > 120 & 23,40 & 8,80 & 13,20 & 8,80 & 12,14 \\ \hline
+			(\%) > 140 & 3,80 & 0,40 & 0,70 & 0,96 & 1,17 \\ \hline
+			Zrealizowane bilety & & & & & \\ \hline
+			Niezrealizowane bilety & & & & & \\ \hline
 		\end{tabular}
 		\caption{Wyniki uzależnione od ilości graczy}
 		\label{table:algo_sizeresult}
 	\end{center}
 \end{table}
 
-\section{Wnioski}
+\begin{figure}
+	\includegraphics{Wykrespunktow.png}
+	\caption{Rozkład punktacji wg. ilości graczy}
+	\label{figure:player_points_algo}
+\end{figure}
 
-\textbf{Wstawić wykres rozkładu punktów}
-
+\begin{figure}
+	\includegraphics{Wykrespunktowglobal.png}
+	\caption{Globalny rozkład punktów}
+	\label{figure:global_points_algo}
+\end{figure}
+\section{Wnioski i podsumowanie} 
+Podsumowując otrzymane dane możemy dojśc do kilku wniosków, przede wszystkim, że decyzje podejmowane przez gracza komputerowego sprawiają wrażenie rzeczywistych. Gracz algorytmiczny ma swoje słabe oraz mocne strony po powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa. \\ \\
+Zgodnie z wynikami wskazanymi w Tablicy \ref{table:algo_sizeresult} możemy zauważyć, że przewidywany wynik gracza powinien wynieść ok. 98 puntków (średnia oraz mediana). Wynik ten potwierdza przebieg wykresu z Rysunku \ref{figure:global_points_algo}, którego \textit{szczyt} znajduje się ok. 97-98 punktów. Można zauważyć, że spora część rozgrywek kończy się wynikiem powyżej 87 punktów. Powyżej wyniku 140 punktów znajduje się znikoma część graczy - według tablicy zaledwie 1,17\%. \\ \\ 
+Wnioski możemy również wynieść z Rysunku \ref{figure:player_points_algo}, który wskazuje rozkład punktów w zależności od ilości graczy. Zgodnie z oczekiwaniami przebieg każdego z wykresu przedstawia rozkład Gaussa. Najlepsze wyniki osiągają gracze uczestniczący w rozgrywce dwuosobowej. Jest to spowodowane powolnym zapełnianiem planszy przez co zdobywają mniejszą ilośc punktów karnych za niezrealizowane bilety. W przypadku takiej konfiguracji można oczekiwać wyniku ok. 107 punktów. \\ \\ 
+Bardziej zbliżone do siebie są rozgrywki trzy- oraz cztero-osobowe, dla których średni wynik wynosi 98 pkt. Można zauważyć, że dla rozgrywek trzyosobowych po osiągnięciu maksimum częstości, częstośc występowań wyników o danej ilości punktów maleje szybciej od rozgrywek czteroosobowych. Skutkiem tego jest znacznie wyższy procent graczy z wynikiem końcowym ponad 120 oraz ponad 140 punktów, co przedstawiono w Tablicy \ref{table:algo_sizeresult}.
 \chapter{Model sieci neuronowej}
+\section{Wprowadzenie do eksperymentu}
+Z łatwością można wskazać działanie przygotowanego algorytmu, gorzej jest w przypadku sieci neuronowej. 
 \section{Model danych wejściowych}
-\begin{table}[h]
-		\begin{tabular}{| c | c | c | c |} \hline
-			Nazwa & Typ & Zakres & Opis \\ \hline
-			Tura & Int & 0-100 & Aktualna tura gracza \\ \hline
-			Karty wagonów & Int & 0-120 & Suma kart wagonów gracza (wszystkich kolorów) \\ \hline
-			Wagony na planszy & Int & 0-5 & Ilość wagonów na planszy \\ \hline
-			Wagony w talii & Int & 0-120 & Ilość wagonów w talii \\ \hline
-			Wagony odrzucone & Int & 0-120 & Ilość odrzuconych wagonów \\ \hline
-			Bilety gracza & Int & 0-30 & Ilość biletów posiadanych przez gracza \\ \hline
-		\end{tabular}	
-		\caption{Dane wejściowe sieci neuronowej}
-		\label{table:algo_input}
-\end{table}
+Model danych wejściowych przedstawiono w \ref{table:algo_input}. W trakcie przygotowania kierowałem się danymi jakie są wykorzystywane w trakcie wyboru decyzji w algorytmie \textit{klasycznym}
+
+\begin{longtable}[h]{| c | c | c | p{6.5cm} |} \hline
+	Nazwa & Typ & Zakres & Opis \\ \hline	
+	Tura & Int & 0-100 & Aktualna tura gracza \\ \hline
+	Karty wagonów & Int & 0-120 & Suma kart wagonów gracza (wszystkich kolorów) \\ \hline
+	Wagony na planszy & Int & 0-5 & Ilość wagonów na planszy \\ \hline
+	Wagony w talii & Int & 0-120 & Ilość wagonów w talii \\ \hline
+	Wagony odrzucone & Int & 0-120 & Ilość odrzuconych wagonów \\ \hline
+	Bilety gracza & Int & 0-30 & Ilość biletów posiadanych przez gracza \\ \hline
+	Bilety w talii & Int & 0-30 & Ilość biletów pozostających w talii \textit{biletów} \\ \hline
+	Wagony gracza & Int & 0-45 & Ilość wagoników posiadanych przez gracza \\ \hline
+	Punkty gracza & Int & -50 - 200 & Ilośc punktów posiadanych przez gracza \\ \hline
+	Pozostałe karty wagonów & Int & 0 - 120 & Ilość kart wagonów w talii oraz na planszy  \\ \hline
+	Liczba połączeń do zrealizowania & Int & 0 - 40 & Ilość połączeń na planszy, które gracz może zarezerwować \\ \hline
+	Liczba połączeń pasujących & Int & 0 - 40 & Ilość połączeń, które gracz może zrealizować z trasy biletów. \\ \hline
+	Liczba połączeń targetowych & Int & 0 - 40 & Ilość połączeń na trasie biletów. \\ \hline
+	Liczba połączeń brakujących & Int & 0 - 40 & Ilość połączeń jakie brakuje graczowi do zrealizowania wszystkich biletów \\ \hline
+	Liczba graczy & Int & 2-5 & Ilość graczy w rozgrywce \\ \hline
+	Min wagonów  & Int & 0 - 45 & Najmniejsza liczba wagonów wśród pozostałych graczy \\ \hline
+	max wagonów  & Int & 0 - 45 & Największa liczba wagonów wśród pozostałych graczy \\ \hline
+	avg wagonów  & Int & 0 - 45 & Srednia liczba wagonów wśród pozostałych graczy  \\ \hline
+	Mediana Wagonów & Int & 0 - 45 & Mediana liczby wagonów wśród pozostałych graczy  \\ \hline
+	Min biletów & Int & 0 - 45 & Najmniejsza posiadanych liczba biletów wśród pozostałych graczy  \\ \hline
+	max biletów & Int & 0 - 45 & Największa posiadanych liczba biletów wśród pozostałych graczy  \\ \hline
+	avg biletów & Int & 0 - 45 & Srednia liczba posiadanych biletów wśród pozostałych graczy  \\ \hline
+	med biletow & Int & 0 - 45 & Mediana liczba posiadanych biletów wśród pozostałych graczy  \\ \hline
+	ticket fail & Int & 0 - 30 & Liczba biletów \textit{niezrealizowanych} przez aktywnego gracza \\ \hline
+	ticket done & Int & 0 - 30 & Liczba biletów \textit{zrealizowanych} przez aktywnego gracza \\ \hline
+	points for others & Int & 0 - 30 & Liczba punktów bez liczenia punktów za bilety \\ \hline
+\caption{Dane wejściowe sieci neuronowej}
+\label{table:algo_input}
+\end{longtable}
+
 \section{Model danych wyjściowych}
 W eksperymencie wykorzystano klasyfikator, który operuje na pięciu możliwych klasach wyjściowych (do podglądu w \ref{table:algo_classifcator}):
 \begin{table}[h]	
 	\begin{center}
 		\begin{tabular}{| c | c | c |} \hline
 			\# & Nazwa & Opis decyzji \\ \hline
-			0 & Start & Służy do oznaczenia początku rozgrywki \\ \hline
+			0 & Opuszczenie tury & Gracz nie może podjąć żadnej decyzji \\ \hline
 			1 & Pobranie karty wagonów & Gracz powinien pobrać karty tego typu (akumulacja zasobów) \\ \hline
 			2 & Pobranie karty biletów & Gracz powinien pobrać karty tego typu (dobranie celów) \\ \hline
 			3 & Zarezerwowanie połączenia & Gracz powinien zabezpieczyć punkty \\ \hline
-			4 & Opuszczenie tury & Gracz nie może podjąć żadnej decyzji (sytuacja niemal teoretyczna) \\ \hline
 		\end{tabular}
 		\caption{Klasy określane przez klasyfikator}
 		\label{table:algo_classifcator}
 	\end{center}
 \end{table}
 \section{Struktura sieci}
+W pracy wykorzystano klasyfikator oparty o pracę głębokich sieci neuronowych. Warstwa wejściowa składała się z 26 featerów. Następnie były dwie warstwy ukryte, które składały się odpowiednio z 160 oraz 120 neuronów. Na wyjściu klasyfikacja opierała się na 5 neuronach.
 \section{Proces weryfikacji uczenia}
-W trakcie zbierania pomiarów kilkukrotnie zmieniano model danych. Sieć podejmowała często zabronione decyzje spowodowane wpływem niepotrzebnych \textit{featerów}. W związku z tym usunięto dane o poczynaniach innych graczy, a dodano ilość różnych kolorów kart wagonów posiadanych przez gracza oraz największą ilość kart tego samego koloru.
+W trakcie zbierania pomiarów kilkukrotnie zmieniano model danych. Sieć podejmowała często zabronione decyzje spowodowane wpływem niepotrzebnych \textit{featerów}. W związku z tym usunięto dane o poczynaniach innych graczy, a dodano ilość różnych kolorów kart wagonów posiadanych przez gracza oraz największą ilość kart tego samego koloru. \\ \\ 
+Drugą ważną zmianą w modelu sieci neuronowej była redukcja ilości dozwolonych decyzji (klas). Początkowo jako punkt wejściowy był zapisany stan \textit{start}, lecz ostatecznie został on usunięty.
 \section{Wyniki} 
 \section{Podusmowanie}
-\chapter{Dowód dzizałania sieci}
-\section{Model eksperymentu}
-W celu udowodnienia działania modelu przeprowadziłem eksperyment w formie. Dla każdej epoki uczenia przeprowadziłem serię testów a uśredniony wynik powinien wzrastać wraz z wzrostem iteracji.
+\chapter{Optymalizacja / Generalizacja}
+\section{Wprowadzenie do eksperymentu}
+Sztuczna inteligencja powinna w swoim działaniu dążyć do jak najlepszych wyników. W przypadku sztucznej sieci neuronowej najlepsze wyniki uzyskujemy poprzez dobór odpowiednich modelów / zbioru danych uczących. W przypadku sztucznej inteligencji dla rozważanej gry możemy:
+
+\begin{enumerate}
+	\item Przygotować specjalny model dla każdego konfiguracji liczby graczy, każdy model ma swój zbiór danych uczących. W dalszej części pracy nazwany \textbf{model specyficzny}
+	\item Przygotować zaagregowany zbiór danych uczących z poprzedniego podpunktu. Model wykorzystywany jest w rozgrywkach niezależnie od konfiguracji. W dalszej cześci pracy nazwany \textbf{model uniwersalny}
+\end{enumerate}
+
+\section{Przebieg doświadczenia}
+Na początku przygotowałem zbiory danych uczących dla każdej konfiguracji liczby graczy wybierając rozgrywki według najlepszego wyniku końcowego. Każdy zbiór danych składał się z zapisu decyzji trzydziestu graczy. Dodatkowo na końcu wszystkie zbiory danych uczących zapisane zostały do dodatkowego pliku \textit{all}, który zostaje wykorzystany do budowy modelu \textit{uniwersalnego}. \\ \\
+Po przygotowaniu zbiorów danych uczących uruchomione zostało doświaczenie. Na początku przeprowadzenie uczenie sieci - 40 epok z rozmiarem batch'a 250 decyzji gracza. Dla każdej konfiguracji przeprowadzono po 60 rozgrywek - oddzielnie dla modelu uniwersalnego oraz modelu specyficznego. W sumie dla tej części przeprowadzono 480 gier testowych, których wyniki zamieszczono poniżej.
 \section{Wyniki}
-\chapter{Podsumowanie}
+Wyniki otrzymane w doświadczeniu zostały zawarte w Tablicach \ref{table:nn_single_test} oraz  \ref{table:nn_all_test} oraz omówione w następnej sekcji.
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| c | c | c | c | c | c |} \hline
+			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & ogólnie \\ \hline
+			Minimum & 41 & 48 & 46 & 41 & 41 \\ \hline
+			Maksimum & 157 & 140 & 148 & 142 & 157 \\ \hline
+			Srednia & 101,66 & 99,4 & 97,36 & 92,05 & 96,57 \\ \hline
+			Mediana & 99,5 & 101 & 100 & 91 & 97 \\ \hline
+			Ukończonych rozgrywek & 60 & 55 & 60 & 56 & 231 \\ \hline
+			(\%) > 110 & 28,33 & 24,24 & 25,00 & 18,57 & 23,11 \\ \hline
+			(\%) > 120 & 18,33 & 10,30 & 8,75 & 8,21 & 10,31 \\ \hline
+			(\%) > 140 & 4,17 & 0,00 & 0,42 & 0,36 & 0,87 \\ \hline
+			Zrealizowane bilety & & & & & \\ \hline
+			Niezrealizowane bilety & & & & & \\ \hline
+		\end{tabular}
+		\caption{Podsumowanie - modele operujące na precyzyjnych danych uczących}
+		\label{table:nn_single_test}
+	\end{center}
+\end{table}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| c | c | c | c | c | c |} \hline
+			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & ogólnie \\ \hline
+			Minimum & 45 & 49 & 54 & 37 & 37 \\ \hline
+			Maksimum & 154 & 133 & 144 & 143 & 154 \\ \hline
+			Srednia & 108,12 & 96,51 & 97,69 & 94,88 & 98,00 \\ \hline
+			Mediana & 108 & 97 & 99,5 & 96,5 & 99 \\ \hline
+			Ukończonych rozgrywek & 60 & 60 & 59 & 56 & 235 \\ \hline
+			(\%) > 110 & 43,33 & 24,44 & 23,73 & 21,07 & 25,86 \\ \hline
+			(\%) > 120 & 25,00 & 7,78 & 8,05 & 7,14 & 10,17 \\ \hline
+			(\%) > 140 & 3,33 & 0,00 & 1,27 & 0,71 & 1,10 \\ \hline
+			Zrealizowane bilety & & & & & \\ \hline
+			Niezrealizowane bilety & & & & & \\ \hline
+		\end{tabular}
+		\caption{Podsumowanie - modele operujące na uniwersaslnych danych uczących}
+		\label{table:nn_all_test}
+	\end{center}
+\end{table}
+\section{Omówienie wyników}
+\chapter{Dowód działania sieci}
+\section{Wprowadzenie do eksperymentu}
+Poza wskazaniem, że wyniki osiągane przez sieć neuronową są zbliżone do tych osiąganych przez algorytm należy udowodnić, że przygotowany model oraz założenia są słuszne. W tym celu określono metryki za pomoca których można opisać wyniki pracy sieci. Należy wskazać przede wszystkim, że wyniki osiągane w rozgrywkach sterowanych przez \textit{Losową} sieć neuronową są średnio gorsze od tych wyuczonych przykładowymi danymi.
+\section{Model eksperymentu}
+W celu udowodnienia działania modelu przeprowadziłem eksperyment w formie ewaluacji modelu w trakcie uczenia sieci. Dla każdej epoki składającej się z próbki pięciuset \textit{entry} przeprowadziłem ewaluację modelu dla losowych 100 wpisów z zbioru uczącego a następnie rozgrywałem sześćdziesiąt partii w każdej konfiguracji (od dwóch do pięciu graczy) co ostatecznie daje wynik 240 rozgrywek na iterację. Ilość danych uczących rośnie wraz z iteracją uczenia.
+\section{Metryki}
+Metryki, jakimi opisywany jest postep uczenia zostały opisane w Tablicy \ref{table:learn_metrics}.
+\begin{table}[h]
+	\begin{tabular}{| c | c ||} \hline
+		Metryka & Opis \\ \hline
+		Iteracja & Aktualna iteracja \\ \hline
+		Global step & Sumaryczna ilość danych uczących \\ \hline
+		Loss & Sumaryczna ilość błednych wskazań dla próbki \\ \hline
+		Average loss & Srednie odchylenie od próbki \\ \hline
+		Accuracy & Srednia pewnosc klasyfikacji \\ \hline
+		Games & Liczba gier \\ \hline
+		Fails & Liczba gier zakończonych przerwaniem (ruchem zabronionym) \\ \hline
+		Max & Maksymalna liczba punków \\ \hline
+		Min & Minimalna liczba punktów \\ \hline
+		Players & Liczba graczy która ukończyła rozgrywki \\ \hline
+		Finished & Liczba rozgrywek prawidłowo zakończona \\ \hline
+		Avg & Srednia zdobycz punktowa \\ \hline
+		Turns & Srednia liczba tur potrzebnych do zakonczenia rozgrywki \\ \hline
+	\end{tabular}	
+	\caption{Metryki zbierane podczas eksperymentu}
+	\label{table:learn_metrics}
+\end{table}
+\section{Wyniki}
 \section{Podsumowanie}
+Wraz z kolejnymi iteracjami można dostrzec trend malejącej ilości rozgrywek zakończonych wyborem \textit{Decyzji ze zbioru zabronionego}. Jednocześnie można zauważyć malejącą liczbę niezrealizowanych biletów. 
+\chapter{Podsumowanie}
 \chapter{Słownik}
 \paragraph{Gracz}
 Uczestnik rozgrywki - sterowany przez sztuczną inteligencję. Przygotowano poniższych uczestników

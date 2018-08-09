@@ -20,7 +20,7 @@ class DecisionNNPredictor:
         self.predictor = tf.estimator.DNNClassifier(
                 feature_columns=self.my_feature_columns,
                 hidden_units=[180, 160],
-                n_classes=5,
+                n_classes=4,
                 model_dir=model_dir,
                 config=self.my_config
             )

@@ -2,8 +2,7 @@ from enum import Enum
 
 
 class DecisionType(Enum):
-    START = 0
+    PASS = 4
     WAGONCARD = 1
     TICKETCARD = 2
     CLAIMTRACK = 3
-    PASS = 4

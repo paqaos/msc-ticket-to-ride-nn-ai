@@ -90,12 +90,12 @@ def load_data(y_name='Decision', path='../dataset/learn.csv'):
 
 
 def train_input_fn(features, labels, batch_size):
-    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels)).shuffle(5000).repeat().batch(batch_size)
+    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels)).shuffle(6000).repeat().batch(batch_size)
 
     return dataset
 
 def eval_input_fn(features, labels, batch_size):
-    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels)).shuffle(5000).repeat().batch(batch_size)
+    dataset = tf.data.Dataset.from_tensor_slices((dict(features), labels)).shuffle(6000).repeat().batch(batch_size)
 
     iterator = dataset.make_one_shot_iterator()
     batch_features, batch_labels = iterator.get_next()
@@ -125,4 +125,4 @@ def _parse_line(line):
 def csv_input_fn(csv_path, batch_size):
     dataset = tf.data.TextLineDataset(csv_path).map(_parse_line)
 
-    return dataset.shuffle(5000).repeat().batch(batch_size)
+    return dataset.shuffle(6000).repeat().batch(batch_size)

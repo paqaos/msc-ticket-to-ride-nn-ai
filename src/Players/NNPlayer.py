@@ -3,7 +3,7 @@ from numpy.random import random
 from src.AI import game_data
 from src.Enums import DecisionType
 from src.Players.AlgoPlayer import AlgoPlayer
-
+import tensorflow as tf
 
 class NNPlayer(AlgoPlayer):
     def __init__(self, name, game, board, predictor):

@@ -54,6 +54,14 @@ class Game:
                 elif decision == DecisionType.DecisionType.WAGONCARD:
                     self.activePlayer.decisionWagons(self.board, self)
                     self.activePlayer.decisions.append(DecisionType.DecisionType.WAGONCARD)
+                elif decision == DecisionType.DecisionType.START:
+                    raise RuntimeError('Cannot use start decision')
+                elif decision == DecisionType.DecisionType.PASS:
+                    canDrawWagons = len(self.board.wagonsDeck.cards) > 0 or len(self.board.wagonsHand.cards) > 0
+                    canClaim = len(self.activePlayer.__poss__) > 0
+                    canTicket = len(self.board.ticketDeck) > 0
+                    if canDrawWagons or canClaim or canTicket:
+                        raise RuntimeError('User cannot skip turn')
 
                 state.append(decision.value)
                 #  with open('reports/' + str(self.gameId) + '/' + str(self.activePlayer.PlayerName) + '.sth', 'a', newline='') as stateFile:

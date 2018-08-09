@@ -21,7 +21,7 @@ class Player:
         self.WagonCards = Hand()
         self.game = game
         self.board = board
-        self.decisions = [DecisionType.DecisionType.START]
+        self.decisions = []
         self.claimed = []
         self.dobranie = 0
         self.TicketDone = 0
