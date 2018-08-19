@@ -198,10 +198,10 @@ class Experiment:
 if __name__ == '__main__':
 
     learn_batch = 100
-    learn_iteration = 4
+    learn_iteration = 10
 
-    modelPath = 'models/poc'
+    modelPath = 'models/poc2'
     source = 'dataset/learn_all.csv'
 
     experiment = Experiment(modelPath, 'proove', 60, source, tf)
-    experiment.run_experiment(learn_iteration, learn_batch, True, start_iteration=0, epochs=1, playerEnd=5, playerStart=2, skipFirst=True)
+    experiment.run_experiment(learn_iteration, learn_batch, True, start_iteration=9, epochs=1, playerEnd=5, playerStart=2, skipFirst=False)

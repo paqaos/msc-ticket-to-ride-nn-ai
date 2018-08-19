@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 
 \begin{document}  
+\setcounter{tocdepth}{1} % + subsections
 \thispagestyle{empty}
 \begin{titlepage}
     \begin{center}
@@ -83,8 +84,14 @@ Praca wykonana pod kierunkiem\\
 \end{center}
 \vfill
 \newpage
+\tableofcontents
+\newpage
 \chapter{Wprowadzenie}
-\section{Wprowadzenie}
+\section{Wprowadzenie do pracy}
+Wraz z rozwojem możliwości technicznych komputerów człowiek szukał kolejnych zastosowań dla swojego wynalazku. Doskonałym celem do tego było sprawienie by życie człowieka stało się prostsze. Początkowo odbywało się to za pomocą przemyślanych i sprawdzonych algorytmów. Pojawiały się jednocześnie coraz bardziej skomplikowane problemy, dla których przygotowanie działającego algorytmu stanowiło wyzwanie. Na ratunek posłużyły sieci neuronowe, które po zaprojektowaniu wymagały odpowiednio przygotowanych danych uczących. \\ \\
+Taka metoda pracy oraz podejmowania decyzji w ostatnich latach stała się coraz bardziej popularna i powszechnie wykorzystywana - np. w transporcie, finansach czy medycynie. Pojawiły się wreszcie próby wykorzystania sieci neuronowych w sytuacjach, dla których nie można z łatwością ocenić czy otrzymany wynik jest prawidłowy - gry. \\ \\ 
+W mojej pracy chcę przygotować implementację sztucznej inteligencji dla gry \textit{Wsiąść do Pociągu} w oparciu o sztuczną sieć neuronową. 
+\section{Definicja pojęć}
 \paragraph{Gra} W literaturze pojawia się wiele definicji dla gry. Można uznać, że jest to czynność o rozrywkowym charakterze, w której uczestniczy jeden lub wielu graczy. Grę można również opisać jako model matematyczny charakteryzujący się określonymi zasadami oraz zbiorem możliwych operacji na tym modelu.
 \paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Można założyć, że każdy chce uzyskać jak najlepszy wynik dla siebie.
 \paragraph{Klasyfikacja gry}
@@ -209,13 +216,20 @@ Następnie w celu wyznaczenia parametrów rozgrywki.  \ref{table:outputparam}
 	\end{center}
 \end{table}
 
-
 \chapter{Model algorytmiczny}
 \label{model:algo}
 \section{Wprowadzenie do eksperymentu}
 Celem drugiej części eksperymentu było dowiedzienie, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Wykorzystanie modelu algorytmicznego pozwoli uprościć zbieranie danych, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. \\
 W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}.
 \section{Opis algorytmu}
+W pracy przygotowano kilka szczegółówych algorytmów:
+\paragraph{Decyzja ogólna} Jedna z trzech dozwolonych przez zasady gry decyzji (plus pominięcie tury w szczególnych przypadkach)
+\paragraph{Decyzja bilet} Decyzja polegająca na wyborze najlepszego zbioru biletów z przekazanych jako parametr algorytmu
+\paragraph{Karta wagonów} Decyzja polegająca na wyborze, które karty wagonów gracz powinien zabrać z planszy
+\paragraph{Rezerwacja połączenia} Decyzja, której efektem jest wybór połączenia, które powinno zostać zarezerwowane przez gracza w pierwszej kolejności
+\paragraph{Przygotowanie tury} Wyznaczenie kierunku w którym powinien się gracz poruszać
+\\ \\
+Dodatkowo, grę można przedstawić jako graf przez co często pojawiają się ścieżki pomiędzy miastami - w tym celu zaimplementowano algorytm określający najkrótszą ścieżkę między miastami w kontekście gracza.
 \subsection{Decyzja ogólna}
 \begin{enumerate}
 	\item Gracz nie posiada biletów
@@ -289,8 +303,8 @@ Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeres
 			(\%) > 110 & 44,60 & 38,00 & 28,00 & 21,60 & 27,51 \\ \hline
 			(\%) > 120 & 23,40 & 8,80 & 13,20 & 8,80 & 12,14 \\ \hline
 			(\%) > 140 & 3,80 & 0,40 & 0,70 & 0,96 & 1,17 \\ \hline
-			Zrealizowane bilety & & & & & \\ \hline
-			Niezrealizowane bilety & & & & & \\ \hline
+			Zrealizowane bilety & 3,63 & 3,01 & 3,21 & 2,8 & 3,08 \\ \hline
+			Niezrealizowane bilety & 0,46 & 0,58 & 0,56 & 0,62 & 0,57 \\ \hline
 		\end{tabular}
 		\caption{Wyniki uzależnione od ilości graczy}
 		\label{table:algo_sizeresult}
@@ -308,16 +322,27 @@ Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeres
 	\caption{Globalny rozkład punktów}
 	\label{figure:global_points_algo}
 \end{figure}
+
+\begin{figure}
+	\includegraphics{WynikWPkt.png}
+	\caption{Wyniki wg. ilości graczy}
+	\label{figure:min_max_algo}
+\end{figure}
 \section{Wnioski i podsumowanie} 
 Podsumowując otrzymane dane możemy dojśc do kilku wniosków, przede wszystkim, że decyzje podejmowane przez gracza komputerowego sprawiają wrażenie rzeczywistych. Gracz algorytmiczny ma swoje słabe oraz mocne strony po powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa. \\ \\
 Zgodnie z wynikami wskazanymi w Tablicy \ref{table:algo_sizeresult} możemy zauważyć, że przewidywany wynik gracza powinien wynieść ok. 98 puntków (średnia oraz mediana). Wynik ten potwierdza przebieg wykresu z Rysunku \ref{figure:global_points_algo}, którego \textit{szczyt} znajduje się ok. 97-98 punktów. Można zauważyć, że spora część rozgrywek kończy się wynikiem powyżej 87 punktów. Powyżej wyniku 140 punktów znajduje się znikoma część graczy - według tablicy zaledwie 1,17\%. \\ \\ 
 Wnioski możemy również wynieść z Rysunku \ref{figure:player_points_algo}, który wskazuje rozkład punktów w zależności od ilości graczy. Zgodnie z oczekiwaniami przebieg każdego z wykresu przedstawia rozkład Gaussa. Najlepsze wyniki osiągają gracze uczestniczący w rozgrywce dwuosobowej. Jest to spowodowane powolnym zapełnianiem planszy przez co zdobywają mniejszą ilośc punktów karnych za niezrealizowane bilety. W przypadku takiej konfiguracji można oczekiwać wyniku ok. 107 punktów. \\ \\ 
-Bardziej zbliżone do siebie są rozgrywki trzy- oraz cztero-osobowe, dla których średni wynik wynosi 98 pkt. Można zauważyć, że dla rozgrywek trzyosobowych po osiągnięciu maksimum częstości, częstośc występowań wyników o danej ilości punktów maleje szybciej od rozgrywek czteroosobowych. Skutkiem tego jest znacznie wyższy procent graczy z wynikiem końcowym ponad 120 oraz ponad 140 punktów, co przedstawiono w Tablicy \ref{table:algo_sizeresult}.
+Bardziej zbliżone do siebie są rozgrywki trzy- oraz cztero-osobowe, dla których średni wynik wynosi 98 pkt. Można zauważyć, że dla rozgrywek trzyosobowych po osiągnięciu maksimum częstości, częstośc występowań wyników o danej ilości punktów maleje szybciej od rozgrywek czteroosobowych. Skutkiem tego jest znacznie wyższy procent graczy z wynikiem końcowym ponad 120 oraz ponad 140 punktów, co przedstawiono w Tablicy \ref{table:algo_sizeresult}.. \\ \\
+Kolejnym zauważalnym wnioskiem są lepsze wyniki dla rozgrywek 2 oraz 4 osobowych niż 3 oraz 5 graczowych. Można to zauważyć w \ref{figure:min_max_algo}, gdzie w przypadku średniej oraz mediany jest zauważalny trend malejący wyniku względem ilości graczy. Jako przyczynę tej sytuacji można wskazać szybsze zapełnianiem się planszy. Można zaobserwować róznież niską średnią ilość niezrealizowanych biletów - można wnioskować, że co najmniej co drugi gracz zrealizował wszystkie swoje bilety. W kwestii zrealizowanych biletów ogólna średnia powyżej 3 biletów świadczy, że gracze zazwyczaj dociągali karty biletów. \\ \\
+Wysoka amplituda wyników jest spowodowana dużym spektrum możliwych stanów planszy (rezerwacji połączeń, biletów oraz celów graczy), przez co możliwe są wyniki bardzo dobre (powyżej 140 punktów) jak i złe (poniżej 60). 
 \chapter{Model sieci neuronowej}
 \section{Wprowadzenie do eksperymentu}
-Z łatwością można wskazać działanie przygotowanego algorytmu, gorzej jest w przypadku sieci neuronowej. 
+Z łatwością można wskazać działanie przygotowanego algorytmu, gorzej jest w przypadku sieci neuronowej. Sieci neuronowe w swojej charakterystyce mogą być nieprzewidywalne, a duże znaczenie w jej efektywności odgrywa odpowiednie przygotowanie modelu danych, następnie struktury sieci a w końcu są potrzebne odpowiednie dane, które pozwolą sieć wyuczyć. \\ \\
+Przygotowanie sztucznej inteligencji opartej o uczenie maszynowe dla tego typu zagadnień wydaje sie ciekawym podejściem. W większości gier uczestnik rozgrywki ma okrojony zakres dozwolonych w danym momencie typów decyzji (w algebrze  \textit{klas równoważności}). Przygotowanie klasyfikatora, którego celem będzie określenie jaka jest najlepsza w danym momencie decyzja jest realizowalne przez klasyfikator działający na podstawie uczenia maszynowego (np. DNNClassifier z biblioteki \textit{tensorflow}). Przygotowanie algorytmu, który wybierze odpowiednią decyzję niesie za sobą skutek w postaci rozbudowy algorytmu o dodatkowe rozgałęzienia i ujęcie przypadków szczególnych lub ograniczenie się do dobrego działania w okrojonego zakresu. Przygotowanie sieci neuronowej może pozwolić na obsługę zdarzeń szczczególnych - zwłaszcza w przypadku, gdy takie zdarzenie znajdzie się w zbiorze danych uczących.
+ \\ \\ W przypadku gier planszowych, przygotowanie modelu danych nie jest niewykonalnym zadaniem, gdyż sama rozgrywka odbywa się w postaci unormowanej - większość zdarzeń oraz stanów możemy przedstawić w matematycznej formie - jako wartości / zmienne. W pierwszym kroku pracy nad siecią neuronową należało zbudować taki model danych w oparciu o \textit{Stan gry}, na podstawie którego sieć będzie mogła podjąć jednoznaczną decyzję. Model danych powinien być pozbawiony szumu w postaci zbędnych danych.
+ \\ \\ Po przygotowanie modelu przystąpiono przygotowania danych uczących w oparciu o model algorytmiczny. Ostatnim krokiem przed rozpocząciem uczenia sieci było przygotowanie konfiguracji sieci, która będzie osiągać najlepsze wyniki w symulowanych rozgrywkach.
 \section{Model danych wejściowych}
-Model danych wejściowych przedstawiono w \ref{table:algo_input}. W trakcie przygotowania kierowałem się danymi jakie są wykorzystywane w trakcie wyboru decyzji w algorytmie \textit{klasycznym}
+Model danych wejściowych przedstawiono w Tablicy \ref{table:algo_input}. W trakcie przygotowania kierowałem się danymi jakie są wykorzystywane w trakcie wyboru decyzji w algorytmie \textit{klasycznym}
 
 \begin{longtable}[h]{| c | c | c | p{6.5cm} |} \hline
 	Nazwa & Typ & Zakres & Opis \\ \hline	
@@ -367,12 +392,61 @@ W eksperymencie wykorzystano klasyfikator, który operuje na pięciu możliwych 
 	\end{center}
 \end{table}
 \section{Struktura sieci}
-W pracy wykorzystano klasyfikator oparty o pracę głębokich sieci neuronowych. Warstwa wejściowa składała się z 26 featerów. Następnie były dwie warstwy ukryte, które składały się odpowiednio z 160 oraz 120 neuronów. Na wyjściu klasyfikacja opierała się na 5 neuronach.
+W pracy wykorzystano klasyfikator oparty o pracę głębokich sieci neuronowych. Warstwa wejściowa składała się z 26 featerów. Następnie były dwie warstwy ukryte, które składały się odpowiednio z 160 oraz 120 neuronów. Na wyjściu klasyfikacja opierała się na 5 neurach.
 \section{Proces weryfikacji uczenia}
 W trakcie zbierania pomiarów kilkukrotnie zmieniano model danych. Sieć podejmowała często zabronione decyzje spowodowane wpływem niepotrzebnych \textit{featerów}. W związku z tym usunięto dane o poczynaniach innych graczy, a dodano ilość różnych kolorów kart wagonów posiadanych przez gracza oraz największą ilość kart tego samego koloru. \\ \\ 
 Drugą ważną zmianą w modelu sieci neuronowej była redukcja ilości dozwolonych decyzji (klas). Początkowo jako punkt wejściowy był zapisany stan \textit{start}, lecz ostatecznie został on usunięty.
+\section{Zbiór danych uczących}
+Jak kilkukrotnie wspomniano w pracy jako zrodło danych uczących wykorzystano uruchomienie modelu algorytmicznego i zapis rozgrywek do pliku. Z powodu dużej amplitudy wyników zdecydowałem się na redukcję zbioru uczącego do zapisu trzydziestu parti (preferowane były jak najlepsze wyniki) dla każdej konfiguracji liczby graczy. 
 \section{Wyniki} 
+Wyniki otrzymane w trakcie eksperymentu zostały zawarte w Tablicy \ref{table:nn_sizeresult}, oraz ziilustrowane na wykresach \ref{figure:player_points_nn}, \ref{figure:global_points_nn} oraz \ref{figure:min_max_nn}.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| c | c | c | c | c | c |} \hline
+			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & ogólnie \\ \hline
+			Minimum & 55 & 37 & 27 & 15 & 15 \\ \hline
+			Maksimum & 163 & 178 & 159 & 180 & 180 \\ \hline
+			Srednia & 106,41 & 100,01 & 100,13 & 96,23 & 99,69 \\ \hline
+			Mediana & 107 & 100 & 101 & 98 & 101 \\ \hline
+			(\%) > 110 & 38,07 & 38,27 & 24,79 & 21,12 & 25,71 \\ \hline
+			(\%) > 120 & 14,81 & 10,24 & 10,12 & 7,54 & 9,92 \\ \hline
+			(\%) > 140 & 2,26 & 0,55 & 1,14 & 0,79 & 1,05 \\ \hline
+			Zrealizowane bilety & - & - & - & - & - \\ \hline
+			Niezrealizowane bilety & - & - & - & - & - \\ \hline
+			Ruchy zabronione & 7&9&8&22&46 \\ \hline
+		\end{tabular}
+		\caption{Wyniki uzależnione od ilości graczy}
+		\label{table:nn_sizeresult}
+	\end{center}
+\end{table}
+
+\begin{figure}[h]
+	\includegraphics{NNWykrespunktow.png}
+	\caption{Rozkład punktacji wg. ilości graczy}
+	\label{figure:player_points_nn}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics{NNWykrespunktowglobal.png}
+	\caption{Globalny rozkład punktów}
+	\label{figure:global_points_nn}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics{NNWynikWPkt.png}
+	\caption{Wyniki wg. ilości graczy}
+	\label{figure:min_max_nn}
+\end{figure}
+
 \section{Podusmowanie}
+Wyniki otrzymane w części dotyczącej sieci neuronowych wskazują, że proces uczenia miał swoje słabe i mocniejsze strony. Analogicznie do modelu algorytmicznego wraz z wzrostem ilości graczy model radził sobie coraz gorzej. Widać to zwłaszcza w mierniku \textit{Ruchy zabronione}, który oznacza, że sieć wskazała decyzję, która w danej turze była niemożliwa do zrealizowania. Najwięcej takich sytuacji zaszło w przypadku rozgrywek dla 5 graczy. \\ \\
+W porównaniu do algorytmu, sieć radzi sobie znacznie lepiej w rozgrywkach od trzech do pięciu graczy jednocześnie nieznacznie tracąc w rozgrywkach dwuosobowych. Należy zaznaczyć, że średnia jest wyższa o 1,5 punktu zwycięstwa podczas gdy mediana aż o 2 punkty. Lepsza średnia jednocześnie została poniesiona kosztem rozgrywek o bardzo dobrym wyniku. Porównując Rysunki \ref{figure:global_points_algo} oraz \ref{figure:global_points_nn} można zauważyć, że w przypadku rezultatów rozgrywek sieci neuronowej rozkład jest bardziej śpiczasty, bardzo szybko rośnie częstość danego wyniku do maximum ok. 107 punktów. Następnie znacznie w porównaniu do modelu algorytmicznego szybciej spada. \\ \\
+Kolejną zauważalną analogią są bardzo zbliżone do siebie wyniki rozgrywek trzy oraz czteroosobowoch. W analizie konfiguracji trend malejącej średniej oraz mediany się utrzymuje. Może zaskoczyć natomiast, że największe wyniki otrzymywane były w rozgrywkach 3 oraz 5 osobowych co możemy zaobserwować na \ref{figure:min_max_nn}. \\ \\
+Na \ref{figure:player_points_nn} możemy natomiast zauważyć przebieg rozkładu punktów w zależności ilości graczy. Dla rozgrywek pięciograczowych wykres zaczyna rosnąć najwczęsniej, w okolicach 62 punktów zwycięstwa. Dla rozgrywek dla dwóch graczy wyniki zaczynają się czesciej pojawiać dopiero od poziomu 83 punktów, i jednoczęśniej najbardziej się wybijają. Z dwóch pozostałych konfiguracji, ta dla czterech graczy ma bardziej ostry przebieg. \\ \\
+\section{Wnioski na temat uczenia}
+Zgodnie z podstawami uczenia maszynowego - dużo zależy od tego jakie dane oraz w jakiej formie są dostarczone do sieci, którą chcemy nauczyć. Ograniczenia, jakie pojawiają się w przypadku zbioru danych uczących oraz słabości samych danych odbijają się na działaniu sztucznej sieci neuronowej. \\ \\ 
+Lepsze średnie wyniki są spowodowane tym, że jako zrodlo danych do zbioru uczacego wykorzystano zapisy partii z najwyższą zdobyczą punktową. Pozwoliło to jednocześnie zachować schematy działania z originalnego algorytmu co zaskutkowało wymagającą w kontekście konfrontacji zdobyczą punktową. Niestety nie udało się doprowadzić do sytuacji w której nie zostały podjęte decyzje klasyfikowane jako zabronione. 
 \chapter{Optymalizacja / Generalizacja}
 \section{Wprowadzenie do eksperymentu}
 Sztuczna inteligencja powinna w swoim działaniu dążyć do jak najlepszych wyników. W przypadku sztucznej sieci neuronowej najlepsze wyniki uzyskujemy poprzez dobór odpowiednich modelów / zbioru danych uczących. W przypadku sztucznej inteligencji dla rozważanej gry możemy:
@@ -399,8 +473,8 @@ Wyniki otrzymane w doświadczeniu zostały zawarte w Tablicach \ref{table:nn_sin
 			(\%) > 110 & 28,33 & 24,24 & 25,00 & 18,57 & 23,11 \\ \hline
 			(\%) > 120 & 18,33 & 10,30 & 8,75 & 8,21 & 10,31 \\ \hline
 			(\%) > 140 & 4,17 & 0,00 & 0,42 & 0,36 & 0,87 \\ \hline
-			Zrealizowane bilety & & & & & \\ \hline
-			Niezrealizowane bilety & & & & & \\ \hline
+			Zrealizowane bilety & 467 & 575 & 873 & 951 & 2866 \\ \hline
+			Niezrealizowane bilety & 63 & 66 & 102 & 135 & 366 \\ \hline
 		\end{tabular}
 		\caption{Podsumowanie - modele operujące na precyzyjnych danych uczących}
 		\label{table:nn_single_test}
@@ -419,45 +493,76 @@ Wyniki otrzymane w doświadczeniu zostały zawarte w Tablicach \ref{table:nn_sin
 			(\%) > 110 & 43,33 & 24,44 & 23,73 & 21,07 & 25,86 \\ \hline
 			(\%) > 120 & 25,00 & 7,78 & 8,05 & 7,14 & 10,17 \\ \hline
 			(\%) > 140 & 3,33 & 0,00 & 1,27 & 0,71 & 1,10 \\ \hline
-			Zrealizowane bilety & & & & & \\ \hline
-			Niezrealizowane bilety & & & & & \\ \hline
+			Zrealizowane bilety & 515 & 603 & 855 & 939 & 2912 \\ \hline
+			Niezrealizowane bilety & 41 & 90 & 83 & 111 & 325 \\ \hline
 		\end{tabular}
 		\caption{Podsumowanie - modele operujące na uniwersaslnych danych uczących}
 		\label{table:nn_all_test}
 	\end{center}
 \end{table}
 \section{Omówienie wyników}
+Ciężko wskazać, które z dwóch sprawdzanych podejść odnosi lepsze rezultaty. Za kluczowe wskaźniki można uznać średni wynik oraz medianę punktów. Oba wskaźniki są wyższe w przypadku modelu uniwersalnego. Dodatkowo bardziej korzystna jest ilość dokonanych ruchów zabronionych. Na korzyść jest również w każdym przypadku procentowa ilość graczy, którzy przekroczyli podaną ilość punktów. Z drugiej strony model specyficzny ma niższy najniższy wynik oraz wyższy najwyższy wynik. \\ \\ 
+Do ciekawszych wniosków prowadzą wyniki poszczególnych konfiguracji liczby graczy. Dla dwóch graczy uniwersalny (wspólny) model danych uczących daje znacząco lepsze rezultaty. Oczekiwana wartość punktowa jest wyższa aż o 7 punktów a w dodatku procentowy udział graczy z uzyskaną liczbą punktów wyższą od 110 punktów jest wyższy o 15 punktów procentowych. 
+\\
+\textbf{Rekomendacja: Model uniwersalny} \\ \\ 
+Odwrotną sytuację można zauważyć w konfiguracji dla trzech graczy, gdzie sieć wyuczona danymi precyzyjnymi jest znacząco lepsza. Srednia zdobycz punktowa jest wyzsza o 3 punkty zwycięstwa a w dodatku wyższy jest odsetek graczy z końcowym wynikiem powyżej 120 punktów. 
+ \\
+\textbf{Rekomendacja: Model precyzyjny} \\ \\
+Dla kolejnej z konfiguracji możemy zauważyć zbliżone do siebie wyniki. Zarówno średnia jak i mediana wyników są bardzo zbliżone do siebie - 97,36 oraz 97,69. Procentowy udział wyników powyżej 140 punktów jest lepszy dla uniwersalnych danych uczących. Dla zwiększenia prawdopodobieństwa uzyskania wyniku powyżej 110 oraz 120 punktów należało wykorzystać model precyzyjny. 
+\\ \textbf{Rekomendacja: model precyzyjny} \\ \\ 
+Ostatnią konfiguracją jest rozgrywka dla pięciu graczy. W tym przypadku lepsze wyniki osiągane są w przypadku modelu wyuczonego na uniwersalnych danych. Oczekiwana oraz mediana wyniku są wyższe o odpowiednio 2,83 oraz 5,5 punktów. Procentowy udział rozgrywek z wynikiem 110 oraz 140 punktów również działa na korzyść omawianego modelu. Dodatkowo, znacznie niższa jest liczba niezrealizowanych biletów. \\ \textbf{Rekomendacja: model uniwersalny} \\ \\
+\section{Podsumowanie}
+Podsumowując aktualny rozdział nie można jednoznacznie określić, z którego z tych dwóch modeli lepiej będzie skorzystać. Najlepiej będzie wykorzystać system mieszany, który adaptowalny byłby dla danej sytuacji. Dla rozgrywek dwu i pięcu osobowych wykorzystać model uniwersalny, dla pozostałych - model precyzyjny. Jako przyczynę przewagi w uogólnieniu - modelu uniwersalnego - można wskazać większą ilość różnych zdarzeń w trakcie rozgrywki. Dla graczy grających zgodnie z algorytmem dla konkretnej konfiguracji gry zakres  zdarzeń będzie ograniczony. Na przykład w rozgrywkach trójosobowych znacznie szybciej zapełnia się plansza, więc rozgrywka musi być przeprowadzona szybciej. Dlatego dla granicznych konfiguracji lepsze będzie wykorzystanie modelu uniwersalnego. W przypadku rozgrywek 3 i 4 osobowych, konnieczne będzie eliminacja jakiegokolwiek błędu, dlatego każdy ruch powinien być przemyślany, precyzyjny. 
 \chapter{Dowód działania sieci}
 \section{Wprowadzenie do eksperymentu}
 Poza wskazaniem, że wyniki osiągane przez sieć neuronową są zbliżone do tych osiąganych przez algorytm należy udowodnić, że przygotowany model oraz założenia są słuszne. W tym celu określono metryki za pomoca których można opisać wyniki pracy sieci. Należy wskazać przede wszystkim, że wyniki osiągane w rozgrywkach sterowanych przez \textit{Losową} sieć neuronową są średnio gorsze od tych wyuczonych przykładowymi danymi.
 \section{Model eksperymentu}
 W celu udowodnienia działania modelu przeprowadziłem eksperyment w formie ewaluacji modelu w trakcie uczenia sieci. Dla każdej epoki składającej się z próbki pięciuset \textit{entry} przeprowadziłem ewaluację modelu dla losowych 100 wpisów z zbioru uczącego a następnie rozgrywałem sześćdziesiąt partii w każdej konfiguracji (od dwóch do pięciu graczy) co ostatecznie daje wynik 240 rozgrywek na iterację. Ilość danych uczących rośnie wraz z iteracją uczenia.
-\section{Metryki}
-Metryki, jakimi opisywany jest postep uczenia zostały opisane w Tablicy \ref{table:learn_metrics}.
-\begin{table}[h]
-	\begin{tabular}{| c | c ||} \hline
-		Metryka & Opis \\ \hline
-		Iteracja & Aktualna iteracja \\ \hline
-		Global step & Sumaryczna ilość danych uczących \\ \hline
-		Loss & Sumaryczna ilość błednych wskazań dla próbki \\ \hline
-		Average loss & Srednie odchylenie od próbki \\ \hline
-		Accuracy & Srednia pewnosc klasyfikacji \\ \hline
-		Games & Liczba gier \\ \hline
-		Fails & Liczba gier zakończonych przerwaniem (ruchem zabronionym) \\ \hline
-		Max & Maksymalna liczba punków \\ \hline
-		Min & Minimalna liczba punktów \\ \hline
-		Players & Liczba graczy która ukończyła rozgrywki \\ \hline
-		Finished & Liczba rozgrywek prawidłowo zakończona \\ \hline
-		Avg & Srednia zdobycz punktowa \\ \hline
-		Turns & Srednia liczba tur potrzebnych do zakonczenia rozgrywki \\ \hline
-	\end{tabular}	
-	\caption{Metryki zbierane podczas eksperymentu}
-	\label{table:learn_metrics}
-\end{table}
 \section{Wyniki}
+Wyniki otrzymane w trakcie doświadczenia umieszczono w Tablicy \ref{table:learn_metrics}.
+
+\begin{figure}
+	\includegraphics{WykresPunktowPosteIteracji.png}
+	\caption{Rozkład punktacji w procesie uczenia}
+	\label{figure:learn_results}
+\end{figure}
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{| p{6cm} | c | c | c | c | c |} \hline
+			Aktualna iteracja & 0 & 1 & 2 & 3 & 4 \\ \hline
+			Sumaryczna ilość danych uczących & 0 & 100 & 200 & 300 & 400 \\ \hline
+			Srednie odchylenie od próbki & 7.614 & 0.649 & 0.490 & 0.610 & 0.333 \\ \hline
+			Srednia pewnosc klasyfikacji & 0.107 & 0.689 & 0.800 & 0.692 & 0.885 \\ \hline
+			Liczba gier zakończonych przerwaniem (ruchem zabronionym) & 240 & 1 & 32 & 4 & 47 \\ \hline
+			Maksymalna liczba punków & - & 123 & 144 & 125 & 151 \\ \hline
+			Minimalna liczba punktów & - & -3 & 26 & 4 & 47 \\ \hline
+			Liczba graczy która ukończyła rozgrywki & 0 & 835 & 702 & 824 & 654 \\ \hline
+			Srednia zdobycz punktowa & - & 81.63 & 87.23 & 75.69 & 94.80 \\ \hline
+			Srednia liczba tur potrzebnych do zakonczenia rozgrywki & 1.70 & 40.75 & 42.23 & 39.44 & 44.25 \\ \hline
+			Srednia liczba ukonczonych biletów & - & 2,21 & 2,39 & 1,9 & 3,08 \\ \hline
+			Srednia liczba nieukonczonych biletow & - & 0,43 & 0,33 & 0,54 & 0,32 \\ \hline
+		\end{tabular}	
+		\caption{Wyniki pierwszych pięciu epok uczenia}
+		\label{table:learn_metrics}
+	\end{center}
+\end{table}
+
 \section{Podsumowanie}
-Wraz z kolejnymi iteracjami można dostrzec trend malejącej ilości rozgrywek zakończonych wyborem \textit{Decyzji ze zbioru zabronionego}. Jednocześnie można zauważyć malejącą liczbę niezrealizowanych biletów. 
-\chapter{Podsumowanie}
+W dowodzie pojawia się trudność w ocenie postępów uczenia, gdyż rozważany problem nie jest trywialny i realna możliwość oceny sztucznej inteligencji pojawia się dopiero po rozegraniu całej partii trwającej średnio ok. 40 tur. \\ \\
+Najprostszym wyznacznikiem jest średnia zdobycz punktowa, która dla losowej konfiguracji nie skutkowała żadną rozegraną do końca rozgrywką. W każdej z 240 gier, jeden z graczy dokonał ruchu zabronionego. Dosyć szybko, gdyż po zaledwie jednej epoce gracz komputerowy był w stanie rozegrać partię do końca. Na 240 gier zaledwie jedna zakończyła się podjęciem decyzji zabronionej. Niestety oczekiwany wynik uzyskiwany przez tą sieć był względnie niski. Dla modelu algorytmicznego oczekiwana wynosiła 98,16 (W nawiązaniu do Tablicy \ref{table:algo_sizeresult}), w tym przypadku wynik był aż o ok. 17 punktów niższy. Niskie wartości miały również najniższy osiągnięty wynik jak i najwyższy wynik w całej serii rozgrywek. \\ \\
+Nie można wskazać dominującego trendu w dalszym procesie uczenia. Do szóstej iteracji uczenia (próbka danych uczących - 600) średnia wartość wyników gracza reguranie wzrastała. Od piątej epoki oczekiwany wynik wynosił ok. 95 punktów, co można uznać za akceptowalny wynik w kontekście zbioru uczącego. \\ \\ W trakcie procesu uczenia wzrastał natomiast najniższy osiągany wynik przez wszystkich graczy w wszystkich seriach testu. Natomiast wynik najwyższy utrzynywał się w granicach 150-160 punktów, który to wynik sprawiłby trudność doświadczonemu graczowi. \\ \\
+Dodatkowo, na podstawie rysunku \ref{figure:learn_results} można zauważyć trend - rosnąca średnia wartość zdobyczy punktowej wraz z malejącą wartością sredniej straty (parametr average loss). Na wykresie można dostrzec również powolną stabilizację najwyższego oraz najniższego wyniku, jaki osiągnęła sięć w trakcie symulacji gier.
+\chapter{Podsumowanie pracy}
+Przygotowanie sztucznej inteligencji dla gry \textit{Wsiąść do pociągu} było jednoczesnie wyzywające oraz uczące. Do skutecznego działania konieczne było opracowanie algorytmów działajacych jednocześnie efektywnie jak i uniwersalnie. Jako cel założono uzyskanie jak najwyższego oczekiwanej wyniku z możliwością wybicia się przy odpowiednim ułożeniu kart. \\ \\ 
+Dla redukcji złożoności problemów zrezygnowano z następujących elementów:
+\begin{enumerate}
+	\item Dodatkowe dziesięć punktów dla posiadacza najdłuższej ścieżki
+	\item Interakcje polegające na blokowaniu sobie połączeń
+\end{enumerate}
+oraz założono, że gracz zawsze stara się grać jak najlepiej dla swojego wyniku. \\ \\  
+Opisywana w pracy gra jest skomplikowana z dużą ilością danych, które opisać można jako losowe. Mamy do dyspozycje dwie różne talie - zasobów oraz biletów, problem grafowy oraz interakcje z innymi graczami. Trudnym zadaniem jest przygotować sztuczną inteligencję, która podejmie dobrą decyzję dla każdej decyzji, nawet tej najbardziej niszowej oraz nieprzewidywalnej. \\ \\ 
+Otrzymane wyniki dowiodły, że zaproponowany algorytm może być wykorzystywany w trakcie rozgrywek oraz może posłużyć jako schemat działania, który można wykorzystać w własnych rozgrywkach. 
 \chapter{Słownik}
 \paragraph{Gracz}
 Uczestnik rozgrywki - sterowany przez sztuczną inteligencję. Przygotowano poniższych uczestników
@@ -474,6 +579,8 @@ Losowane przez uczestnika rozgrywki zadanie do zrealizowania. Określony przez d
 Połączenie dwóch sąsiadujących ze sobą miast. Połączenia charakteryzują się ilością nitek (1 lub dwie), kolorystyką (jeden z 8 kolorów lub połączenie bezbarwne) oraz długością. Można zbudować graf wykorzystując miasta jako węzły oraz połączenia jako krawędzie.
 \paragraph{Wagon} Element (w fizycznej wersji gry) służący do znakowania zarezerwowanych połączeń. Jeden wagonik odpowiada jednej karcie wagonów służacej do zarezerwowania połączenia. Gracz na początku posiada 45 wagonów. W momencie, gdy jeden z graczy ma 2 wagony lub mniej gracze wykonują jeszcze po jednym ruchu po czym przechodzą do fazy podliczenia punktów na koniec rozgrywki.
 \paragraph{Karta wagonu} Element rozgrywki. W grze występuje jako jeden z 8 zasobów (kolorów) - po 10 sztuk, oraz karta joker (zastępuje dowolną kartę zasobów) - w ilości 12 sztuk. Gracz wykorzystuje karty zasobów do zrealizowania połączenia.
+\paragraph{Stan gry} Stan rozgrywki składający się z informacji o planszy (w tym kolejność ułożenia niewidocznych kart) oraz informacji o graczach. Stan gry jest przedstawiony w sposób reduntantny - np. wagony przedstawione są jako licznik, a kolor gracza nie ma znaczenia - jedynie jego identyfikator.
+\paragraph{Punkt (zwycięstwa)} Jest to wynik gracza. Punkt zwycięstwa zdobywa się za realizację biletów oraz rezerwacje połączeń między miastami.
 \chapter{Bibliografia}
 \begin{enumerate}
 	\item{Instrukcja do gry}
@@ -482,6 +589,10 @@ Połączenie dwóch sąsiadujących ze sobą miast. Połączenia charakteryzują
 	\subitem (Dostęp: ) \\ 
 	\url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
 	\item{Repozytorium projektu}
-	\subitem(Dostęp: ) \\ \url{https://github.com/paqaos/praca-dyplomowa}
+	\subitem(Dostęp: ) \\ \url{https://github.com/paqaos/msc-ticket-to-ride-nn-ai}
+	\item{Algorytmy}
+	\subitem Cormen
 \end{enumerate}
+\listoffigures
+\listoftables
 \end{document}
