@@ -1,0 +1,20 @@
+experiment started: 2018-08-08 15:46:35.377658
+iteration 2 started: 2018-08-08 15:46:35.377658
+iteration 2 ended: 2018-08-08 16:36:26.871923
+experiment ended: 2018-08-08 16:36:26.871923
+experiment started: 2018-08-08 16:36:26.902865
+iteration 3 started: 2018-08-08 16:36:26.902865
+iteration 3 ended: 2018-08-08 17:45:25.894112
+experiment ended: 2018-08-08 17:45:25.894620
+experiment started: 2018-08-08 17:45:25.926062
+iteration 4 started: 2018-08-08 17:45:25.926062
+iteration 4 ended: 2018-08-08 19:15:47.937629
+experiment ended: 2018-08-08 19:15:47.937629
+experiment started: 2018-08-08 19:15:47.970567
+iteration 5 started: 2018-08-08 19:15:47.970567
+iteration 5 ended: 2018-08-08 21:06:40.590881
+experiment ended: 2018-08-08 21:06:40.591381
+experiment started: 2018-08-08 21:06:40.639791
+iteration 6 started: 2018-08-08 21:06:40.639791
+iteration 6 ended: 2018-08-09 02:09:07.504302
+experiment ended: 2018-08-09 02:09:07.504801
