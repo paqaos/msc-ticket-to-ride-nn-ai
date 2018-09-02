@@ -38,8 +38,8 @@
        \begin{minipage}{1\textwidth}
 \begin{flushright}
 Praca wykonana pod kierunkiem\\
-<tytuł/stopień naukowy Imię Nazwisko>\\
-<Instytut/Zakład>
+dr Przemysław Witaszczyk\\
+Zakład Technologii Gier
 \end{flushright}
 \end{minipage}
         
@@ -235,23 +235,23 @@ W pracy przygotowano kilka szczegółówych algorytmów:
 \\ \\
 Dodatkowo, grę można przedstawić jako graf przez co często pojawiają się ścieżki pomiędzy miastami - w tym celu zaimplementowano algorytm określający najkrótszą ścieżkę między miastami w kontekście gracza uznając koszt dla zarezerwowanych połączeń jako zero.
 \subsection{Decyzja ogólna}
-\begin{enumerate}
-	\item Gracz nie posiada biletów
-	\subitem 1.1 Gracz posiada co najmniej 8 kart wagonów, 8 wagonów, inni gracze mają co najmniej 6 wagonów każdy, pozostały jeszcze bilety w talii - dobranie biletów
-	\subitem 1.2 Gracz ma co najmniej 5 kart wagonów jednego koloru oraz może zarezerwować połączenie na planszy - Rezerwacja połączenia
-	\subitem 1.3 Gracz może dobrać karty wagonów oraz jest początek rozgrywki - dobranie kart wagonów
-	\item Gracz może zarezerwować połączenie na planszy - Rezerwacja połączenia
-	\item Gracz może dobrać kartę wagonu - dobranie kart wagonów
-	\item Są wolne bilety - dobranie biletów
-	\item Gracz jest zmuszony opuścić turę
-\end{enumerate}
+Wykorzystany w pracy algorytm przedstawiono na Rysunku \ref{figure:alg_diagram} w formie schematu blokowego.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{MainAlgorithm2.png}
+	\caption{Schemat blokowy algorytmu podejmującego decyzje o typie wykonywanego ruchu}
+	\label{figure:alg_diagram}
+\end{figure}
+
 \subsection{Poddecyzja - bilet}
-\begin{enumerate}
-	\item \textbf{Przygotowanie} Dla kazdej grupy biletow (możliwego podzbioru pobranych kart) wyznacz koszt realizacji (suma wagonów dla brakujących połączeń) oraz możliwą zdobycz punktów zwycięstwa
-	\subitem Oznacz grupę biletów, która w sumie spowoduje utratę najmniejszą liczbę punktów - jesli żadnej z nich gracz nie może zrealizować
-	\item Z grup, ktore gracz moze ukonczyc wybierz grupe o najniższym koszcie. Jesli dwie lub wiecej grup ma taki sam koszt - wybierz tą, która gwarantuje większą liczbę punktów
-	\item Jesli w punkcie drugim nie wybrano żadnej grupy, jako wybraną grupą biletów wybierz grupę oznaczoną w punkcie pierwszym.
-\end{enumerate}
+Wykorzystany w pracy algorytm wyboru biletów przedstawiono na Rysunku \ref{figure:bilety_diagram} w formie schematu blokowego.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Bilety.png}
+	\caption{Schemat blokowy algorytmu podejmującego decyzje o wyborze najlepszego podzbioru biletów}
+	\label{figure:bilety_diagram}
+\end{figure}
+
 \subsection{Poddecyzja - karta wagonów}
 \begin{enumerate}
 	\item Policz dostepne karty wagonow na planszy (według kolorów) oraz ile kart każdego z kolorów potrzeba na zrealizowanie pozostałych biletów
@@ -601,14 +601,17 @@ Jest to najmniejszy element połączenia zajmowany wyłącznie przez jednego z g
 \chapter{Bibliografia}
 \begin{enumerate}
 	\item{Instrukcja do gry}
-	\subitem (Dostęp: ) \\ \url{https://www.wydawnictworebel.pl/repository/files/instrukcje/WdP_USA.pdf}
+	\subitem Dostęp: 02 września 2018
+	\subitem \url{https://www.wydawnictworebel.pl/repository/files/instrukcje/WdP_USA.pdf}
 	\item{Omówienie botów do gry - forum Board Game Geek}
-	\subitem (Dostęp: ) \\ 
-	\url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
+	\subitem Dostęp: 02 września 2018
+	\subitem \url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
 	\item{Repozytorium projektu}
-	\subitem(Dostęp: ) \\ \url{https://github.com/paqaos/msc-ticket-to-ride-nn-ai}
-	\item{Algorytmy}
-	\subitem Cormen
+	\subitem Dostęp: 2 września 2018
+	\subitem \url{https://github.com/paqaos/msc-ticket-to-ride-nn-ai}
+	\item{Wprowadzenie do algorytmów (Introduction to Algorithms)}
+	\subitem Cormen, Thomas H., Leiserson, Charles E., Rivest, Ronald L.
+	\subitem 1997, Wydawnictwa Naukowo-Techniczne, Warszawa
 \end{enumerate}
 \listoffigures
 \listoftables
