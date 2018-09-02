@@ -89,16 +89,16 @@ Zakład Technologii Gier
 
 \chapter{Wprowadzenie}
 \section{Wprowadzenie do pracy}
-Wraz z rozwojem możliwości technicznych komputerów człowiek szukał kolejnych zastosowań dla swojego wynalazku. Doskonałym celem do tego było sprawienie by życie człowieka stało się prostsze. Początkowo odbywało się to za pomocą przemyślanych i sprawdzonych algorytmów. Pojawiały się jednocześnie coraz bardziej skomplikowane problemy, dla których przygotowanie działającego algorytmu stanowiło wyzwanie. Na ratunek posłużyły sieci neuronowe, które po zaprojektowaniu wymagały odpowiednio przygotowanych danych uczących. \\ \\
-Taka metoda pracy oraz podejmowania decyzji w ostatnich latach stała się coraz bardziej popularna i powszechnie wykorzystywana - np. w transporcie, finansach czy medycynie. Pojawiły się wreszcie próby wykorzystania sieci neuronowych w sytuacjach, dla których nie można z łatwością ocenić czy otrzymany wynik jest prawidłowy - przykładowo w grach. \\ \\ 
-W mojej pracy chcę przygotować implementację sztucznej inteligencji dla gry \textit{Wsiąść do Pociągu} w oparciu o sztuczną sieć neuronową. 
+Wraz z rozwojem możliwości technicznych komputerów człowiek szukał kolejnych zastosowań dla swojego wynalazku. Doskonałym celem do tego było sprawienie by życie człowieka stało się prostsze. Początkowo odbywało się to za pomocą przemyślanych i sprawdzonych algorytmów wykorzystywanych do celów naukowych oraz wojskowych. Pojawiały się jednocześnie coraz bardziej skomplikowane problemy, dla których przygotowanie działającego algorytmu w każdym przypadku stanowiło wyzwanie. Na ratunek posłużyły sieci neuronowe, które po zaprojektowaniu wymagały odpowiednio przygotowanych danych uczących. \\ \\
+Taka metoda pracy oraz podejmowania decyzji w ostatnich latach stawała się coraz bardziej popularna i powszechnie wykorzystywana - np. w transporcie, finansach czy medycynie. Pojawiły się wreszcie próby wykorzystania sieci neuronowych w sytuacjach, dla których nie można z łatwością ocenić czy otrzymany wynik jest prawidłowy - przykładowo w grach. \\ \\ 
+W mojej pracy chcę przygotować implementację sztucznej inteligencji dla gry \textit{Wsiąść do Pociągu} w oparciu o zaprojektowany algorytm oraz sztuczną sieć neuronową. 
 \section{Definicja pojęć}
 \label{section:Definitions}
-W celu lepszego zrozumienia treści pracy warto przyswoić kilka pojęć przedstawionych poniżej. Kluczowe pojęcia dotyczące samej gry znalazły się w Rozdziale \ref{chap:dictionary}.
+W celu lepszego zrozumienia treści pracy warto przyswoić kilka pojęć przedstawionych poniżej. Kluczowe pojęcia, pojawiające się w treści pracy dotyczące samej gry znalazły się w Rozdziale \ref{chap:dictionary}.
 \paragraph{Gra} W literaturze pojawia się wiele definicji dla gry. Można uznać, że jest to czynność o rozrywkowym charakterze, w której uczestniczy jeden lub wielu graczy. Grę można również opisać jako model matematyczny charakteryzujący się określonymi zasadami oraz zbiorem możliwych operacji na tym modelu.
-\paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Można założyć, że każdy chce uzyskać jak najlepszy wynik dla siebie.
+\paragraph{Teoria gier} W przypadku kiedy w rozgrywce uczestniczy więcej niż jeden gracz możemy rozważać zachowania każdego z uczestników. Możemy również założyć, że każdy z graczy chce uzyskać jak najbardziej korzystny dla siebie wynik. 
 \paragraph{Klasyfikacja gry}
-Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową, niesymetryczną z niepełną informacją. 
+Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową dopuszczającą od dwóch do pięciu graczy, niesymetryczną z niepełną informacją. Decyzje podejmowane są w sposób sekwencyjny po jednym ruchu na uczestnika rozgrywki.
 \paragraph{Problem klasyfikacji}
 W grze \textit{Wsiąść do Pociągu} pojawia się problem decyzyjny w postaci klasyfikacji. Klasyfikacja jest problemem przyporządkowania danego zestawu danych do jednej lub więcej klas ze zbioru co najmniej dwóch klas. \textit{Przeciwieństwo: Regresja}
 \paragraph{Gra z niepełną informacją} 
@@ -135,56 +135,65 @@ Po rozłożeniu planszy następuje przygotowanie zasobów do gry:
 	\item \textbf{Przygotowanie talii}
 	\subitem Gracze tasują dostępne karty wagonów oraz biletów. Rozkładają na planszy pierwszych 5 kart wagonów - widocznych awersem dla graczy. Jeśli są wśród nich co najmniej 3 lokomotywy należy wymienić cały zestaw kart.
 	\item \textbf{Losowanie biletów}
-	\subitem Każdy z graczy pobiera z talii biletów po trzy karty. Następnie wybiera które z nich zachować a które odłożyć na spód talii. Musi zachować conajmniej dwa bilety. \textit{Przyjmuje się zachowanie jedynie dwóch kart biletów}
+	\subitem Każdy z graczy pobiera z talii biletów po trzy karty. Następnie wybiera które z~nich zachować a które odłożyć na spód talii. Musi zachować conajmniej dwa bilety. \textit{Jako bezpieczną taktykę gry przyjmuje się zachowanie jedynie dwóch kart biletów}
 	\item \textbf{Losowanie kart wagonów}
 	\subitem Każdy z graczy pobiera z talii biletów po cztery karty. Nie ma prawa ich odrzucić lub zamienić.
 \end{enumerate}
 Gdy zostaną wykonane powyższe kroki uczestnicy gry mogą rozpocząć rozgrywkę. 
 \subsection{Rodzaje decyzji podejmowanych przez gracza}
-W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji:
+W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji: \\ \\
+\textbf{Rezerwacja połączania} \\
+Warunki rezerwacji połączenia:
 \begin{enumerate}
-	\item \textbf{Zarezerwowanie połączenia} 
-	\subitem Każdy z graczy może zarezerwować dowolne połączenie pomiędzy miastami po spełnieniu warunków
-	\subitem Gracz musi posiadać odpowiednią ilość kart wagonów odpowiedniego koloru (lokomotywa zastępuje dowolny kolor)
-	\subitem Gracz musi posiadać co najmniej tyle wagonów ile wynosi długość połączenia które chce zarezerwować
-	\subitem Gracz nie zarezerwował ścieżki w połączeniu
-	\subitem Pozostaje co najmniej jedna ścieżka wolna w połączeniu
-	\subitem Połączenie ma dwie ścieżki, jedna z nich jest zajęta, druga wolna. W rozgrywce uczestniczy co najmniej 4 graczy.
-	\subitem \textbf{Decyzja zabroniona} Gracz nie ma wagonów lub kart wagonów potrzebnych do zarezerwowania dowolnego połączenia na mapie.
-	\item \textbf{Dobranie wagonów}
-	\subitem Gracz może zdecydować o dobraniu do dwóch wagonów w zależności od tego jakie wagony chce dobrać. 
-	\subitem Gracz może zabrać jako pierwszy wagon - kartę lokomotywy (Joker) z puli planszy. Nie dobiera wtedy drugiego wagonu.
-	\subitem Gracz może zabrać z talii lub puli dwie karty. Może być jedna karta z talii oraz jedna karta z planszy.
-	\subitem \textbf{Decyzja zabroniona} Skończyła się talia kart wagonów, nie ma na planszy kart wagonów a stos kart odrzuconych jest pusty.
-	\item \textbf{Dobranie biletów}
-	\subitem Gracz w ramach decyzji o dobranie biletów losuje 3 bilety z talii i decyduje, które zachowa, a które odrzuci. Zachować musi co najmniej 1 bilet.
-	\subitem \textbf{Decyzja zabroniona} W talii kart biletów nie pozostał żaden bilet.
+	\item Gracz musi posiadać odpowiednią ilość kart wagonów odpowiedniego koloru (lokomotywa zastępuje dowolny kolor).
+	\item Gracz musi posiadać co najmniej tyle wolnych wagonów ile wynosi długość połączenia które chce zarezerwować.
+	\item Gracz nie zarezerwował ścieżki (w przypadku połączeń podwójnych) w połączeniu.
+	\item Pozostaje co najmniej jedna ścieżka wolna w połączeniu.
+	\item Połączenie ma dwie ścieżki, jedna z nich jest zajęta, druga wolna. W rozgrywce uczestniczy co najmniej 4 graczy.
 \end{enumerate}
+Decyzja zabroniona: \\
+\textit{Gracz nie posiada wagonów lub kart wagonów potrzebnych do zarezerwowania dowolnego połączenia na mapie.} \\ \\
+\textbf{Dobranie kart wagonów} \\
+Warunki dobrania kart wagonów:
+\begin{enumerate}
+	\item Gracz może zdecydować o dobraniu do dwóch wagonów w zależności od tego jakie wagony chce dobrać. 
+	\item Gracz może zabrać jako pierwszy wagon - kartę lokomotywy (Joker) z puli planszy. Nie dobiera wtedy drugiego wagonu.
+	\item Gracz może zabrać z talii lub puli dwie karty. Może być jedna karta z talii oraz jedna karta z planszy.
+\end{enumerate}
+ Decyzja zabroniona: \\
+ \textit{Skończyła się talia kart wagonów, na planszy nie znajdują się żadne kart wagonów a stos kart odrzuconych jest pusty.} \\ \\
+\textbf{Dobranie kart biletów} \\
+Gracz w ramach decyzji o dobranie biletów losuje 3 bilety z talii i decyduje, które zachowa, a które odrzuci. Zachować musi co najmniej 1 bilet. \\ \\
+Decyzja zabroniona:\\
+\textit{W talii kart biletów nie pozostał żaden bilet.}
+\subsection{Uzupełnianie kart wagonów na planszy}
+Gdy jeden z graczy dobierze kartę wagonów znajdującą się na planszy na jej miejsce pojawia się pierwsza karta z talii. Jeżeli w dowolnym momencie rozgrywki na planszy znajdują się co najmniej trzy karty lokomotyw to cały zestaw kart zostaje odrzucony, a na ich miejsce dobierane jest pięć kart z talii kart wagonów. \\ \\
+Jeżeli w danym momencie talia kart wagonów jest pusta należy potasować stos kart odrzuconych a następnie położyć go na miejscu talii kart wagonów. Jeżeli odbywa się to w trakcie uzupełniania kart na planszy to karty należy wykorzystać do uzupełnienia kart wagonów na planszy. 
 \subsection{Koniec gry}
-Rozgrywka kończy się w momencie, gdy jednemu z graczy pozostają co najwyżej dwa wagoniki. Po tym zdarzeniu każdy z graczy ma jeszcze jeden ruch do wykonaniu. Gdy wszyscy gracze wykonają ruch przechodzi się do fazy podliczenia punktów. \\
+Rozgrywka kończy się w momencie, gdy jednemu z graczy pozostają co najwyżej dwa wagoniki. Po tym zdarzeniu każdy z graczy ma jeszcze jeden ruch do wykonania. Gdy wszyscy gracze wykonają swój ostatni ruch przechodzi się do fazy podliczenia punktów. \\
 Podliczenie przebiega następująco:
 \begin{enumerate}
-	\item Podliczenie punktów za połączenia (według Tablicy \ref{table:points} )
+	\item Podliczenie punktów za połączenia (według Tablicy \ref{table:points})
 	\item Dodanie punktów za każdy zrealizowany bilet (według oznaczenia na bilecie)
 	\item Odjęcie punktów za każdy niezrealizowany bilet (według oznaczenia na bilecie)
 \end{enumerate}
 \textbf{Dla usprawnienia procesu gry w eksperymentach pominięto zasadę bonusowych 10 punktów dla gracza posiadającego najdłuższą nieprzerwaną ścieżkę}
 \chapter{Przebieg badania}
 \section{Analiza zachowań gracza}
-Pierwszym etapem pracy nad sztuczną inteligencją zostało zaanalizowanie zachowań graczy pod punktem przygotowania algorytmu, który wykorzystano do przygotowania zbioru uczącego. Jako rozsądne kierunki analizy przyjąłem:
+Pierwszym etapem pracy nad sztuczną inteligencją zostało przeanalizowanie zachowań graczy w~celu przygotowania algorytmu, który wykorzystano do przygotowania zbioru uczącego. Jako rozsądne kroki w celu przeprowadzenia analizy przyjąłem:
 	\begin{enumerate}
 		\item{Analiza rozgrywek z rzeczywistym graczem}
-		\item{Analiza rozgrywek z graczem komputerowym (dostępnym z grą w wersji cyfrowej)}
-		\item{Przeszukanie sieci internet w tematyce SI}
+		\item{Analiza rozgrywek z graczem komputerowym (dostępnym z grą w wersji cyfrowej)}.
+		\item{Przeszukanie sieci internet w tematyce SI}. Odnośnik wskazany w bibliografii.
 	\end{enumerate}
-W dalszej pracy przyjąłem następujace zachowanie gracza komputerowego:
+Jako kluczowe w dalszej analizie przyjąłem następujace zachowanie gracza komputerowego:
 \begin{enumerate}
-	\item Gracz kieruje rozgrywkę dla siebie - zależy mu jedynie na jak największej ilości punktów (w danym momencie oraz ogólnie)
-	\item Gracze nie przeszkadzają sobie nawzajem (uczestnicy rozgrywki nie podejmują decyzji mających na celu utrudnienie gry innym uczestnikom, wykluczając sytuację, gdy dla danego gracza decyzja blokująca jest jednocześnie najbardziej korzystną w kontekście zdobyczy punktowej)
+	\item Gracz kieruje rozgrywkę dla siebie - zależy mu jedynie na jak największej ilości punktów (w danym momencie oraz ogólnie).
+	\item Gracze nie przeszkadzają sobie nawzajem (uczestnicy rozgrywki nie podejmują decyzji mających na celu utrudnienie gry innym uczestnikom, wykluczając sytuację, gdy dla danego gracza decyzja blokująca jest jednocześnie najbardziej korzystną w kontekście zdobyczy punktowej).
+	\item Uczestnicy starają się najpierw ukończyć posiadane bilety a następnie gromadzą punkty.
 \end{enumerate}
 \section{Model doświadczenia}
-Po określeniu wstępnych żałożeń dotyczących sztucznej inteligencji przystąpiłem do przygotowania doświadczenia badającego jakość algorytmu oraz uczenia sieci za pomocą wygenerowanych danych. W pierwszym kroku określiłem mierniki, jakie posłużą mi do oceny sztucznej inteligencji a następnie zostały one wpisane do Tablicy \ref{table:outputparam}. \\ \\
-
+Po określeniu wstępnych żałożeń dotyczących sztucznej inteligencji przystąpiłem do przygotowania doświadczenia badającego jakość algorytmu oraz uczenia sieci za pomocą wygenerowanych danych. W pierwszym kroku określiłem mierniki, jakie posłużą mi do oceny sztucznej inteligencji, następnie wpisane zostały do Tablicy \ref{table:outputparam}. \\ \\
 \begin{table}[h]
 	\begin{center}
 		\begin{tabular}{| c | c |} \hline
@@ -223,26 +232,23 @@ Dla uzyskania miarodajnych wyników dla każdej próby postanowiłem przeprowadz
 \chapter{Model algorytmiczny}
 \label{model:algo}
 \section{Wprowadzenie do eksperymentu}
-Celem drugiej części eksperymentu było dowiedzienie, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Wykorzystanie modelu algorytmicznego pozwoli uprościć zbieranie danych, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. \\
-W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}.
+Celem drugiej części eksperymentu był dowód, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Wykorzystanie modelu algorytmicznego pozwoli uprościć zbieranie danych, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć również do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}.
 \section{Opis algorytmu}
 W pracy przygotowano kilka szczegółówych algorytmów:
-\paragraph{Decyzja ogólna} Jedna z trzech dozwolonych przez zasady gry decyzji (plus pominięcie tury w szczególnych przypadkach)
-\paragraph{Decyzja bilet} Decyzja polegająca na wyborze najlepszego zbioru biletów z przekazanych jako parametr algorytmu
-\paragraph{Karta wagonów} Decyzja polegająca na wyborze, które karty wagonów gracz powinien zabrać z planszy
-\paragraph{Rezerwacja połączenia} Decyzja, której efektem jest wybór połączenia, które powinno zostać zarezerwowane przez gracza w pierwszej kolejności
-\paragraph{Przygotowanie tury} Wyznaczenie kierunku w którym powinien się gracz poruszać w tym wyznaczenie dostępnych i brakujących połączeń
+\paragraph{Decyzja ogólna} Jedna z trzech dozwolonych przez zasady gry decyzji (plus pominięcie tury w szczególnych przypadkach).
+\paragraph{Decyzja bilet} Decyzja polegająca na wyborze najlepszego podzbioru biletów z przekazanych jako parametr algorytmu.
+\paragraph{Karta wagonów} Decyzja polegająca na wyborze, które karty wagonów gracz powinien zabrać z planszy.
+\paragraph{Rezerwacja połączenia} Decyzja, której efektem jest wybór połączenia, które powinno zostać zarezerwowane przez gracza w pierwszej kolejności.
+\paragraph{Przygotowanie tury} Wyznaczenie kierunku w którym powinien się gracz poruszać w tym wyznaczenie dostępnych i brakujących połączeń.
 \\ \\
-Dodatkowo, grę można przedstawić jako graf przez co często pojawiają się ścieżki pomiędzy miastami - w tym celu zaimplementowano algorytm określający najkrótszą ścieżkę między miastami w kontekście gracza uznając koszt dla zarezerwowanych połączeń jako zero.
+Dodatkowo, grę można przedstawić jako graf przez co często pojawiają się ścieżki pomiędzy miastami - w tym celu zaimplementowano algorytm określający najkrótszą ścieżkę między miastami w kontekście gracza uznając koszt dla zarezerwowanych przez gracza połączeń jako zero. Połączenia, które zostały już zarezerowane przez innych graczy oznaczone zostały jako o bardzo dużym koszcie.
 \subsection{Decyzja ogólna}
 Wykorzystany w pracy algorytm przedstawiono na Rysunku \ref{figure:alg_diagram} w formie schematu blokowego.
-
 \begin{figure}
 	\includegraphics[width=\textwidth]{MainAlgorithm2.png}
 	\caption{Schemat blokowy algorytmu podejmującego decyzje o typie wykonywanego ruchu}
 	\label{figure:alg_diagram}
 \end{figure}
-
 \subsection{Poddecyzja - bilet}
 Wykorzystany w pracy algorytm wyboru biletów przedstawiono na Rysunku \ref{figure:bilety_diagram} w formie schematu blokowego.
 
@@ -288,11 +294,12 @@ Wykorzystany w pracy algorytm wyboru biletów przedstawiono na Rysunku \ref{figu
 	
 \end{enumerate}
 \subsection{Wyznaczanie tras do realizacji biletów}
-Planszę rozgrywki można przedstawić w formie modelu grafu, gdzie połączeniami są krawędzie a wierzchołkami miasta. Do wyznaczenia najbardziej korzystanego połączenia tras wykorzystano Algorytm Bellmana-Forda. Algorytm ten pozwala nam na określenie całej najkrótszej ścieżki rozpoczynając od wierzchołka początkowego. Jako metodę porównywawczą dla kosztu ścieżki uznano:
+Planszę rozgrywki można przedstawić w formie modelu grafu, gdzie połączeniami są krawędzie a wierzchołkami miasta. Do wyznaczenia najbardziej korzystanego połączenia tras wykorzystano Algorytm Bellmana-Forda (wg. \textit{Wprowadzenia do Algorytmów} - Bibliografia 4. ). Algorytm ten pozwala nam na określenie całej najkrótszej ścieżki rozpoczynając od wierzchołka początkowego. Jako metodę porównywawczą dla kosztu ścieżki uznano:
 \begin{enumerate}
-	\item Dla różnych kosztów (w wagonów) od węzła początkowego wybieramy ten który jest mniejszy
-	\item Dla równego kosztu (w wagonach) od węzła początkowego wybieramy tą ścieżkę dla której ścieżka gwarantuje większą ilość punktów
+	\item Dla różnych kosztów (w wagonów) od węzła początkowego wybieramy ten który jest mniejszy.
+	\item Dla równego kosztu (w wagonach) od węzła początkowego wybieramy tą ścieżkę dla której ścieżka gwarantuje większą ilość punktów.
 \end{enumerate}
+Przy osiągalnym koszcie realizacji biletów tj. koszt jest mniejszy od liczby wagoników gracza ścieżka o najniższym koszcie jest oznaczona jako cel realizacji. Wskazanie jest realizowane każdorazowo na początku tury gracza.
 \section{Wyniki modelu algorytmicznego}
 W trakcie doświadczenia uruchomiono serie gier według konfiguracji opisanej w Tablicy \ref{table:gameconfig}. Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}.
 
@@ -333,9 +340,9 @@ W trakcie doświadczenia uruchomiono serie gier według konfiguracji opisanej w 
 	\label{figure:min_max_algo}
 \end{figure}
 \section{Podsumowanie} 
-Podsumowując otrzymane dane możemy dojśc do kilku wniosków, przede wszystkim, że decyzje podejmowane przez gracza komputerowego sprawiają wrażenie podejmowanych przez rzeczywistego gracza. Niestety gracz algorytmiczny ma swoje słabe oraz mocne strony co powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa. \\ \\
-Zgodnie z wynikami wskazanymi w Tablicy \ref{table:algo_sizeresult} możemy zauważyć, że przewidywany wynik gracza powinien wynieść ok. 98 puntków (średnia oraz mediana). Wynik ten potwierdza przebieg wykresu z Rysunku \ref{figure:global_points_algo}. Z zapisów rozgrywek wyczytać można również modę zdobyczy punktowej wynoszącą 106. Można  ponadto zauważyć, że spora część rozgrywek kończy się wynikiem powyżej 87 punktów. Powyżej wyniku 140 punktów znajduje się znikoma część graczy - według tablicy zaledwie 1,17\%. \\ \\ 
-Wnioski możemy również wynieść z Rysunku \ref{figure:player_points_algo}, który wskazuje rozkład punktów w zależności od ilości graczy. Zgodnie z oczekiwaniami przebieg każdego z wykresu przedstawia rozkład Gaussa. Najlepsze wyniki osiągają gracze uczestniczący w rozgrywce dwuosobowej. Jest to spowodowane powolnym zapełnianiem planszy przez co zdobywają mniejszą ilośc punktów karnych za niezrealizowane bilety, jednocześnie gracz jest mniej karany za śpózniony ruch. W przypadku takiej konfiguracji można oczekiwać wyniku ok. 107 punktów. \\ \\ 
+Podsumowując otrzymane dane możemy dojśc do kilku wniosków, przede wszystkim, że decyzje podejmowane przez gracza komputerowego sprawiają wrażenie podejmowanych przez rzeczywistego gracza. Niestety gracz algorytmiczny ma swoje słabe oraz mocne strony co~powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa. \\ \\
+Zgodnie z wynikami wskazanymi w Tablicy \ref{table:algo_sizeresult} możemy zauważyć, że przewidywany wynik gracza powinien wynieść ok. 98 puntków (wynosi tyle średni wynik punktowy oraz mediana). Obserwację potwierdza przebieg wykresu z Rysunku \ref{figure:global_points_algo}. Z zapisów rozgrywek wyczytać można również modę zdobyczy punktowej wynoszącą 106. Można  ponadto zauważyć, że spora część rozgrywek kończy się wynikiem powyżej 87 punktów. Powyżej wyniku 140 punktów znajduje się znikoma część graczy - według tablicy zaledwie 1,17\%. \\ \\ 
+Wnioski możemy również wynieść z Rysunku \ref{figure:player_points_algo}, który wskazuje rozkład punktów w zależności od ilości graczy. Zgodnie z oczekiwaniami przebieg każdego z wykresu przedstawia rozkład Gaussa. Najlepsze wyniki osiągają gracze uczestniczący w rozgrywce dwuosobowej. Jest to spowodowane powolnym zapełnianiem planszy przez co zdobywają mniejszą ilośc punktów karnych za niezrealizowane bilety, jednocześnie gracz jest mniej karany za śpózniony ruch. W~ przypadku takiej konfiguracji można oczekiwać wyniku ok. 107 punktów. \\ \\ 
 Bardziej zbliżone do siebie są rozgrywki trzy- oraz cztero-osobowe, dla których średni wynik wynosi 98 pkt. Można zauważyć, że dla rozgrywek trzyosobowych po osiągnięciu maksimum częstości, częstośc występowań wyników o danej ilości punktów maleje szybciej od rozgrywek czteroosobowych. Skutkiem tego jest znacznie wyższy procent graczy z wynikiem końcowym ponad 120 oraz ponad 140 punktów, co przedstawiono w Tablicy \ref{table:algo_sizeresult}. \\ \\
 Kolejnym zauważalnym wnioskiem są lepsze wyniki dla rozgrywek 2 oraz 4 osobowych niż 3 oraz 5 graczowych. Można to zauważyć na Rysunku \ref{figure:min_max_algo}, gdzie w przypadku średniej oraz mediany jest zauważalny trend malejący wyniku względem ilości graczy. Jako przyczynę tej sytuacji można wskazać szybsze zapełnianiem się planszy. Można zaobserwować róznież niską średnią ilość niezrealizowanych biletów - można wnioskować, że co najmniej co drugi gracz zrealizował wszystkie swoje bilety. W kwestii zrealizowanych biletów ogólna średnia powyżej 3 biletów świadczy, że gracze zazwyczaj dociągali karty biletów. \\ \\
 Wysoka amplituda wyników jest spowodowana dużym spektrum możliwych stanów planszy (rezerwacji połączeń, biletów oraz celów graczy), przez co możliwe są wyniki bardzo dobre (powyżej 140 punktów) jak i złe (poniżej 60). 
