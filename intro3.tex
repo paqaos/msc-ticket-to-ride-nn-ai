@@ -9,6 +9,7 @@
 \usepackage[table]{xcolor}
 \usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{listings}
 
 \begin{document}  
 \setcounter{tocdepth}{1} % + subsections
@@ -102,11 +103,14 @@ W celu lepszego zrozumienia treści pracy warto przybliżyć kilka terminów prz
 \paragraph{Klasyfikacja gry}
 Gra \textit{Wsiąść do Pociągu} jest grą wieloosobową dopuszczającą od dwóch do pięciu graczy, niesymetryczną z niepełną informacją. Decyzje podejmowane są w sposób sekwencyjny po jednym ruchu na uczestnika rozgrywki.
 \paragraph{Problem klasyfikacji}
-W grze \textit{Wsiąść do Pociągu} pojawia się problem decyzyjny w postaci klasyfikacji. Klasyfikacja jest problemem przyporządkowania danego zestawu danych do jednej lub więcej klas ze zbioru co najmniej dwóch klas. \textit{Przeciwieństwo: Regresja}
+W grze \textit{Wsiąść do Pociągu} pojawia się problem decyzyjny w postaci klasyfikacji. Klasyfikacja jest problemem przyporządkowania danego zestawu danych do jednej lub więcej klas ze zbioru co najmniej dwóch klas.
 \paragraph{Gra z niepełną informacją} 
 Określenie gra z niepełną informacją oznacza, że gracze podejmują swoje decyzje nie wiedząc o tym jakie cele mają inni uczestnicy rozgrywki lub jaki jest stan środowiska gry. W grze \textit{Wsiąść do pociągu} polega to m.in. na braku wiedzy jakie bilety realizują konkurenci(oraz czy zostały ukończone).
-\paragraph{Uczenie maszynowe}
-Według Donald'a Michie: \\ \textit{System uczący się wykorzystuje zewnętrzne dane empiryczne w celu tworzenia i aktualizacji podstaw dla udoskonalonego działania na podobnych danych w przyszłości oraz wyrażania tych podstaw w zrozumiałej i symbolicznej postaci}
+
+\paragraph{Uczenie maszynowe} Jako definicję można wykorzystać publikację \textit{A Few Useful Things to Know about Machine Learning} autorstwa Pedro Domingos z \textit{University of Washington} \\
+Angielska:  \textit{Machine learning algorithms can figure out how to perform important tasks by generalizing from examples.} \\
+Polskie tłumaczenie: \textit{Algorytmy uczenia maszynowego potrafią dowiedzieć się, jak wykonywać ważne zadania, generalizując je na podstawie przykładów.} \\
+
 \paragraph{Głębokie sieci neuronowe}
 Głębokie sieci neuronowe są szczególnym przypadkiem uczenia maszynowego. Sieć składa się z więcej niż jednej warstwy ukrytej, a reprezentacja wewnętrzna neuronów przeważnie nie jest odworowaniem liniowym.
 \section{Zasady gry \textit{Wsiąść do pociągu}}
@@ -154,9 +158,9 @@ W trakcie swojej tury gracz może wybrać jedną z trzech dostępnych akcji: \\ 
 \textbf{Rezerwacja połączania} \\
 Warunki rezerwacji połączenia:
 \begin{enumerate}
-	\item Gracz musi posiadać odpowiednią ilość kart wagonów odpowiedniego koloru (lokomotywa zastępuje dowolny kolor).
+	\item Gracz musi posiadać odpowiednią ilość kart wagonów odpowiedniego koloru (karta lokomotywy zastępuje dowolny kolor).
 	\item Gracz musi posiadać co najmniej tyle wolnych wagonów ile wynosi długość połączenia które chce zarezerwować.
-	\item Gracz nie zarezerwował ścieżki (w przypadku połączeń podwójnych) w połączeniu.
+	\item Gracz nie zarezerwował już ścieżki (w przypadku połączeń podwójnych) w rozważanym połączeniu.
 	\item Pozostaje co najmniej jedna ścieżka wolna w połączeniu.
 	\item Połączenie ma dwie ścieżki, jedna z nich jest zajęta, druga wolna. W rozgrywce uczestniczy co najmniej 4 graczy.
 \end{enumerate}
@@ -241,7 +245,7 @@ Dla uzyskania miarodajnych wyników dla każdej próby postanowiłem przeprowadz
 \chapter{Model algorytmiczny}
 \label{model:algo}
 \section{Wprowadzenie do eksperymentu}
-Celem drugiej części eksperymentu był dowód, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Wykorzystanie modelu algorytmicznego pozwoli uprościć zbieranie danych, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć również do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}. W trakcie przygotowania algorytmu rozwiazującego grę posłużono się dyskusją wskazaną w punkcie 2. Bibliografii. Ostateczna forma algorytmu została zbudowana w ramach pracy.
+Celem drugiej części eksperymentu był dowód, że komputer może rozgrywać samodzielnie partię gier \textit{Wsiąść do Pociągu}. Symulacja i zapis stanu rozgrywek za pomocą modelu algorytmicznego pozwoli zebrać dane, które w opracowanej formie posłużą jako zbiór danych uczących. Opracowanie danych ma posłużyć również do ustalenia jakościowych wyników algorytmu, które posłużą do oceny jakości uczenia. W dalszej pracy model algorytmiczny będzie opisywany jako \textit{Algorytm} lub \textit{Algorytm klasyczny}. W trakcie przygotowania algorytmu rozwiazującego grę posłużono się dyskusją wskazaną w punkcie 2. Bibliografii. Ostateczna forma algorytmu została zbudowana w ramach pracy.
 \section{Opis algorytmu}
 W pracy przygotowano kilka szczegółówych algorytmów:
 \paragraph{Decyzja ogólna} Jedna z trzech dozwolonych przez zasady gry decyzji (plus pominięcie tury w szczególnych przypadkach).
@@ -312,12 +316,12 @@ Planszę rozgrywki można przedstawić w formie modelu grafu, gdzie połączenia
 \end{enumerate}
 Przy osiągalnym koszcie realizacji biletów tj. koszt jest mniejszy od liczby wagoników gracza ścieżka o najniższym koszcie jest oznaczona jako cel realizacji. Wskazanie jest realizowane każdorazowo na początku tury gracza.
 \section{Wyniki modelu algorytmicznego}
-W trakcie doświadczenia uruchomiono serie gier według konfiguracji opisanej w Tablicy \ref{table:gameconfig}. Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}.
+W trakcie doświadczenia uruchomiono serie gier według konfiguracji opisanej w Tablicy \ref{table:gameconfig}. Wyniki uzyskane w doświadczeniu przedstawiono w Tablicy \ref{table:algo_sizeresult}. W ostatniej kolumnie umieszczono wyniki podsumowujące wszystkie rozgrywki (niezależnie od liczby graczy).
 
 \begin{table}[h]
 	\begin{center}
 		\begin{tabular}{| c | c | c | c | c | c |} \hline
-			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & ogólnie \\ \hline
+			Cecha & 2 graczy & 3 graczy & 4 graczy & 5 graczy & Globalnie \\ \hline
 			Minimum & 37 & 14 & 43 & 34 & 14 \\ \hline
 			Maksimum & 173 & 149 & 182 & 162 & 182 \\ \hline
 			Srednia & 107,02 & 98,02 & 98,03 & 94,59 & 98,16 \\ \hline
@@ -352,7 +356,7 @@ W trakcie doświadczenia uruchomiono serie gier według konfiguracji opisanej w 
 	\label{figure:min_max_algo}
 \end{figure}
 \section{Podsumowanie} 
-Podsumowując otrzymane dane możemy dojśc do kilku wniosków. Przede wszystkim decyzje podejmowane przez gracza komputerowego przypominają te dokonywane przez rzeczywistego gracza. Gracz algorytmiczny ma swoje słabe oraz mocne strony co~powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa. \\ \\
+Podsumowując otrzymane dane możemy dojśc do kilku wniosków. Przede wszystkim decyzje podejmowane przez gracza komputerowego przypominają te dokonywane przez rzeczywistego gracza. Gracz algorytmiczny ma swoje słabe oraz mocne strony co~powoduje, że wykres częstości wartości punktów na koniec rozgrywki przypomina rozkład Gaussa co możemy zaobserwować na Rysunku \ref{figure:global_points_algo}, gdzie wykres rozkładu normalnego o otrzymanych parametrach zaznaczono linią. \\ \\
 Zgodnie z wynikami wskazanymi w Tablicy \ref{table:algo_sizeresult} możemy zauważyć, że przewidywany wynik gracza powinien wynieść ok. 98 puntków (wynosi tyle średni wynik punktowy oraz mediana). Obserwację potwierdza przebieg wykresu z Rysunku \ref{figure:global_points_algo}. Z zapisów rozgrywek wyczytać można również najczęściej pojawiającą się zdobycz punktową wynoszącą 106. Można  ponadto zauważyć, że spora część rozgrywek kończy się wynikiem powyżej 87 punktów. Powyżej wyniku 140 punktów znajduje się znikoma część graczy - według tablicy zaledwie 1,17\%. \\ \\ 
 Wnioski możemy również wynieść z Rysunku \ref{figure:player_points_algo}, który wskazuje rozkład punktów w zależności od ilości graczy. Najlepsze wyniki osiągają gracze uczestniczący w rozgrywce dwuosobowej. Jest to spowodowane powolnym zapełnianiem planszy przez co zdobywają mniejszą ilośc punktów karnych za niezrealizowane bilety, jednocześnie gracz jest mniej karany za śpózniony ruch. W~ przypadku takiej konfiguracji można oczekiwać wyniku ok. 107 punktów. \\ \\ 
 Bardziej zbliżone do siebie są rozgrywki trzy- oraz cztero-osobowe, dla których średni wynik wynosi 98 pkt. Można zauważyć, że dla rozgrywek trzyosobowych po osiągnięciu maksimum częstości, częstośc występowań wyników o danej ilości punktów maleje szybciej od rozgrywek czteroosobowych. Skutkiem tego jest znacznie wyższy procent graczy z wynikiem końcowym ponad 120 oraz ponad 140 punktów, co przedstawiono w Tablicy \ref{table:algo_sizeresult}. \\ \\
@@ -361,9 +365,8 @@ Wysoka amplituda wyników jest spowodowana dużym spektrum możliwych stanów pl
 \chapter{Model sieci neuronowej}
 \section{Wprowadzenie do eksperymentu}
 W przeciwieństwie do jawnego działania algorytmu klasycznego 
-Z łatwością można wskazać działanie przygotowanego algorytmu, gorzej jest w przypadku sieci neuronowej. Sieci neuronowe w swojej charakterystyce mogą być nieprzewidywalne, a~duże znaczenie w jej efektywności odgrywa odpowiednie przygotowanie modelu danych, następnie struktury sieci a w końcu są potrzebne odpowiednie dane, które pozwolą sieć wyuczyć. \\ \\
-Przygotowanie sztucznej inteligencji dla tego typu zagadnień jest bardzo ciekawym zagadnieniem. W większości gier uczestnik rozgrywki ma określony/ograniczony zakres dozwolonych w danym momencie typów decyzji. Przygotowanie klasyfikatora, którego celem będzie określenie jaka decyzja jest najlepsza w danym momencie np. DNNClassifier z biblioteki \textit{T
-	ensorflow}. Przygotowanie algorytmu, który podejmie odpowiednią decyzję niesie za sobą ryzyko w postaci znacznej rozbudowy algorytmu o dodatkowe rozgałęzienia i ujęcie licznych przypadków szczególnych lub ograniczenie się do dobrego działania w ograniczonym zakresie przypadków. Przygotowanie sieci neuronowej może pozwolić na obsługę zdarzeń szczczególnych - zwłaszcza w przypadku, gdy takie zdarzenie znajdzie się w~zbiorze danych uczących(ale wtedy algorytm klasyczny musi je generować).
+funkcjonowanie sieci neuronowej jest bardziej niezależne od projektanta. Efektywność sieci neuronowych w dużym stopniu zależy od odpowiedniego przygotowania modelu danych. Dodatkowo, jakość procesu uczenia sieci zależy od dostarczonych do procesu uczenia danych treningowych. Motywacją tej części pracy jest sprawdzenie czy przygotowany zbiór danych może być wymagającym przeciwnikiem dla gracza. \\ \\
+Przygotowanie sztucznej inteligencji dla tego typu zagadnień jest bardzo ciekawym zagadnieniem. W większości gier uczestnik rozgrywki ma określony/ograniczony zakres dozwolonych w danym momencie typów decyzji. Przygotowanie klasyfikatora, którego celem będzie określenie jaka decyzja jest najlepsza w danym momencie np. DNNClassifier z biblioteki \textit{Tensorflow}. Przygotowanie algorytmu, który podejmie odpowiednią decyzję niesie za sobą ryzyko w postaci znacznej rozbudowy algorytmu o dodatkowe rozgałęzienia i ujęcie licznych przypadków szczególnych lub ograniczenie się do dobrego działania w ograniczonym zakresie przypadków. Przygotowanie sieci neuronowej może pozwolić na obsługę zdarzeń szczczególnych - zwłaszcza w przypadku, gdy takie zdarzenie znajdzie się w~zbiorze danych uczących(ale wtedy algorytm klasyczny musi je generować).
  \\ \\ W przypadku gier planszowych, przygotowanie modelu danych nie jest niewykonalnym zadaniem, gdyż sama rozgrywka odbywa się w postaci unormowanej - większość zdarzeń oraz stanów możemy przedstawić w matematycznej formie (jak wskazano w Rozdziale \ref{section:Definitions}) - jako wartości zmienne. W pierwszym kroku pracy nad siecią neuronową należało zbudować taki model danych w oparciu o \textit{Stan gry}, na podstawie którego sieć będzie mogła podjąć jednoznaczną decyzję. Model danych powinien być pozbawiony szumu w postaci zbędnych danych.
  Kluczowe jednak dla zastosowania sieci głębokich jest posiadanie/wygenerowanie odpowiednio dużego zbioru trenującego.
  \\ \\ Po przygotowaniu modelu przystąpiono do przygotowania danych uczących w oparciu o~model algorytmiczny. Ostatnim krokiem przed rozpocząciem procesu uczenia sieci było przygotowanie konfiguracji sieci, która będzie osiągać najlepsze wyniki w symulowanych rozgrywkach.
@@ -417,14 +420,65 @@ W eksperymencie wykorzystano klasyfikator, który operuje na czterech możliwych
 		\label{table:algo_classifcator}
 	\end{center}
 \end{table}
-\section{Struktura sieci}
-W pracy wykorzystano klasyfikator oparty o głęboką sieć neuronową typu feed forward. Warstwa wejściowa składała się z 26 cech(features). Następnie były dwie warstwy ukryte, które składały się odpowiednio z 160 oraz 120 neuronów. Na wyjściu klasyfikacja opierała się na 4 neuronach.
-\section{Przygotowanie danych uczących}
-\label{ch:learning_data}
+\section{Struktura sieci oraz zbiór danych szkolących}
+W pracy wykorzystano klasyfikator oparty o głęboką sieć neuronową typu feed forward. Warstwa wejściowa składała się z 26 cech(features). Następnie były dwie warstwy ukryte, które składały się odpowiednio z 180 oraz 160 neuronów. Na wyjściu klasyfikacja opierała się na 4 neuronach. Strukturę warstw ukrytych wykorzystanej sieci wyznaczono empirycznie wielokrotnie uruchamiając proces uczenia dla różnych konfiguracji neuronów na warstwach). Ostatnia warstwa wyznaczała prawdopodobieństwo, że przetwarzany stan gry można sklasyfikować jako powiązaną z neuroną klasą. Wartość z najwyższym prawdopodobieństwem sieć uznawała jako zwracany wynik.
+ \\ \\ 
+Jako źródło danych uczących wykorzystano plik zawierający 5700 stanów rozgrywki i odpowiadające im decyzje podjęte z wykorzystaniem modelu algorytmicznego. Z zapisu wszystkich rozgrywek wybrano 30 dla każdej konfiguracji liczby graczy z minimalnym wynikiem końcowym wynoszącym 120 punktów. Każda linia zawierała zapis jednego stanu rozgrywki. Ostatnia wartość oznacza identyfikator klasy z Tablicy \ref{table:algo_classifcator}. Plik służący za źródło danych jest dostępny pod ścieżką \textit{src/dataset/learn\_all.csv} w repozytorium projektu. 
+\begin{lstlisting}[frame=single, language=Python, caption=Pojedynczy format danych uczacych]
+32,12,5,25,51,(...),5,6,5.5,5.5,0,5,32,3,7,1
+\end{lstlisting}
+
+W procesie uczenia sieci wykorzystano próbki danych (batch size) wynoszące 250 zapisów (pojedynczych stanów rozgrywki). Jako funkcję aktywacyjną wykorzystano \textit{tf.nn.relu}, którą można przedstawić jako 
+\begin{equation}
+	f(x) = \max (0,x)
+	\label{eq:relu}
+\end{equation}
+Jako optymalizator użyto AdaGrad czyli algorytm adaptywnego gradientu. Jako funkcję redukującą stratę (loss) dla próbki danych wykorzystano funkcję SUM z biblioteki tf.losses.Reduction. Funkcja ta zwraca skalarną sumę ważonych strat. Sumarycznie w całej strukturze sieci znajdowało się 34120 połączeń pomiędzy węzłami.
 \section{Proces weryfikacji uczenia}
 W trakcie zbierania pomiarów kilkukrotnie zmieniano model danych. Sieć podejmowała często zabronione decyzje spowodowane wpływem niepotrzebnych \textit{charakterystyk}. W związku z tym usunięto dane o poczynaniach innych graczy(np. liczbie kart wagonów), a dodano informację o ilosci różnych kolorów kart wagonów posiadanych przez gracza oraz największą ilość kart tego samego koloru.
-\section{Zbiór danych uczących}
-Jak kilkukrotnie wspomniano w pracy jako zrodło danych uczących wykorzystano uruchomienie modelu algorytmicznego i zapis rozgrywek do pliku. Rozgrywki bazujące na klasycznym algorytmie kończyły się zarówno wysokim jak i niskim wynikiem gracza. Do uczenia sieci wybrano sesje o wyniku > 120 punktów. Plik służący za źródło danych jest dostępny pod ścieżką \textit{src/dataset/learn\_all.csv} w repozytorium projektu.
+\section{Wykorzystanie sieci neuronowej}
+W trakcie mojej pracy korzystałem z biblioteki \textit{Tensorflow}, która ułatwiła mi pracę z sieciami 
+neuronowymi. W celu utworzenia klasyfikatora (\textit{Deep Neural Network Classifier}) wykorzystałem kod z Listingu 4.2. Można zauważyć kształt warstw ukrytych oraz liczbę możliwych klas.
+
+\begin{lstlisting}[frame=single, language=Python, caption=Konfiguracja klasyfikatora]
+ self.predictor = tf.estimator.DNNClassifier(
+		feature_columns=self.my_feature_columns,
+		hidden_units=[180, 160],
+		n_classes=4,
+		model_dir=model_dir,
+		config=self.my_config
+		)
+\end{lstlisting}
+
+Najmniejszą spójną częścią mojej pracy był Eksperyment, który zawarty został w jednej klasie. Przebieg pojedynczego uruchomienia eksperymentu w formie kodu został zawarty w Listingu 4.3. Przed rozpoczęciem pracy musimy określić liczbę cykli. Każdy cykl składa się z sprawdzenia czy w danej iteracji mamy przeprowadzić proces uczenia. Proces uczenia jest opcjonalny, gdyż możemy pracować z pomocą wyuczonej sieci. Następnie wyznaczamy parametry sieci w tym \textit{accuracy} oraz \textit{loss} dla próbki danych. Na samym końcu przeprowadzamy podaną w konfiguracji eksperymetu liczbę rozgrywek. 
+\begin{lstlisting}[frame=single, language=Python, caption=Funkcja przeprowadzająca pojedynczy eksperyment]
+def run_experiment(self, learn_iteration, learn_batch, with_learn, 
+start_iteration=1, epochs = 1, playerStart = 2, playerEnd = 5, 
+skipFirst = False):
+  # przygotowanie plikow do zapisu eksperymentu
+  experiment_start = datetime.utcnow()
+  for li in range(start_iteration, learn_iteration+1):
+    if with_learn and not (skipFirst and li == start_iteration):
+      for i in range(epochs):
+        self.make_learning(learn_batch)
+    quality = self.make_evaluate(learn_batch)
+    iteration_quality = self.make_iteration(li, playerStart,
+		playerEnd+1)
+    # zapis logow calego eksperymentu
+\end{lstlisting}
+
+Ostatnim fragmentem kodu, który warty jest omówienia jest fragment kodu gracza wykorzystującego sieć neuronową w którym sieć wskazuje jaką decyzję gracz powinien podjąć. W poniższym kodzie \textit{predict\_x} zawiera informacje o stanie planszy - dokładnie takim samym, na którego podstawie decyzje podejmuje gracz algorytmiczny. Dzięki poniższemu fragmentowi kodu ostatecznie gracz wykorzystujący sieć neuronowa może uczestniczyć w rozgrywkach. 
+\begin{lstlisting}[frame=single, language=Python, caption=Wyznaczenie klasy decyzji]
+predictions = self.predictor.predict(
+	input_fn=lambda: game_data.pred_input_fn(predict_x,
+	labels=None,
+	batch_size=1))
+result = DecisionType.DecisionType.PASS
+for pred in zip(predictions):
+	classId= pred[0]['class_ids'][0]
+	result = DecisionType.DecisionType(classId)
+\end{lstlisting}
+
 \section{Wyniki i podsumowanie} 
 Wyniki otrzymane w trakcie eksperymentu zostały zawarte w Tablicy \ref{table:nn_sizeresult}, oraz ziilustrowane na Rysunkach \ref{figure:player_points_nn}, \ref{figure:global_points_nn} oraz \ref{figure:min_max_nn}.
 
@@ -624,9 +678,18 @@ Jest to najmniejszy element połączenia zajmowany wyłącznie przez jednego z g
 \paragraph{Punkt (zwycięstwa)} Jest to wynik gracza. Punkt zwycięstwa zdobywa się za realizację biletów oraz rezerwacje połączeń między miastami.
 \chapter{Bibliografia}
 \begin{enumerate}
+	\item{A Few Useful Things to Know about Machine Learning
+	}
+	\subitem Dostęp: 05 września 2018
+	\subitem Pedro Domingos
+	\subitem Department of Computer Science and Engineering
+	\subitem University of Washington
+	\subitem \url{https://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf}
+
 	\item{Instrukcja do gry}
 	\subitem Dostęp: 02 września 2018
 	\subitem \url{https://www.wydawnictworebel.pl/repository/files/instrukcje/WdP_USA.pdf}
+	
 	\item{Omówienie botów do gry - forum Board Game Geek}
 	\subitem Dostęp: 02 września 2018
 	\subitem \url{https://boardgamegeek.com/thread/1523665/ai-project-solo-multiplayer-games}
