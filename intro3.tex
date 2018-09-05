@@ -274,36 +274,31 @@ Wykorzystany w pracy algorytm wyboru biletów przedstawiono na Rysunku \ref{figu
 \end{figure}
 
 \subsection{Poddecyzja - karta wagonów}
-\begin{enumerate}
-	\item Policz dostepne karty wagonow na planszy (według kolorów) oraz ile kart każdego z kolorów potrzeba na zrealizowanie pozostałych biletów
-	\item Wyznacz kolory, których brakuje graczowi a następnie kolor, którego wagonów graczowi brakuje najwięcej.
-	\item Jesli gracz ma zrealizowane wszystkie bilety - wez kartę z talii 
-	\item Jesli gracz ma zrealizowane wszystkie bilety, a talia sie skonczyla - wez losowa karte z planszy
-	\item Jesli graczowi brakuje wiecej niz 3 roznych kolorow kart- wez z talii
-	\item Jesli potrzeba mniej niz 4 karty, a pozadany kolor jest na planszy - wez wybrana karte z planszy
-	\item Jesli pozostala jedna karta do zrealizowania biletu, gracz nie wybral jeszcze w turze karty oraz jest karta \textit{Lokomotywy} na planszy - wez wybrana karte lokomotywy
-	\item Jesli talia nie jest pusta - wez karte z talii
-	\item Wez losowa karte z planszy
-\end{enumerate}
+Wykorzystany w pracy algorytm wyboru pobieranych kart wagonów przedstawiono na Rysunku \ref{figure:wagons_diagram} w formie schematu blokowego.
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=0.6\textheight]{Wagon_card.png}
+	\caption{Schemat blokowy algorytmu podejmującego decyzje o wyborze karty wagonu do pobrania}
+	\label{figure:wagons_diagram}
+\end{figure}
+
 \subsection{Decyzja - rezerwacja połączenia}
-\begin{enumerate}
-	\item Oblicz posiadane karty kazdego z kolorow, oraz jakie karty sa potrzebne do rezerwacji polaczen z biletow
-	\item Jesli sa karty w zbiorze \textit{Pasujace} oznacz ten zbior jako przetwarzany. W przeciwnym przypadku oznacz zbior kart \textit{mozliwych}
-	\item Jako kryterium wyboru polaczenia do rezerwacji wybierz
-	\subitem Dla realizacji w przypadku niepustego zbioru \textit{pasujace} wybierz najkrotsze polaczenie
-	\subitem W kazdym innym przypadku wybierz polaczenie gwarantujace najwiecej punktow.
-	
-	\item Okresl pule kolorow do wykorzystania. Jesli jest wiecej niz jeden mozliwy kolor (w przypadku np. teczy), wybierz ten ktorego masz najwiecej kart
-	\item Wybierz karty wagonow podanego koloru
-\end{enumerate}
+Wykorzystany w pracy algorytm rezerwacji najlepszego połączenia przedstawiono na Rysunku \ref{figure:connection_diagram} w formie schematu blokowego.
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=0.6\textheight]{ConnectionClaim.png}
+	\caption{Schemat blokowy algorytmu rezerwującego najlepsze połączenie}
+	\label{figure:connection_diagram}
+\end{figure}
+
 \subsection{Przygotowanie tury}
 \begin{enumerate}
 	\item Okresl pule wszystkich polaczen potrzebnych do realizacji biletow gracza (okreslane jako \textit{cel})
-	\item Z wszystkich polaczen na mapie wyznacz te ktore gracz moze zrealizowac w danej turze (okreslane jako \textit{mozliwosci})
+	\item Z wszystkich polaczen na mapie wyznacz te ktore gracz moze zrealizowac w danej turze (okreslane jako \textit{mozliwosci}) - pod warunkiem:
 	\subitem Dodaj polaczenia zawierajace sie w \textit{celu}
 	\subitem Dodaj wszystkie polaczenia o dlugosci co najmniej 5
-	\subitem Dodaj wszystkie polaczenia gdy dlugosc zbioru \textit{cel} jest rowna 0
-	\item Dla wszystkich polaczen ze zbioru \textit{cel} (ktore gracz moze w ogole zarezerwowac)
+	\subitem Dodaj wszystkie polaczenia gdy dlugość zbioru \textit{cel} jest rowna 0
+	\item Dla wszystkich polaczen ze zbioru \textit{cel} (które gracz moze w ogole zarezerwowac)
 	\subitem Zawierajace sie w zbiorze \textit{mozliwosci} dodaj do zbioru \textit{pasujace}
 	\subitem W przeciwnym przypadku dodaj do zbioru \textit{Brakujace}
 	
